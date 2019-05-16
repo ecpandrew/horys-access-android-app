@@ -8,15 +8,16 @@
     <string name="action_settings">Settings</string>
 
 
-
     <string name="menu_real_time">Buscas em Tempo Real</string>
     <string name="menu_historical_analysis">Análise do Histórico</string>
     <string name="menu_group_of_persons">Grupos de Pessoas</string>
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
+    <string name="menu_send">Reportar Bugs</string>
     <string name="report_bug">Reportar Bugs</string>
-    <string name="refresh_string"><u>Refresh</u></string>
+    <string name="refresh_string">
+        <u>Refresh</u>
+    </string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="location_avaible_now">Locations Available</string>
@@ -32,10 +33,11 @@
     <string name="login_failed">"Login failed"</string>
     <string name="title_activity_analytics">AnalyticsActivity</string>
 
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_gallery">Buscas em Tempo Real</string>
+    <string name="menu_slideshow">Acessando Histórico</string>
     <string name="menu_home">Home Page</string>
     <string name="pick_label">YY-MM-dd HH-mm</string>
     <string name="pick_a_date">Pick a Date</string>
     <string name="clear_data">Clear</string>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>

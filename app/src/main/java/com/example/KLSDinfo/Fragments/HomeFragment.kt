@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.MainFragments
+package com.example.KLSDinfo.Fragments
 
 import android.content.Context
 import android.os.Bundle

@@ -17,9 +17,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import java.util.*
 import com.example.KLSDinfo.Adapters.SimpleExpandableAdapter
-import com.example.KLSDinfo.MainFragments.HistoryFragment
-import com.example.KLSDinfo.MainFragments.HomeFragment
-import com.example.KLSDinfo.MainFragments.RealTimeFragment
+import com.example.KLSDinfo.Fragments.HistoryFragment
+import com.example.KLSDinfo.Fragments.HomeFragment
+import com.example.KLSDinfo.Fragments.RealFragment
 import kotlin.collections.LinkedHashMap
 
 
@@ -190,7 +190,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_gallery -> {
                 Toast.makeText(baseContext, "Acontecendo Agora", Toast.LENGTH_LONG).show()
                 title = "Acontecendo Agora"
-                navigateToFragment(RealTimeFragment.newInstance())
+                navigateToFragment(RealFragment.newInstance())
 
             }
             R.id.nav_slideshow -> {
@@ -201,9 +201,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.nav_share -> {
+                Toast.makeText(baseContext, "Config Not Implemented Yet!", Toast.LENGTH_LONG).show()
 
             }
             R.id.nav_send -> {
+                Toast.makeText(baseContext, "Report Bugs Not Implemented Yet!", Toast.LENGTH_LONG).show()
+
 
             }
         }
@@ -213,11 +216,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
-    private fun navigateToFragment(fragToGo: Fragment){
+    public fun navigateToFragment(fragToGo: Fragment, addToBackStack: Boolean = false){
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.fragment_container, fragToGo)
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        //transaction.addToBackStack(null) // Todo: verificar o ciclo de vida dos fragmentos
+        if(addToBackStack){
+            transaction.addToBackStack(null) // Todo: verificar o ciclo de vida dos fragmentos
+        }
         transaction.commit()
     }
 

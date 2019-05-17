@@ -7,24 +7,19 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
-import com.example.KLSDinfo.Fragments.SelectionFragments.RealSelectionLocationFragment
-import com.example.KLSDinfo.Fragments.SelectionFragments.RealSelectionPersonFragment
 import com.example.KLSDinfo.Models.Method
 import com.example.KLSDinfo.R
 
-class RealMethodsAdapter(
+class HistoricMethodsAdapter(
     private val context: Context,
-    private val items: List<Method>) : RecyclerView.Adapter<RealMethodsAdapter.MethodViewHolder>()
+    private val items: List<Method>) : RecyclerView.Adapter<HistoricMethodsAdapter.MethodViewHolder>()
 
 {
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RealMethodsAdapter.MethodViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoricMethodsAdapter.MethodViewHolder {
         val itemView: View = LayoutInflater.from(parent.context).inflate(R.layout.card_view, parent, false)
         return MethodViewHolder(itemView)
 
@@ -35,7 +30,7 @@ class RealMethodsAdapter(
         return items.size
     }
 
-    override fun onBindViewHolder(holder: RealMethodsAdapter.MethodViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: HistoricMethodsAdapter.MethodViewHolder, position: Int) {
         val method: Method = items[position]
 
         holder.nameTV.text = method.name
@@ -43,16 +38,7 @@ class RealMethodsAdapter(
 
         holder.cardView.setOnClickListener {
             Toast.makeText(context,"Metodo: ${items[position].name}", Toast.LENGTH_LONG).show()
-            when(position){
-                0 -> {
-                    navigateToFragment(RealSelectionLocationFragment.newInstance(),it,true)
 
-                }
-
-                1 -> {
-                    navigateToFragment(RealSelectionPersonFragment.newInstance(), it, true)
-                }
-            }
         }
 
         displayImage(holder, method)
@@ -60,17 +46,6 @@ class RealMethodsAdapter(
 
     }
 
-
-    private fun navigateToFragment(fragToGo: Fragment,view:View, addToBackStack: Boolean = false){
-        val activity = view.context as AppCompatActivity
-        val transaction = activity.supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragToGo)
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        if(addToBackStack){
-            transaction.addToBackStack(null) // Todo: verificar o ciclo de vida dos fragmentos
-        }
-        transaction.commit()
-    }
 
     private fun displayImage(holder: MethodViewHolder, method: Method){
         if(method.image != null){
@@ -89,7 +64,6 @@ class RealMethodsAdapter(
         val imgView: ImageView = itemView.findViewById(R.id.method_photo)
         val cardView: CardView = itemView.findViewById(R.id.card_view)
     }
-
 
 
 

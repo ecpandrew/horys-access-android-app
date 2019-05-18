@@ -1,21 +1,22 @@
 package com.example.KLSDinfo.Fragments.SelectionFragments
 import android.os.Bundle
+import android.os.Parcelable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.KLSDinfo.Adapters.SelectionAdapters.MultiCheckRoleAdapter
-import com.example.KLSDinfo.Adapters.SelectionAdapters.RoleAdapter
-import com.example.KLSDinfo.Models.Location
+import com.example.KLSDinfo.Fragments.DialogFragments.FullscreenDialogFragment
 import com.example.KLSDinfo.Models.MultiCheckRole
 import com.example.KLSDinfo.Models.Person
 import com.example.KLSDinfo.Models.Role
 import com.example.KLSDinfo.R
-import java.util.ArrayList
 
 
 
@@ -23,10 +24,8 @@ import java.util.ArrayList
 
 open class RealSelectionPersonFragment : Fragment() {
 
-    lateinit var recyclerView: RecyclerView
     lateinit var mAdapter: MultiCheckRoleAdapter
-    private val items: MutableList<Location> = ArrayList<Location>()
-
+    lateinit var items: MutableList<MultiCheckRole>
 
     companion object {
         fun newInstance(): RealSelectionPersonFragment {
@@ -41,25 +40,63 @@ open class RealSelectionPersonFragment : Fragment() {
         val layoutManager = LinearLayoutManager(context)
 
         mAdapter = MultiCheckRoleAdapter(getMultiCheckRoles())
+
         rv.layoutManager = layoutManager
         rv.adapter = mAdapter
+
 
         val btnClear : Button = view.findViewById(R.id.clear_button)
         btnClear.setOnClickListener {
             mAdapter.clearChoices()
         }
 
-
         val check = view.findViewById(R.id.check_first_child) as Button
         check.setOnClickListener {
             mAdapter.checkChild(true, 0, 0)
         }
 
+        val btnSend : Button = view.findViewById(R.id.btn_request)
+
+        btnSend.setOnClickListener {
 
 
+            val seletedElements: MutableList<Parcelable> = getSelectedElements()
 
+            val bundle = Bundle()
+
+            bundle.putParcelableArray("resources", seletedElements.toTypedArray())
+
+
+            val dialog = FullscreenDialogFragment()
+            dialog.arguments = bundle
+            val activity: AppCompatActivity = view.context as AppCompatActivity
+            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+            dialog.show(transaction, "FullScreenDialog")
+
+
+        }
 
         return view
+    }
+
+    private fun getSelectedElements(): MutableList<Parcelable> {
+
+        val persons: MutableList<Parcelable> = mutableListOf()
+        val roles: List<MultiCheckRole> = mAdapter.groups as List<MultiCheckRole>
+
+        for(i in 0 until roles.size){
+            for (j in 0 until roles[i].selectedChildren.size){
+                when(roles[i].selectedChildren[j]){
+                    true -> { persons.add(items[i].persons[j])
+
+                    }
+                }
+            }
+
+        }
+        Log.i("debug", "Enviado: $persons")
+        return persons
+
     }
 
 
@@ -105,6 +142,7 @@ open class RealSelectionPersonFragment : Fragment() {
         roles.add(professor)
         roles.add(masters)
         roles.add(student)
+        items = roles
         return roles
     }
 

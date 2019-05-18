@@ -2,21 +2,27 @@ package com.example.KLSDinfo.Adapters.SelectionAdapters
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.RotateAnimation
 import com.example.KLSDinfo.Adapters.ViewHolders.MultiCheckPersonViewHolder
 import com.example.KLSDinfo.Adapters.ViewHolders.RoleViewHolder
 import com.example.KLSDinfo.Models.MultiCheckRole
 import com.example.KLSDinfo.Models.Person
 import com.example.KLSDinfo.R
 import com.thoughtbot.expandablecheckrecyclerview.CheckableChildRecyclerViewAdapter
+import com.thoughtbot.expandablecheckrecyclerview.ChildCheckController
 import com.thoughtbot.expandablecheckrecyclerview.models.CheckedExpandableGroup
 
 
 class MultiCheckRoleAdapter(groups: List <MultiCheckRole>) :
     CheckableChildRecyclerViewAdapter<RoleViewHolder, MultiCheckPersonViewHolder>(groups) {
 
+
+
     override fun onCreateCheckChildViewHolder(parent: ViewGroup, viewType: Int): MultiCheckPersonViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.list_item_multicheck_person, parent, false)
+
         return MultiCheckPersonViewHolder(view)
     }
 
@@ -38,8 +44,11 @@ class MultiCheckRoleAdapter(groups: List <MultiCheckRole>) :
         holder: RoleViewHolder, flatPosition: Int,
         group: ExpandableGroup<*>
     ) {
+
         holder.setGenreTitle(group)
+
     }
+
 
 
 }

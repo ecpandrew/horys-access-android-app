@@ -2,6 +2,7 @@ package com.example.KLSDinfo.Adapters.SelectionAdapters
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.example.KLSDinfo.Adapters.ViewHolders.PersonViewHolder
 import com.example.KLSDinfo.Adapters.ViewHolders.RoleViewHolder
 import com.example.KLSDinfo.Models.Role
@@ -37,6 +38,9 @@ class RoleAdapter(groups: List<ExpandableGroup<*>>) :
         group: ExpandableGroup<*>
     ) {
 
+
         holder.setGenreTitle(group)
+
+
     }
 }

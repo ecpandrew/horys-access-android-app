@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Adapters.SelectionAdapters
+package com.example.KLSDinfo.Adapters
 
 import android.content.Context
 import android.util.SparseBooleanArray
@@ -7,17 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.example.KLSDinfo.Models.Location
+import com.example.KLSDinfo.Models.PhysicalSpace
 import com.example.KLSDinfo.R
 import com.mikhaellopez.circularimageview.CircularImageView
 
-class RealSelectLocationAdapter(
+class PhysicalSpaceAdapter(
     private val context:Context,
-    private var items: List<Location>,
+    private var items: List<PhysicalSpace>,
     private val selectedItems: SparseBooleanArray = SparseBooleanArray()):
-    RecyclerView.Adapter<RealSelectLocationAdapter.SelectViewHolder>() {
+    RecyclerView.Adapter<PhysicalSpaceAdapter.SelectViewHolder>() {
 
     private var current_selected_idx = -1
     private var onClickLister: OnClickListener? = null
@@ -29,22 +28,22 @@ class RealSelectLocationAdapter(
         this.onClickLister = ocl
     }
 
-    fun setItems(i: List<Location>){
+    fun setItems(i: List<PhysicalSpace>){
         this.items = i
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RealSelectLocationAdapter.SelectViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.recyclerview_item,parent,false)
-        return  SelectViewHolder(view)
+        return SelectViewHolder(view)
     }
 
     override fun getItemCount(): Int {
         return items.size
     }
 
-    override fun onBindViewHolder(holder: RealSelectLocationAdapter.SelectViewHolder, position: Int) {
-        val location: Location = items[position]
+    override fun onBindViewHolder(holder: SelectViewHolder, position: Int) {
+        val location: PhysicalSpace = items[position]
 
         holder.from.text = location.name
         holder.email.text = "no data"
@@ -79,17 +78,12 @@ class RealSelectLocationAdapter(
     }
 
 
-    private fun displayImage(holder: SelectViewHolder, location: Location) {
-        if (location.image != null) {
-            holder.image.setImageResource(location.image!!)
-            holder.image.colorFilter = null
-        } else {
-            holder.image.setImageResource(R.drawable.shape_circle)
-            holder.image.setColorFilter(location.color)
-        }
+    private fun displayImage(holder: SelectViewHolder, location: PhysicalSpace) {
+            holder.image.setImageResource(R.mipmap.ic_building)
     }
 
     private fun toggleCheckedIcon(holder: SelectViewHolder, position: Int) {
+
         if (selectedItems.get(position, false)) {
             holder.lyt_image.visibility = View.GONE
             holder.lyt_checked.visibility = View.VISIBLE
@@ -123,7 +117,7 @@ class RealSelectLocationAdapter(
         notifyItemChanged(pos)
     }
 
-    fun createLocation(position: Int): Location {
+    fun createLocation(position: Int): PhysicalSpace {
 
         return items[position]
     }
@@ -148,9 +142,9 @@ class RealSelectLocationAdapter(
         return items
     }
     interface OnClickListener {
-        fun onItemClick(view: View, obj: Location, pos: Int)
+        fun onItemClick(view: View, obj: PhysicalSpace, pos: Int)
 
-        fun onItemLongClick(view: View, obj: Location, pos: Int)
+        fun onItemLongClick(view: View, obj: PhysicalSpace, pos: Int)
     }
 
 

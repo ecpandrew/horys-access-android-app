@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Fragments
+package com.example.KLSDinfo.Historic
 
 import android.content.Context
 import android.os.Bundle
@@ -9,19 +9,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.KLSDinfo.Adapters.HistoricMethodsAdapter
-import com.example.KLSDinfo.Adapters.RealMethodsAdapter
 import com.example.KLSDinfo.Models.Method
 import com.example.KLSDinfo.R
 
 class HistoryFragment : Fragment(){
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var methodsAdapter: HistoricMethodsAdapter
+    private lateinit var methodsAdapter: HistoryMethodsAdapter
     private var items: MutableList<Method> = mutableListOf()
 
     companion object {
-        fun newInstance(): HistoryFragment{
+        fun newInstance(): HistoryFragment {
             return HistoryFragment()
         }
     }
@@ -37,10 +35,10 @@ class HistoryFragment : Fragment(){
     private fun addItems(){
 
         items.clear()
-        items.add(Method("Houve Encontro?","Exibe todos os encontros em que grupo de pessoas(duas ou mais) estiveram em um intervalo de tempo",R.drawable.ic_location_on_black_24dp))
-        items.add(Method("Tempo passado com grupos de pessoas","Exibe quanto tempo uma pessoa passou em encontros com um grupo de pessoas(duas ou mais) em um intervalo de tempo",R.drawable.ic_location_on_black_24dp))
-        items.add(Method("Verificar Histórico de Pessoas","Exibe todos os locais visitados por pessoa(as) e a duração dos encontros",R.drawable.ic_location_on_black_24dp))
-        items.add(Method("Verificar Histórico de Espaço Físico","Exibe todas as pessoas que estiveram no espaço físico selecionado e a duração dos encontros",R.drawable.ic_location_on_black_24dp))
+        items.add(Method("Houve Encontro?","Busca os encontros em que um grupo de pessoas(duas ou mais) estiveram em um intervalo de tempo.",R.drawable.ic_location_on_black_24dp))
+        items.add(Method("Duração de Encontros com Grupos","Exibe quanto tempo uma pessoa passou em encontros com um grupo de pessoas(duas ou mais) dado um intervalo de tempo.",R.drawable.ic_location_on_black_24dp))
+        items.add(Method("Verificar Histórico de Pessoas","Exibe os encontros das pessoas selecionadas num dado intervalo de tempo.",R.drawable.ic_location_on_black_24dp))
+        items.add(Method("Verificar Histórico de Espaço Físico","Exibe os encontros que aconteceram no local num dado intervalo de tempo",R.drawable.ic_location_on_black_24dp))
 
 
     }
@@ -51,7 +49,7 @@ class HistoryFragment : Fragment(){
         recyclerView.layoutManager = GridLayoutManager(context,1)
         recyclerView.setHasFixedSize(true)
         addItems()
-        methodsAdapter = HistoricMethodsAdapter(context!!, items)
+        methodsAdapter = HistoryMethodsAdapter(context!!, items)
         recyclerView.adapter = methodsAdapter
 
     }

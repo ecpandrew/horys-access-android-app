@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Fragments
+package com.example.KLSDinfo.RealTime
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -8,18 +8,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.KLSDinfo.Adapters.RealMethodsAdapter
 import com.example.KLSDinfo.Models.Method
 import com.example.KLSDinfo.R
 
 class RealFragment : Fragment(){
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var methodsAdapter: RealMethodsAdapter
+    private lateinit var methodsAdapter: RMethodsAdapter
     private var items: MutableList<Method> = mutableListOf()
 
     companion object {
-        fun newInstance(): RealFragment{
+        fun newInstance(): RealFragment {
             return RealFragment()
         }
     }
@@ -37,7 +36,7 @@ class RealFragment : Fragment(){
     private fun addItems(){
 
         items.clear()
-        items.add(Method("Busca por Localização","Verifica quem são as pessoas em encontro com a localização selecionada",R.drawable.ic_location_on_black_24dp))
+        items.add(Method("Busca por Espaço Físico","Verifica todas as pessoas em encontros com o espaço físico escolhido",R.drawable.ic_location_on_black_24dp))
         items.add(Method("Busca por Pessoas","Verifica a localização atual da(s) pessoa(s) selecionadas.",R.drawable.ic_location_on_black_24dp))
 
     }
@@ -48,7 +47,7 @@ class RealFragment : Fragment(){
         recyclerView.layoutManager = GridLayoutManager(context,1)
         recyclerView.setHasFixedSize(true)
         addItems()
-        methodsAdapter = RealMethodsAdapter(context!!, items)
+        methodsAdapter = RMethodsAdapter(context!!, items)
         recyclerView.adapter = methodsAdapter
 
 

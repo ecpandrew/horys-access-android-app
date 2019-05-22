@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Adapters
+package com.example.KLSDinfo.Historic
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -12,20 +12,18 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
-import com.example.KLSDinfo.Fragments.SelectionFragments.RealSelectionLocationFragment
-import com.example.KLSDinfo.Fragments.SelectionFragments.RealSelectionPersonFragment
 import com.example.KLSDinfo.Models.Method
 import com.example.KLSDinfo.R
 
-class RealMethodsAdapter(
+class HistoryMethodsAdapter(
     private val context: Context,
-    private val items: List<Method>) : RecyclerView.Adapter<RealMethodsAdapter.MethodViewHolder>()
+    private val items: List<Method>) : RecyclerView.Adapter<HistoryMethodsAdapter.MethodViewHolder>()
 
 {
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RealMethodsAdapter.MethodViewHolder {
-        val itemView: View = LayoutInflater.from(parent.context).inflate(R.layout.card_view, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MethodViewHolder {
+        val itemView: View = LayoutInflater.from(parent.context).inflate(R.layout.method_view, parent, false)
         return MethodViewHolder(itemView)
 
     }
@@ -35,7 +33,7 @@ class RealMethodsAdapter(
         return items.size
     }
 
-    override fun onBindViewHolder(holder: RealMethodsAdapter.MethodViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MethodViewHolder, position: Int) {
         val method: Method = items[position]
 
         holder.nameTV.text = method.name
@@ -43,14 +41,23 @@ class RealMethodsAdapter(
 
         holder.cardView.setOnClickListener {
             Toast.makeText(context,"Metodo: ${items[position].name}", Toast.LENGTH_LONG).show()
+
+            // TODO: remenber to also pass some reference aboute the choosen method
             when(position){
-                0 -> {
-                    navigateToFragment(RealSelectionLocationFragment.newInstance(),it,true)
+                0 -> { // person
+                    navigateToFragment(HSelectionPersonFragment.newInstance(), it,true)
+                }
+                1 -> {// person: Here we algo need to choose target person
+                    navigateToFragment(HSelectionPersonFragment.newInstance(), it,true)
 
                 }
+                2 -> {// person
+                    navigateToFragment(HSelectionPersonFragment.newInstance(), it,true)
 
-                1 -> {
-                    navigateToFragment(RealSelectionPersonFragment.newInstance(), it, true)
+                }
+                3 -> {
+                    navigateToFragment(HSelectionLocationFragment.newInstance(), it,true)
+
                 }
             }
         }
@@ -60,17 +67,6 @@ class RealMethodsAdapter(
 
     }
 
-
-    private fun navigateToFragment(fragToGo: Fragment,view:View, addToBackStack: Boolean = false){
-        val activity = view.context as AppCompatActivity
-        val transaction = activity.supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragToGo)
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        if(addToBackStack){
-            transaction.addToBackStack(null) // Todo: verificar o ciclo de vida dos fragmentos
-        }
-        transaction.commit()
-    }
 
     private fun displayImage(holder: MethodViewHolder, method: Method){
         if(method.image != null){
@@ -91,8 +87,16 @@ class RealMethodsAdapter(
     }
 
 
-
-
+    private fun navigateToFragment(fragToGo: Fragment, view:View, addToBackStack: Boolean = false){
+        val activity = view.context as AppCompatActivity
+        val transaction = activity.supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragToGo)
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        if(addToBackStack){
+            transaction.addToBackStack(null) // Todo: verificar o ciclo de vida dos fragmentos
+        }
+        transaction.commit()
+    }
 
 
 

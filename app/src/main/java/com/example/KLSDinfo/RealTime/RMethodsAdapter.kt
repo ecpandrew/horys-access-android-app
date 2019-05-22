@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Adapters
+package com.example.KLSDinfo.RealTime
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,20 +7,23 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.example.KLSDinfo.Models.Method
 import com.example.KLSDinfo.R
 
-class HistoricMethodsAdapter(
+class RMethodsAdapter(
     private val context: Context,
-    private val items: List<Method>) : RecyclerView.Adapter<HistoricMethodsAdapter.MethodViewHolder>()
+    private val items: List<Method>) : RecyclerView.Adapter<RMethodsAdapter.MethodViewHolder>()
 
 {
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoricMethodsAdapter.MethodViewHolder {
-        val itemView: View = LayoutInflater.from(parent.context).inflate(R.layout.card_view, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MethodViewHolder {
+        val itemView: View = LayoutInflater.from(parent.context).inflate(R.layout.method_view, parent, false)
         return MethodViewHolder(itemView)
 
     }
@@ -30,7 +33,7 @@ class HistoricMethodsAdapter(
         return items.size
     }
 
-    override fun onBindViewHolder(holder: HistoricMethodsAdapter.MethodViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MethodViewHolder, position: Int) {
         val method: Method = items[position]
 
         holder.nameTV.text = method.name
@@ -38,7 +41,16 @@ class HistoricMethodsAdapter(
 
         holder.cardView.setOnClickListener {
             Toast.makeText(context,"Metodo: ${items[position].name}", Toast.LENGTH_LONG).show()
+            when(position){
+                0 -> {
+                    navigateToFragment(RSelectionLocationFragment.newInstance(),it,true)
 
+                }
+
+                1 -> {
+                    navigateToFragment(RSelectionPersonFragment.newInstance(), it, true)
+                }
+            }
         }
 
         displayImage(holder, method)
@@ -46,6 +58,17 @@ class HistoricMethodsAdapter(
 
     }
 
+
+    private fun navigateToFragment(fragToGo: Fragment,view:View, addToBackStack: Boolean = false){
+        val activity = view.context as AppCompatActivity
+        val transaction = activity.supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragToGo)
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        if(addToBackStack){
+            transaction.addToBackStack(null) // Todo: verificar o ciclo de vida dos fragmentos
+        }
+        transaction.commit()
+    }
 
     private fun displayImage(holder: MethodViewHolder, method: Method){
         if(method.image != null){
@@ -64,6 +87,7 @@ class HistoricMethodsAdapter(
         val imgView: ImageView = itemView.findViewById(R.id.method_photo)
         val cardView: CardView = itemView.findViewById(R.id.card_view)
     }
+
 
 
 

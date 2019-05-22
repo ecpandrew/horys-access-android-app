@@ -39,7 +39,7 @@ class FullscreenDialogFragment : DialogFragment() {
 
 
 
-        val lista: Array<Parcelable>? = arguments?.getParcelableArray("resources")
+        val lista: ArrayList<Parcelable>? = arguments?.getParcelableArrayList<Parcelable>("resources")
 
         Log.i("debug", "Recebido: $lista" )
 

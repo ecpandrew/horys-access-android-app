@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Adapters.ViewHolders
+package com.example.KLSDinfo.ViewHolders
 
 import com.thoughtbot.expandablecheckrecyclerview.viewholders.CheckableChildViewHolder
 import android.widget.Checkable

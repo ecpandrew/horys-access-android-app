@@ -10,7 +10,8 @@
 
     <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+      android:background="@color/grey">
 
         <ImageView
                 android:id="@+id/method_photo"
@@ -26,26 +27,27 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/method_photo"
                 android:layout_marginBottom="0dp"
-                android:background="@color/colorPrimary"
+                android:background="@color/colorWhite"
                 android:gravity="center"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
                 android:text="Description"
-                android:textColor="@color/colorWhite"
-                android:textSize="13sp" />
+                android:textColor="@color/colorPrimary"
+                android:textSize="17sp"
+                android:textStyle="bold"        />
         <TextView
                 android:id="@+id/method_description2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
                 android:text="Description"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/colorPrimary"
                 android:gravity="center"
                 android:layout_below="@+id/method_description"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp"
                 android:layout_alignParentBottom="true"
-                android:background="@color/colorPrimary"/>
+                android:background="@color/colorWhite"/>
 
     </RelativeLayout>
 

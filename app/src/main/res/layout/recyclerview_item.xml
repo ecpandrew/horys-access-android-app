@@ -11,7 +11,6 @@
 
         android:layout_height="wrap_content">
     <com.balysv.materialripple.MaterialRippleLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
             style="@style/RippleStyleBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -22,6 +21,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_multi_selection"
                 android:clickable="true"
+
                 android:orientation="horizontal"
                 android:paddingTop="@dimen/spacing_large"
                 android:paddingBottom="@dimen/spacing_large">
@@ -29,6 +29,7 @@
             <View
                     android:layout_width="@dimen/spacing_large"
                     android:layout_height="0dp" />
+
 
             <RelativeLayout
                     android:layout_width="wrap_content"
@@ -40,9 +41,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
+
                     <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
                             android:src="@drawable/shape_circle"
                             android:tint="@color/red_500" />
 
@@ -62,8 +64,8 @@
 
                     <com.mikhaellopez.circularimageview.CircularImageView
                             android:id="@+id/image"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
                             app:civ_border_width="0dp" />
 
 
@@ -92,10 +94,9 @@
                             android:maxLines="1"
                             android:singleLine="true"
                             android:text="People Name"
-                            android:textSize="12sp"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textSize="17sp"
                             android:textColor="@color/colorPrimary"
-                            android:textStyle="bold" />
+                             />
 
                     <TextView
                             android:id="@+id/email"
@@ -104,6 +105,7 @@
                             android:layout_marginTop="2dp"
                             android:maxLines="1"
                             android:singleLine="true"
+                            android:visibility="gone"
                             android:textSize="10sp"
                             android:text="email.address@mail.com"
                             android:textColor="@color/colorPrimary" />
@@ -114,6 +116,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:maxLines="1"
+                            android:visibility="gone"
                             android:singleLine="true"
                             android:text="Hola"
                             android:layout_marginTop="5dp"

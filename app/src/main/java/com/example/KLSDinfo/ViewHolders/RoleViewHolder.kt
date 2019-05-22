@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Adapters.ViewHolders
+package com.example.KLSDinfo.ViewHolders
 import android.view.animation.Animation.RELATIVE_TO_SELF
 import android.view.animation.RotateAnimation
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
@@ -23,7 +23,6 @@ class RoleViewHolder(itemView: View) : GroupViewHolder(itemView) {
 
 
 
-
     fun setGenreTitle(role: ExpandableGroup<*>) {
         if (role is Role) {
             genreName.text = role.title
@@ -35,6 +34,8 @@ class RoleViewHolder(itemView: View) : GroupViewHolder(itemView) {
         }
 
     }
+
+
 
     override fun expand() {
         animateExpand()

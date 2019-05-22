@@ -1,10 +1,9 @@
-package com.example.KLSDinfo.Adapters.SelectionAdapters
+package com.example.KLSDinfo.Adapters
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
-import com.example.KLSDinfo.Adapters.ViewHolders.PersonViewHolder
-import com.example.KLSDinfo.Adapters.ViewHolders.RoleViewHolder
+import com.example.KLSDinfo.ViewHolders.PersonViewHolder
+import com.example.KLSDinfo.ViewHolders.RoleViewHolder
 import com.example.KLSDinfo.Models.Role
 import com.example.KLSDinfo.R
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter

@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Fragments
+package com.example.KLSDinfo.Home
 
 import android.content.Context
 import android.os.Bundle
@@ -12,7 +12,7 @@ import com.example.KLSDinfo.R
 class HomeFragment : Fragment(){
 
     companion object {
-        fun newInstance(): HomeFragment{
+        fun newInstance(): HomeFragment {
             return HomeFragment()
         }
     }

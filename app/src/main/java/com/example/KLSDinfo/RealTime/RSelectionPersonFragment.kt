@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.KLSDinfo.Adapters.MultiCheckRoleAdapter
 import com.example.KLSDinfo.Fragments.DialogFragments.FullscreenDialogFragment
+import com.example.KLSDinfo.Fragments.DialogFragments.TableOneDialog
+import com.example.KLSDinfo.Fragments.DialogFragments.TableTwoDialog
 import com.example.KLSDinfo.Models.MultiCheckRole
 import com.example.KLSDinfo.Models.Person
 import com.example.KLSDinfo.Models.Role
@@ -74,7 +76,7 @@ open class RSelectionPersonFragment : Fragment() {
             bundle.putParcelableArrayList("resources", seletedElements)
 
 
-            val dialog = FullscreenDialogFragment()
+            val dialog = TableTwoDialog()
             dialog.arguments = bundle
             val activity: AppCompatActivity = view.context as AppCompatActivity
             val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()

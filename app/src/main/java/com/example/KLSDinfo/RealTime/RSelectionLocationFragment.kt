@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.KLSDinfo.Adapters.PhysicalSpaceAdapter
 import com.example.KLSDinfo.Fragments.DialogFragments.FullscreenDialogFragment
+import com.example.KLSDinfo.Fragments.DialogFragments.TableOneDialog
 import com.example.KLSDinfo.Models.Location
 import com.example.KLSDinfo.Models.MultiCheckRole
 import com.example.KLSDinfo.Models.PhysicalSpace
@@ -85,7 +86,7 @@ class RSelectionLocationFragment: Fragment() {
             Log.i("debug", "Enviado: $selectedLocations")
 
             bundle.putParcelableArrayList("resources", selectedLocations)
-            val dialog = FullscreenDialogFragment()
+            val dialog = TableOneDialog()
             dialog.arguments = bundle
             val activity: AppCompatActivity = view.context as AppCompatActivity
             val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()

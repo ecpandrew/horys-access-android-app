@@ -1,4 +1,5 @@
 package com.example.KLSDinfo.Historic
+import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -8,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -17,6 +20,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.KLSDinfo.Adapters.MultiCheckRoleAdapter
 import com.example.KLSDinfo.Fragments.DialogFragments.FullscreenDialogFragment
+import com.example.KLSDinfo.Fragments.DialogFragments.TableOneDialog
+import com.example.KLSDinfo.Fragments.DialogFragments.TableThreeDialog
+import com.example.KLSDinfo.Fragments.DialogFragments.TableTwoDialog
 import com.example.KLSDinfo.Models.MultiCheckRole
 import com.example.KLSDinfo.Models.Person
 import com.example.KLSDinfo.Models.Role
@@ -41,6 +47,7 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
     lateinit var items: MutableList<MultiCheckRole>
     lateinit var dateTxt: TextView
     lateinit var dateTxt2: TextView
+    lateinit var  LL : LinearLayout
 
     private var TAG: Int = 0
     private var year: Int = 0
@@ -63,10 +70,13 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
         val cardDate: CardView = view.findViewById(R.id.card_view3)
         val cardDate2: CardView = view.findViewById(R.id.card_view4)
+        LL = view.findViewById(R.id.LL)
 
         dateTxt = view.findViewById(R.id.data1)
         dateTxt2 = view.findViewById(R.id.data2)
 
+        // Todo: tratar esse -> !!
+        val methodRef : Int? = arguments?.getInt("ref")
 
         cardDate.setOnClickListener {
             TAG = 0
@@ -96,6 +106,7 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         check.setOnClickListener {
             mAdapter.checkChild(true, 0, 0)
         }
+        initCheckBoxes()
 
         val btnSend : Button = view.findViewById(R.id.btn_request)
 
@@ -109,11 +120,35 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
             bundle.putParcelableArray("resources", seletedElements.toTypedArray())
 
 
-            val dialog = FullscreenDialogFragment()
-            dialog.arguments = bundle
-            val activity: AppCompatActivity = view.context as AppCompatActivity
-            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-            dialog.show(transaction, "FullScreenDialog")
+
+            when(methodRef){
+                0 -> {
+                    Log.i("debug","go1")
+                    val dialog = TableThreeDialog()
+                    dialog.arguments = bundle
+                    val activity: AppCompatActivity = view.context as AppCompatActivity
+                    val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+                    dialog.show(transaction, "FullScreenDialog")
+                }
+
+                1 -> {
+                    Log.i("debug","go2")
+
+                    val dialog = TableTwoDialog()
+                    dialog.arguments = bundle
+                    val activity: AppCompatActivity = view.context as AppCompatActivity
+                    val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+                    dialog.show(transaction, "FullScreenDialog")
+                }
+                else -> {
+                    Log.i("debug","else")
+
+                }
+            }
+
+
+
+
 
 
         }
@@ -190,38 +225,34 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
 
 
-    fun getRoles(): MutableList<Role> {
+    private fun initCheckBoxes() {
+        val roles: MutableList<MultiCheckRole> = getMultiCheckRoles()
+        for (i in 0 until roles.size) {
+            val ch = CheckBox(context)
+            ch.text = roles[i].name
 
-        val professors: MutableList<Person> = mutableListOf()
-        professors.add(Person("Francisco Silva", true))
-        professors.add(Person("Alex Barradas", true))
-        professors.add(Person("Davi", true))
+            ch.setOnClickListener {
 
-        val graduacao: MutableList<Person> = mutableListOf()
-        graduacao.add(Person("André Luiz", false))
-        graduacao.add(Person("Alysson Cirilo", true))
-        graduacao.add(Person("Daniel CP", false))
+                when (ch.isChecked) {
+                    true -> {
+                        selectAllOfGroup(true, i, roles[i].persons.size)
 
-        val master: MutableList<Person> = mutableListOf()
-        master.add(Person("Aluno Mestrado 1", false))
-        master.add(Person("Aluno Mestrado 2", true))
-        master.add(Person("Aluno Mestrado 3", true))
+                    }
+                    false -> {
+                        selectAllOfGroup(false, i, roles[i].persons.size)
 
+                    }
+                }
+            }
 
+            LL.addView(ch)
+        }
+    }
 
+    private fun selectAllOfGroup(status: Boolean, group: Int, child: Int) {
 
-
-        val professor: Role = Role("Professores",professors, R.drawable.ic_banjo)
-        val student: Role = Role("Alunos de Graduação", graduacao, R.drawable.ic_banjo)
-        val masters: Role = Role("Alunos de Mestrado", master, R.drawable.ic_banjo)
-
-
-
-        val roles: MutableList<Role> = mutableListOf()
-        roles.add(professor)
-        roles.add(masters)
-        roles.add(student)
-        return roles
+        for (i in 0 until child)
+            mAdapter.checkChild(status,group, i)
 
 
     }

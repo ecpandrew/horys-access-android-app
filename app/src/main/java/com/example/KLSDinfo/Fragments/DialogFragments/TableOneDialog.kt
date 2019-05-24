@@ -28,7 +28,13 @@ class TableOneDialog : DialogFragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         val view: View = inflater.inflate(R.layout.table_one_layout, container, false)
 
+        val tool: Toolbar = view.findViewById(R.id.toolbar)
 
+
+        tool.setNavigationIcon(R.drawable.ic_close_white_24dp)
+        tool.setNavigationOnClickListener {
+            cancelUpload()
+        }
 
 
 

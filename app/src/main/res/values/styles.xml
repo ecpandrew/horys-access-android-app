@@ -38,6 +38,7 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="android:actionModeBackground">@color/colorDarkBlue2</item>
         <item name="android:dialogTheme">@style/Dialog.Theme</item>
+        <item name="cardViewStyle">@style/CardView.Light</item>
 
     </style>
 

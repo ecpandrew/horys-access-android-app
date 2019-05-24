@@ -1,6 +1,7 @@
 package com.example.KLSDinfo.Historic
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,19 +46,28 @@ class HistoryMethodsAdapter(
             // TODO: remenber to also pass some reference aboute the choosen method
             when(position){
                 0 -> { // person
-                    navigateToFragment(HSelectionPersonFragment.newInstance(), it,true)
+
+                    val frag = HSelectionPersonFragment.newInstance()
+                    val bundle = Bundle()
+                    bundle.putInt("ref", 0)
+                    frag.arguments = bundle
+                    navigateToFragment(frag, it,true)
                 }
                 1 -> {// person: Here we algo need to choose target person
-                    navigateToFragment(HSelectionPersonFragment.newInstance(), it,true)
+                    val frag = HSelectionPersonFragment.newInstance()
+                    val bundle = Bundle()
+                    bundle.putInt("ref", 1)
+                    frag.arguments = bundle
+                    navigateToFragment(frag, it,true)
 
                 }
-                2 -> {// person
-                    navigateToFragment(HSelectionPersonFragment.newInstance(), it,true)
 
-                }
-                3 -> {
-                    navigateToFragment(HSelectionLocationFragment.newInstance(), it,true)
-
+                2 -> {
+                    val bundle = Bundle()
+                    val frag = HSelectionLocationFragment.newInstance()
+                    bundle.putInt("ref", 2)
+                    frag.arguments = bundle
+                    navigateToFragment(frag, it,true)
                 }
             }
         }

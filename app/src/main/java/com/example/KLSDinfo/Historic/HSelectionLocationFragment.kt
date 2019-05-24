@@ -3,15 +3,21 @@ package com.example.KLSDinfo.Historic
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.*
+import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.KLSDinfo.Adapters.PhysicalSpaceAdapter
+import com.example.KLSDinfo.Fragments.DialogFragments.TableOneDialog
 import com.example.KLSDinfo.Models.Location
 import com.example.KLSDinfo.Models.PhysicalSpace
 import com.example.KLSDinfo.R
@@ -27,6 +33,10 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
     lateinit var mAdapter: PhysicalSpaceAdapter
     private lateinit var actionModeCallback: ActionModeCallback
     private var actionMode: ActionMode? = null
+    lateinit var pilha: Stack<List<PhysicalSpace>>
+    lateinit var back: Button
+    lateinit var get: Button
+
 
     lateinit var dateTxt: TextView
     lateinit var dateTxt2: TextView
@@ -60,10 +70,11 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
     private fun initComponents(view: View) {
 
 
-
         recyclerView = view.findViewById(R.id.selectionHistoryRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)
+        pilha = Stack()
+        pilha.push(FakeRequest().getAllPhysicalSpaces())
         mAdapter = PhysicalSpaceAdapter(context!!, FakeRequest().getAllPhysicalSpaces())
 
         recyclerView.adapter = mAdapter
@@ -71,9 +82,34 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
 
         val cardDate: CardView = view.findViewById(R.id.card_view3)
         val cardDate2: CardView = view.findViewById(R.id.card_view4)
-
+        val btnGet: Button = view.findViewById(R.id.buttonGet)
+        back = view.findViewById(R.id.backToParent)
         dateTxt = view.findViewById(R.id.data1)
         dateTxt2 = view.findViewById(R.id.data2)
+
+
+
+        btnGet.setOnClickListener {
+            val selectedItemPositions = mAdapter.getSelectedItems()
+            val selectedLocations = ArrayList<Parcelable>()
+
+            for (i in selectedItemPositions){
+                selectedLocations.add(pilha.peek()[i])
+            }
+
+            val bundle = Bundle()
+
+
+            Log.i("debug", "Enviado: $selectedLocations")
+
+            bundle.putParcelableArrayList("resources", selectedLocations)
+            val dialog = TableOneDialog()
+            dialog.arguments = bundle
+            val activity: AppCompatActivity = view.context as AppCompatActivity
+            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+            dialog.show(transaction, "FullScreenDialog")
+
+        }
 
 
         cardDate.setOnClickListener {
@@ -86,7 +122,21 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
             pickData()
         }
 
+        back.setOnClickListener {
 
+
+            when(pilha.size){
+                1 -> {Toast.makeText(context,"There are no parent nodes", Toast.LENGTH_LONG).show()}
+                else -> {
+                    pilha.pop()
+                    mAdapter.clearSelections()
+                    mAdapter.setItems(pilha.peek())
+                    mAdapter.notifyDataSetChanged()
+
+                }
+            }
+
+        }
         val obj = object: PhysicalSpaceAdapter.OnClickListener {
             override fun onItemLongClick(view: View, obj: PhysicalSpace, pos: Int) {
                 enableActionMode(pos)

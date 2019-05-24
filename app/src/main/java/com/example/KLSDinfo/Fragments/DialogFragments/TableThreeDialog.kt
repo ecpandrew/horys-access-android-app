@@ -15,7 +15,7 @@ import com.example.KLSDinfo.R
 
 
 
-class TableTwoDialog : DialogFragment() {
+class TableThreeDialog : DialogFragment() {
 
     val TAG: String = "FullScreenDialog"
 
@@ -26,7 +26,7 @@ class TableTwoDialog : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        val view: View = inflater.inflate(R.layout.table_two_layout, container, false)
+        val view: View = inflater.inflate(R.layout.table_three_layout, container, false)
 
 
         val tool: Toolbar = view.findViewById(R.id.toolbar)

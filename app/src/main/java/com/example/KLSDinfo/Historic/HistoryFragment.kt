@@ -35,8 +35,7 @@ class HistoryFragment : Fragment(){
     private fun addItems(){
 
         items.clear()
-        items.add(Method("Houve Encontro?","Busca os encontros em que um grupo de pessoas(duas ou mais) estiveram em um intervalo de tempo.",R.drawable.ic_location_on_black_24dp))
-        items.add(Method("Duração de Encontros com Grupos","Exibe quanto tempo uma pessoa passou em encontros com um grupo de pessoas(duas ou mais) dado um intervalo de tempo.",R.drawable.ic_location_on_black_24dp))
+        items.add(Method("Encontros com Grupos","Exibe quantos encontros houveram entre pessoas e o tempo  em que cada uma pessoa passou com o grupo de pessoas selecionadas.",R.drawable.ic_location_on_black_24dp))
         items.add(Method("Verificar Histórico de Pessoas","Exibe os encontros das pessoas selecionadas num dado intervalo de tempo.",R.drawable.ic_location_on_black_24dp))
         items.add(Method("Verificar Histórico de Espaço Físico","Exibe os encontros que aconteceram no local num dado intervalo de tempo",R.drawable.ic_location_on_black_24dp))
 
@@ -50,6 +49,9 @@ class HistoryFragment : Fragment(){
         recyclerView.setHasFixedSize(true)
         addItems()
         methodsAdapter = HistoryMethodsAdapter(context!!, items)
+
+
+
         recyclerView.adapter = methodsAdapter
 
     }

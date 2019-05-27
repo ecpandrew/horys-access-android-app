@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.KLSDinfo.Adapters.PhysicalSpaceAdapter
+import com.example.KLSDinfo.Fragments.DialogFragments.TableFiveDialog
 import com.example.KLSDinfo.Fragments.DialogFragments.TableOneDialog
 import com.example.KLSDinfo.Models.Location
 import com.example.KLSDinfo.Models.PhysicalSpace
@@ -103,7 +104,7 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
             Log.i("debug", "Enviado: $selectedLocations")
 
             bundle.putParcelableArrayList("resources", selectedLocations)
-            val dialog = TableOneDialog()
+            val dialog = TableFiveDialog()
             dialog.arguments = bundle
             val activity: AppCompatActivity = view.context as AppCompatActivity
             val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()

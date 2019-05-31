@@ -7,7 +7,6 @@ import android.os.Parcelable
 import android.util.Log
 import android.view.*
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -23,11 +22,10 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.KLSDinfo.Adapters.PhysicalSpaceAdapter
 import com.example.KLSDinfo.Fragments.DialogFragments.TableFiveDialog
-import com.example.KLSDinfo.Fragments.DialogFragments.TableOneDialog
 import com.example.KLSDinfo.Models.Location
 import com.example.KLSDinfo.Models.PhysicalSpace
 import com.example.KLSDinfo.R
-import com.example.KLSDinfo.Requests.FakeRequest
+import com.example.KLSDinfo.Models.FakeRequest
 import com.example.KLSDinfo.UtilClasses.Tools
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog

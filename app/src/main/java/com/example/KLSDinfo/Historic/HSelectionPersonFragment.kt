@@ -1,5 +1,4 @@
 package com.example.KLSDinfo.Historic
-import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -8,12 +7,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,7 +22,7 @@ import com.example.KLSDinfo.Adapters.MultiCheckRoleAdapter
 import com.example.KLSDinfo.Fragments.DialogFragments.*
 import com.example.KLSDinfo.Models.*
 import com.example.KLSDinfo.R
-import com.example.KLSDinfo.Requests.FakeRequest
+import com.example.KLSDinfo.Models.FakeRequest
 import com.example.KLSDinfo.Volley.VolleySingleton
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
@@ -61,6 +56,10 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
     lateinit var listOfRoles: List<Role2>
     lateinit var cardDate: TextView
     lateinit var cardDate2: TextView
+    private var calendar: Calendar? = null
+    private var calendar2: Calendar? = null
+    private var unixTime: Long? = null
+    private var unixOneWeekAgo: Long? = null
 
     companion object {
         fun newInstance(): HSelectionPersonFragment {
@@ -74,12 +73,11 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         val rv : RecyclerView = view.findViewById(R.id.recycler_view)
         val layoutManager = LinearLayoutManager(context)
 
+
         cardDate = view.findViewById(R.id.textView13)
         cardDate2 = view.findViewById(R.id.textView14)
         LL = view.findViewById(R.id.LL)
 
-//        dateTxt = view.findViewById(R.id.data1)
-//        dateTxt2 = view.findViewById(R.id.data2)
 
         // Todo: tratar esse -> !!
         val methodRef : Int? = arguments?.getInt("ref")
@@ -95,8 +93,6 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         }
 
 
-
-
         mAdapter = MultiCheckRoleAdapter(mutableListOf())
 
         rv.layoutManager = layoutManager
@@ -104,28 +100,32 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
 
         val btnClear : Button = view.findViewById(R.id.clear_button)
+
         btnClear.setOnClickListener {
+            Toast.makeText(context,"TODO", Toast.LENGTH_SHORT).show()
             mAdapter.clearChoices()
         }
 
-//        val check = view.findViewById(R.id.check_first_child) as Button
-//        check.setOnClickListener {
-//            mAdapter.checkChild(true, 0, 0)
-//        }
-//        initCheckBoxes()
 
         val btnSend : Button = view.findViewById(R.id.btn_request)
 
         btnSend.setOnClickListener {
 
 
-            val seletedElements: MutableList<Parcelable> = getSelectedElements()
-
+            val seletedElements: ArrayList<Parcelable> = getSelectedElements()
             val bundle = Bundle()
+            var date = null
+            var date2 = null
 
-            bundle.putParcelableArray("resources", seletedElements.toTypedArray())
+            if (calendar == null || calendar2 == null){
+                setDefaultUnixTime()
+            }else{
+                setCustomUnixTime()
+            }
 
-
+            bundle.putParcelableArrayList("resources", seletedElements)
+            bundle.putLong("date", unixTime!!)
+            bundle.putLong("date2", unixOneWeekAgo!!)
 
             when(methodRef){
                 0 -> {
@@ -225,10 +225,48 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         return view
     }
 
-    private fun getSelectedElements(): MutableList<Parcelable> {
+    private fun setCustomUnixTime() {
+        var timeZone: TimeZone
+        var cals: Date
+        var milis: Long
 
-        val persons: MutableList<Parcelable> = mutableListOf()
-        val roles: List<MultiCheckRole> = mAdapter.groups as List<MultiCheckRole>
+        timeZone = calendar!!.timeZone
+        cals = Calendar.getInstance(TimeZone.getDefault()).time
+        milis = cals.time
+        milis += timeZone.getOffset(milis)
+        unixTime = milis/1000
+
+
+        timeZone = calendar2!!.timeZone
+        cals = Calendar.getInstance(TimeZone.getDefault()).time
+        milis = cals.time
+        milis += timeZone.getOffset(milis)
+        unixOneWeekAgo = milis/1000
+
+
+
+
+    }
+
+    private fun setDefaultUnixTime() {
+
+        val calendar = Calendar.getInstance()
+        val timeZone: TimeZone = calendar!!.timeZone
+        val cals: Date = Calendar.getInstance(TimeZone.getDefault()).time
+        var milis: Long = cals.time
+
+        milis += timeZone.getOffset(milis)
+
+        unixTime = milis/1000
+        unixOneWeekAgo = (milis/1000)-604800
+
+
+    }
+
+    private fun getSelectedElements(): ArrayList<Parcelable> {
+
+        val persons: ArrayList<Parcelable> = ArrayList()
+        val roles: ArrayList<MultiCheckRole> = mAdapter.groups as ArrayList<MultiCheckRole>
 
         for(i in 0 until roles.size){
             for (j in 0 until roles[i].selectedChildren.size){
@@ -298,44 +336,7 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
     }
 
-
-//    fun getMultiCheckRoles() : MutableList<MultiCheckRole>{
-//
-//
-//
-//        val professors: MutableList<Person> = mutableListOf()
-//        professors.add(Person("Francisco Silva", true))
-//        professors.add(Person("Alex Barradas", true))
-//        professors.add(Person("Davi", true))
-//
-//        val graduacao: MutableList<Person> = mutableListOf()
-//        graduacao.add(Person("André Luiz", false))
-//        graduacao.add(Person("Alysson Cirilo", true))
-//        graduacao.add(Person("Daniel CP", false))
-//
-//        val master: MutableList<Person> = mutableListOf()
-//        master.add(Person("Aluno Mestrado 1", false))
-//        master.add(Person("Aluno Mestrado 2", true))
-//        master.add(Person("Aluno Mestrado 3", true))
-//
-//
-//
-//        val professor = MultiCheckRole("Professores",professors, R.mipmap.ic_prof)
-//        val student = MultiCheckRole("Alunos de Graduação", graduacao, R.mipmap.ic_aluno)
-//        val masters = MultiCheckRole("Alunos de Mestrado", master, R.mipmap.ic_master)
-//
-//        val roles: MutableList<MultiCheckRole> = mutableListOf()
-//        roles.add(professor)
-//        roles.add(masters)
-//        roles.add(student)
-//        items = roles
-//        return roles
-//    }
-
-
-
     private fun initCheckBoxes(roles: MutableList<MultiCheckRole>) {
-
         for (i in 0 until roles.size) {
             val ch = CheckBox(context)
             ch.text = roles[i].name
@@ -395,17 +396,6 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         datePickerDialog.setTitle("Escolher Data")
     }
 
-
-
-
-
-
-
-
-
-
-
-
     fun initDateTimeData(){
         when(year){
             0 -> {
@@ -440,6 +430,10 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         timePickerDialog.show(fragmentManager!!, "timePickerDialog")
         timePickerDialog.title = "Escolher Horario"
         timePickerDialog.isThemeDark = true
+
+
+        calendar = Calendar.getInstance()
+        calendar = Calendar.getInstance()
     }
 
     override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute_: Int, second: Int) {
@@ -454,11 +448,12 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
         if (TAG == 0) {
             cardDate.text = dateString
+            calendar!!.set(year,month,day,hour,minute)
 
         } else {
             cardDate2.text = dateString
+            calendar2!!.set(year,month,day,hour,minute)
         }
-
 
     }
 
@@ -468,8 +463,10 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         day = 0
         hour = 0
         minute = 0
-        dateTxt.text = "yyyy-MM-dd HH:mm"
-        dateTxt2.text = "yyyy-MM-dd HH:mm"
+        cardDate.text = "yyyy-MM-dd HH:mm"
+        cardDate2.text = "yyyy-MM-dd HH:mm"
+        calendar = null
+        calendar2 = null
     }
 
 

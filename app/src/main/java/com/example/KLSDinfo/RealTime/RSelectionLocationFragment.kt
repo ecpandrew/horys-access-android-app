@@ -15,13 +15,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.KLSDinfo.Adapters.PhysicalSpaceAdapter
 import com.example.KLSDinfo.Fragments.DialogFragments.TableOneDialog
 import com.example.KLSDinfo.Models.Location
 import com.example.KLSDinfo.Models.PhysicalSpace
 import com.example.KLSDinfo.R
-import com.example.KLSDinfo.Requests.FakeRequest
+import com.example.KLSDinfo.Models.FakeRequest
 import com.example.KLSDinfo.UtilClasses.Tools
 import com.example.KLSDinfo.Volley.VolleySingleton
 import com.example.KLSDinfo.Volley.JavaCustomJsonArrayRequest
@@ -62,7 +61,6 @@ class RSelectionLocationFragment: Fragment() {
 
 
         url = "http://smartlab.lsdi.ufma.br/semantic/api/physical_spaces/roots"
-        rq = Volley.newRequestQueue(context)
 
         initComponents(view)
 

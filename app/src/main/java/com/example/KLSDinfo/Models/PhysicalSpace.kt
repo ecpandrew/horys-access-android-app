@@ -121,4 +121,9 @@ data class TableTwoResource(val shortName: String, val physical_space: String, v
 
 
 
+data class TableFourResource(val shortName: String, val physical_space: String, val thingID: String, val arrive: Long, val depart: Long){
+    fun getDuration(): Long{
+        return (this.depart - this.arrive)
+    }
+}
 

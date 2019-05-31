@@ -23,7 +23,7 @@ import com.example.KLSDinfo.Adapters.MultiCheckRoleAdapter
 import com.example.KLSDinfo.Fragments.DialogFragments.TableTwoDialog
 import com.example.KLSDinfo.Models.*
 import com.example.KLSDinfo.R
-import com.example.KLSDinfo.Requests.FakeRequest
+import com.example.KLSDinfo.Models.FakeRequest
 import com.example.KLSDinfo.Volley.VolleySingleton
 
 

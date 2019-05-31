@@ -1,10 +1,6 @@
-package com.example.KLSDinfo.Requests
+package com.example.KLSDinfo.Models
 
 import android.util.Log
-import com.example.KLSDinfo.Models.Person2
-import com.example.KLSDinfo.Models.PhysicalSpace
-import com.example.KLSDinfo.Models.Role2
-import com.example.KLSDinfo.Models.TableTwoResource
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -67,6 +63,15 @@ class FakeRequest {
             gson.fromJson(json, object : TypeToken<List<TableTwoResource>>() {}.type )
         }
     }
+    fun getTableFourData(json:String?): List<TableFourResource>{
 
+        val gson = Gson()
+
+        return if(json.isNullOrBlank()){
+            listOf()
+        }else {
+            gson.fromJson(json, object : TypeToken<List<TableFourResource>>() {}.type )
+        }
+    }
 
 }

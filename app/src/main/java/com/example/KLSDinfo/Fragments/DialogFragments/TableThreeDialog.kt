@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
+import com.example.KLSDinfo.Models.Person2
 import com.example.KLSDinfo.R
 
 
@@ -21,7 +22,7 @@ class TableThreeDialog : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogStyle)
+        setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -36,6 +37,18 @@ class TableThreeDialog : DialogFragment() {
         tool.setNavigationOnClickListener {
             cancelUpload()
         }
+        val bundle: Bundle? = arguments
+
+        if (bundle == null || bundle.isEmpty){
+            // Todo: Não há resultados
+
+        }else {
+            val persons: List<Person2>? = bundle.getParcelableArrayList("resources")
+
+            Log.i("recebido", persons.toString())
+            Log.i("recebido", "${bundle.getLong("date")} and ${bundle.getLong("date2")}")
+        }
+
 
 
 

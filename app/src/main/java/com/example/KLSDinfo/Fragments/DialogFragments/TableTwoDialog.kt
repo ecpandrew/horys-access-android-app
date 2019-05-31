@@ -19,8 +19,10 @@ import com.example.KLSDinfo.Models.Person2
 import com.example.KLSDinfo.Models.TableTwoResource
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.R.color.grey
-import com.example.KLSDinfo.Requests.FakeRequest
+import com.example.KLSDinfo.Models.FakeRequest
 import com.example.KLSDinfo.Volley.VolleySingleton
+import kotlinx.android.synthetic.main.table_one_layout.view.*
+import java.text.NumberFormat
 
 
 class TableTwoDialog : DialogFragment() {
@@ -66,7 +68,6 @@ class TableTwoDialog : DialogFragment() {
             // Todo: Não há resultados
 
         }else{
-
             val persons: List<Person2>? = bundle.getParcelableArrayList("resources")
             if (persons == null){
                 // Todo: tratar isso dai
@@ -135,45 +136,39 @@ class TableTwoDialog : DialogFragment() {
     }
 
 
-
-
-    private fun addRow(element: TableTwoResource) {
-
-        val row: TableRow = LayoutInflater.from(context).inflate(R.layout.table_two_item, null) as TableRow
-
-
-
-        (row.findViewById(R.id.table_item_name) as TextView).text = element.shortName
-        (row.findViewById(R.id.table_item_physical) as TextView).text = element.physical_space
-
-        (row.findViewById(R.id.table_item_duration) as TextView).text = "${element.duration/60}"
-
-        val view: View = View(context).also {
-            it.setBackgroundColor(resources.getColor(grey))
-            it.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,1)
-
-        }
-
-        table.addView(row)
-        table.addView(view)
-
-    }
-
     private fun generateTable(src: List<TableTwoResource>, role: String) {
 
         val card: CardView = LayoutInflater.from(context).inflate(R.layout.table_two_card, null) as CardView
-            (card.findViewById(R.id.parent_title) as TextView).text = role
-            (card.findViewById(R.id.parent_options) as ImageButton).setOnClickListener {
-                Toast.makeText(context, role,Toast.LENGTH_SHORT).show()
+        (card.findViewById(R.id.parent_title) as TextView).text = role
+
+        (card.findViewById(R.id.parent_options) as ImageButton).setOnClickListener {
+            val popup = PopupMenu(context, it.parent_options)
+            popup.inflate(R.menu.menu_card)
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.action_details -> {
+                        Toast.makeText(context,"Expand Table - $role", Toast.LENGTH_LONG).show()
+                    }
+                    R.id.action_log -> {
+                        Toast.makeText(context,"Log - $role", Toast.LENGTH_LONG).show()
+                    }
+                }
+                false
             }
+            popup.show()
+        }
         for(item in src){
+            val nf = NumberFormat.getInstance() // get instance
             val table: TableLayout = card.findViewById(R.id.parent_table_layout)
             val row: TableRow = LayoutInflater.from(context).inflate(R.layout.table_two_item, null) as TableRow
 
             (row.findViewById(R.id.table_item_name) as TextView).text = item.shortName
             (row.findViewById(R.id.table_item_physical) as TextView).text = item.physical_space
+            nf.maximumFractionDigits = 2 // set decimal places
 
-            (row.findViewById(R.id.table_item_duration) as TextView).text = "${item.duration/60}"
+            val s = nf.format(item.duration.toFloat()/3600)
+
+            (row.findViewById(R.id.table_item_duration) as TextView).text = "$s"
 
             val view: View = View(context).also {
                 it.setBackgroundColor(resources.getColor(grey))

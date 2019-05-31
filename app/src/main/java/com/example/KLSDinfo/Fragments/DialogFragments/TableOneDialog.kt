@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
+import com.example.KLSDinfo.Models.Person2
+import com.example.KLSDinfo.Models.PhysicalSpace
 import com.example.KLSDinfo.R
 import kotlinx.android.synthetic.main.table_one_layout.view.*
 
@@ -21,6 +23,8 @@ class TableOneDialog : DialogFragment() {
 
     lateinit var toggleSort: ImageButton
     lateinit var btnOptions: ImageButton
+    lateinit var childLinearLayout: LinearLayout
+    lateinit var url: String
     var SORT: String = "UP"
     var list_of_items = arrayOf("Details", "LOG")
     val TAG: String = "FullScreenDialog"
@@ -34,54 +38,41 @@ class TableOneDialog : DialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view: View = inflater.inflate(R.layout.table_one_layout, container, false)
-
         val tool: Toolbar = view.findViewById(R.id.toolbar)
-
-
         tool.setNavigationIcon(R.drawable.ic_close_white_24dp)
         tool.setNavigationOnClickListener {
             cancelUpload()
         }
-        btnOptions = view.findViewById(R.id.parent_options)
-        toggleSort = view.findViewById(R.id.parent_sort_duration)
+        childLinearLayout= view.findViewById(R.id.child_linear_layout)
 
-        toggleSort.setOnClickListener {
+        val bundle: Bundle? = arguments
+        if (bundle == null || bundle.isEmpty){
+            // Todo: Não há resultados
+        }else{
+            val listOfPhysicalSpace: List<PhysicalSpace>? = bundle.getParcelableArrayList("resources")
+            if (listOfPhysicalSpace == null){
+                // Todo: tratar isso dai
+            }else{
 
-            when(SORT){
-                "UP" -> {
-                    toggleSort.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp)
-                    SORT = "DOWN"
+
+                for (space in listOfPhysicalSpace ){
+                    url = "http://smartlab.lsdi.ufma.br/semantic/api/physical_spaces/{id}/things"
+
                 }
-                "DOWN" -> {
-                    toggleSort.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp)
-                    SORT = "UP"
-                }
+
+
+
+
             }
-
         }
 
-        btnOptions.setOnClickListener {
 
 
-            val popup = PopupMenu(context, it.parent_options)
 
-            popup.inflate(R.menu.menu_card)
 
-            popup.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
-                override fun onMenuItemClick(item: MenuItem): Boolean {
-                    when (item.itemId) {
-                        R.id.action_details -> {
-                            Toast.makeText(context,"Detail", Toast.LENGTH_LONG).show()
-                        }
-                        R.id.action_log -> {
-                            Toast.makeText(context,"Log", Toast.LENGTH_LONG).show()
-                        }
-                    }
-                    return false
-                }
-            })
-            popup.show()
-        }
+
+
+
 
 
 
@@ -106,3 +97,19 @@ class TableOneDialog : DialogFragment() {
     }
 
 }
+
+
+//        toggleSort.setOnClickListener {
+//
+//            when(SORT){
+//                "UP" -> {
+//                    toggleSort.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp)
+//                    SORT = "DOWN"
+//                }
+//                "DOWN" -> {
+//                    toggleSort.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp)
+//                    SORT = "UP"
+//                }
+//            }
+//
+//        }

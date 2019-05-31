@@ -16,6 +16,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.Request
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.example.KLSDinfo.Adapters.PhysicalSpaceAdapter
 import com.example.KLSDinfo.Fragments.DialogFragments.TableFiveDialog
 import com.example.KLSDinfo.Fragments.DialogFragments.TableOneDialog
@@ -49,6 +54,10 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
     private var hour: Int = 0
     private var minute: Int = 0
 
+    var listPhysicalSpaces: List<PhysicalSpace> = listOf()
+    lateinit var rq: RequestQueue
+
+
     companion object {
         fun newInstance(): HSelectionLocationFragment {
             return HSelectionLocationFragment()
@@ -72,13 +81,16 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
 
 
         recyclerView = view.findViewById(R.id.selectionHistoryRecyclerView)
+        recyclerView.visibility = View.GONE
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)
         pilha = Stack()
-        pilha.push(FakeRequest().getAllPhysicalSpaces())
-        mAdapter = PhysicalSpaceAdapter(context!!, FakeRequest().getAllPhysicalSpaces())
+//        pilha.push(FakeRequest().getAllPhysicalSpaces(null))
 
+
+        mAdapter = PhysicalSpaceAdapter(context!!, listPhysicalSpaces)
         recyclerView.adapter = mAdapter
+
 
 
         val cardDate: CardView = view.findViewById(R.id.card_view3)
@@ -153,6 +165,7 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
                 }else{
                     Toast.makeText(context,"onClick: ${obj.name}", Toast.LENGTH_LONG).show()
                     if(obj.children != null){
+                        pilha.push(obj.children)
                         mAdapter.setItems(obj.children)
                         mAdapter.notifyDataSetChanged()
 
@@ -165,6 +178,31 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
 
         mAdapter.setOnClickListener(obj)
         actionModeCallback = ActionModeCallback()
+
+        val queue = Volley.newRequestQueue(context)
+        val url = "http://smartlab.lsdi.ufma.br/semantic/api/physical_spaces/roots"
+
+        // Request a string response from the provided URL.
+        val stringRequest = StringRequest(
+            Request.Method.GET, url,
+            Response.Listener<String> { response ->
+                // Display the first 500 characters of the response string.
+                Log.i("debug","Response is: $response")
+
+                val lista: List<PhysicalSpace> = FakeRequest().getAllPhysicalSpaces(response)
+                pilha.push(lista)
+                mAdapter.setItems(lista)
+                mAdapter.notifyDataSetChanged()
+                recyclerView.visibility = View.VISIBLE
+
+
+            },
+            Response.ErrorListener {
+                Log.i("debug","Response is: reqeust failled}")
+            })
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest)
     }
 
 

@@ -18,12 +18,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.DefaultRetryPolicy
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.VolleyLog
+import com.android.volley.toolbox.StringRequest
 import com.example.KLSDinfo.Adapters.MultiCheckRoleAdapter
 import com.example.KLSDinfo.Fragments.DialogFragments.*
-import com.example.KLSDinfo.Models.MultiCheckRole
-import com.example.KLSDinfo.Models.Person
-import com.example.KLSDinfo.Models.Role
+import com.example.KLSDinfo.Models.*
 import com.example.KLSDinfo.R
+import com.example.KLSDinfo.Requests.FakeRequest
+import com.example.KLSDinfo.Volley.VolleySingleton
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import java.util.*
@@ -52,6 +57,10 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
     private var day: Int = 0
     private var hour: Int = 0
     private var minute: Int = 0
+    lateinit var listOfPersons: List<Person2>
+    lateinit var listOfRoles: List<Role2>
+    lateinit var cardDate: TextView
+    lateinit var cardDate2: TextView
 
     companion object {
         fun newInstance(): HSelectionPersonFragment {
@@ -65,12 +74,12 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         val rv : RecyclerView = view.findViewById(R.id.recycler_view)
         val layoutManager = LinearLayoutManager(context)
 
-        val cardDate: CardView = view.findViewById(R.id.card_view3)
-        val cardDate2: CardView = view.findViewById(R.id.card_view4)
+        cardDate = view.findViewById(R.id.textView13)
+        cardDate2 = view.findViewById(R.id.textView14)
         LL = view.findViewById(R.id.LL)
 
-        dateTxt = view.findViewById(R.id.data1)
-        dateTxt2 = view.findViewById(R.id.data2)
+//        dateTxt = view.findViewById(R.id.data1)
+//        dateTxt2 = view.findViewById(R.id.data2)
 
         // Todo: tratar esse -> !!
         val methodRef : Int? = arguments?.getInt("ref")
@@ -88,7 +97,7 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
 
 
-        mAdapter = MultiCheckRoleAdapter(getMultiCheckRoles())
+        mAdapter = MultiCheckRoleAdapter(mutableListOf())
 
         rv.layoutManager = layoutManager
         rv.adapter = mAdapter
@@ -99,11 +108,11 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
             mAdapter.clearChoices()
         }
 
-        val check = view.findViewById(R.id.check_first_child) as Button
-        check.setOnClickListener {
-            mAdapter.checkChild(true, 0, 0)
-        }
-        initCheckBoxes()
+//        val check = view.findViewById(R.id.check_first_child) as Button
+//        check.setOnClickListener {
+//            mAdapter.checkChild(true, 0, 0)
+//        }
+//        initCheckBoxes()
 
         val btnSend : Button = view.findViewById(R.id.btn_request)
 
@@ -150,6 +159,69 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
         }
 
+
+
+
+
+
+
+
+
+        val queue= VolleySingleton.getInstance(context).requestQueue
+        val url = "http://smartlab.lsdi.ufma.br/semantic/api/persons"
+        val url_roles = "http://smartlab.lsdi.ufma.br/semantic/api/roles"
+
+
+        val stringRequest = StringRequest(
+            Request.Method.GET,
+            url,
+            Response.Listener<String> { response ->
+                // Display the first 500 characters of the response string.
+                VolleyLog.v("Response:%n %s", response)
+                val lista: MutableList<Person2> = FakeRequest().getAllPersons(response)
+
+                val mCheckRoles : MutableList<MultiCheckRole> = getMultiCheckRoles2(listOfRoles, lista)
+                mAdapter = MultiCheckRoleAdapter(mCheckRoles)
+                rv.layoutManager = layoutManager
+                rv.adapter = mAdapter
+
+                initCheckBoxes(mCheckRoles)
+
+
+
+            },
+            Response.ErrorListener {
+                VolleyLog.e("Error: ", it.message)
+            })
+
+        // Add the request to the RequestQueue.
+
+        stringRequest.retryPolicy = DefaultRetryPolicy(20 * 1000, 3, 1.0f)
+
+
+
+        val roleRequest = StringRequest(
+            Request.Method.GET,
+            url_roles,
+            Response.Listener<String> { response ->
+                // Display the first 500 characters of the response string.
+                VolleyLog.v("Response:%n %s", response)
+                listOfRoles = FakeRequest().getAllRoles(response)
+                queue.add(stringRequest)
+
+            },
+            Response.ErrorListener {
+                VolleyLog.e("Error: ", it.message)
+            })
+
+        // Add the request to the RequestQueue.
+
+        stringRequest.retryPolicy = DefaultRetryPolicy(20 * 1000, 3, 1.0f)
+
+
+        queue.add(roleRequest)
+
+
         return view
     }
 
@@ -184,46 +256,86 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         mAdapter.onRestoreInstanceState(savedInstanceState)
 
     }
+    private fun getMultiCheckRoles2(listRoles: List<Role2>,lista: MutableList<Person2>): MutableList<MultiCheckRole> {
+
+        val map : MutableMap<String,MutableList<Person2>> = mutableMapOf()
+
+        listRoles.map {
+            map[it.name] = mutableListOf()
+        }
 
 
 
-    fun getMultiCheckRoles() : MutableList<MultiCheckRole>{
+        for (person in lista) {
+            for (role in person.roles!!) {
+                val list = map[role.name]
+                list!!.add(person)
+                map[role.name] = list
+            }
+        }
+
+
+        val multiRoles: MutableList<MultiCheckRole> = mutableListOf()
 
 
 
-        val professors: MutableList<Person> = mutableListOf()
-        professors.add(Person("Francisco Silva", true))
-        professors.add(Person("Alex Barradas", true))
-        professors.add(Person("Davi", true))
 
-        val graduacao: MutableList<Person> = mutableListOf()
-        graduacao.add(Person("André Luiz", false))
-        graduacao.add(Person("Alysson Cirilo", true))
-        graduacao.add(Person("Daniel CP", false))
-
-        val master: MutableList<Person> = mutableListOf()
-        master.add(Person("Aluno Mestrado 1", false))
-        master.add(Person("Aluno Mestrado 2", true))
-        master.add(Person("Aluno Mestrado 3", true))
+        map.map {
+            multiRoles.add(MultiCheckRole(it.key, it.value, R.mipmap.ic_aluno))
+        }
 
 
 
-        val professor = MultiCheckRole("Professores",professors, R.mipmap.ic_prof)
-        val student = MultiCheckRole("Alunos de Graduação", graduacao, R.mipmap.ic_aluno)
-        val masters = MultiCheckRole("Alunos de Mestrado", master, R.mipmap.ic_master)
 
-        val roles: MutableList<MultiCheckRole> = mutableListOf()
-        roles.add(professor)
-        roles.add(masters)
-        roles.add(student)
-        items = roles
-        return roles
+
+        items = multiRoles.filterNot {
+            it.persons.isEmpty()
+        } as MutableList<MultiCheckRole>
+
+        return items
+
+
+
     }
 
 
+//    fun getMultiCheckRoles() : MutableList<MultiCheckRole>{
+//
+//
+//
+//        val professors: MutableList<Person> = mutableListOf()
+//        professors.add(Person("Francisco Silva", true))
+//        professors.add(Person("Alex Barradas", true))
+//        professors.add(Person("Davi", true))
+//
+//        val graduacao: MutableList<Person> = mutableListOf()
+//        graduacao.add(Person("André Luiz", false))
+//        graduacao.add(Person("Alysson Cirilo", true))
+//        graduacao.add(Person("Daniel CP", false))
+//
+//        val master: MutableList<Person> = mutableListOf()
+//        master.add(Person("Aluno Mestrado 1", false))
+//        master.add(Person("Aluno Mestrado 2", true))
+//        master.add(Person("Aluno Mestrado 3", true))
+//
+//
+//
+//        val professor = MultiCheckRole("Professores",professors, R.mipmap.ic_prof)
+//        val student = MultiCheckRole("Alunos de Graduação", graduacao, R.mipmap.ic_aluno)
+//        val masters = MultiCheckRole("Alunos de Mestrado", master, R.mipmap.ic_master)
+//
+//        val roles: MutableList<MultiCheckRole> = mutableListOf()
+//        roles.add(professor)
+//        roles.add(masters)
+//        roles.add(student)
+//        items = roles
+//        return roles
+//    }
 
-    private fun initCheckBoxes() {
-        val roles: MutableList<MultiCheckRole> = getMultiCheckRoles()
+
+
+    private fun initCheckBoxes(roles: MutableList<MultiCheckRole>) {
+
         for (i in 0 until roles.size) {
             val ch = CheckBox(context)
             ch.text = roles[i].name
@@ -341,10 +453,10 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
                 if (minute < 10) "0$minute" else minute
 
         if (TAG == 0) {
-            dateTxt.text = dateString
+            cardDate.text = dateString
 
         } else {
-            dateTxt2.text = dateString
+            cardDate2.text = dateString
         }
 
 

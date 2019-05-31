@@ -1,7 +1,6 @@
-package com.example.KLSDinfo.Historic
+package com.example.KLSDinfo.Adapters
 
 import android.content.Context
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +14,12 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.example.KLSDinfo.Models.Method
 import com.example.KLSDinfo.R
+import com.example.KLSDinfo.RealTime.RSelectionLocationFragment
+import com.example.KLSDinfo.RealTime.RSelectionPersonFragment
 
-class HistoryMethodsAdapter(
+class TableTwoAdapter(
     private val context: Context,
-    private val items: List<Method>) : RecyclerView.Adapter<HistoryMethodsAdapter.MethodViewHolder>()
+    private val items: List<Method>) : RecyclerView.Adapter<TableTwoAdapter.MethodViewHolder>()
 
 {
 
@@ -42,32 +43,14 @@ class HistoryMethodsAdapter(
 
         holder.cardView.setOnClickListener {
             Toast.makeText(context,"Metodo: ${items[position].name}", Toast.LENGTH_LONG).show()
-
-            // TODO: remenber to also pass some reference aboute the choosen method
             when(position){
-                0 -> { // person
-
-                    val frag = HSelectionPersonFragment.newInstance()
-                    val bundle = Bundle()
-                    bundle.putInt("ref", 0)
-                    frag.arguments = bundle
-                    navigateToFragment(frag, it,true)
-                }
-                1 -> {// person: Here we algo need to choose target person
-                    val frag = HSelectionPersonFragment.newInstance()
-                    val bundle = Bundle()
-                    bundle.putInt("ref", 1)
-                    frag.arguments = bundle
-                    navigateToFragment(frag, it,true)
+                0 -> {
+                    navigateToFragment(RSelectionLocationFragment.newInstance(),it,true)
 
                 }
 
-                2 -> {
-                    val bundle = Bundle()
-                    val frag = HSelectionLocationFragment.newInstance()
-                    bundle.putInt("ref", 2)
-                    frag.arguments = bundle
-                    navigateToFragment(frag, it,true)
+                1 -> {
+                    navigateToFragment(RSelectionPersonFragment.newInstance(), it, true)
                 }
             }
         }
@@ -77,6 +60,17 @@ class HistoryMethodsAdapter(
 
     }
 
+
+    private fun navigateToFragment(fragToGo: Fragment,view:View, addToBackStack: Boolean = false){
+        val activity = view.context as AppCompatActivity
+        val transaction = activity.supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragToGo)
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        if(addToBackStack){
+            transaction.addToBackStack(null) // Todo: verificar o ciclo de vida dos fragmentos
+        }
+        transaction.commit()
+    }
 
     private fun displayImage(holder: MethodViewHolder, method: Method){
         if(method.image != null){
@@ -97,16 +91,8 @@ class HistoryMethodsAdapter(
     }
 
 
-    private fun navigateToFragment(fragToGo: Fragment, view:View, addToBackStack: Boolean = false){
-        val activity = view.context as AppCompatActivity
-        val transaction = activity.supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragToGo)
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        if(addToBackStack){
-            transaction.addToBackStack(null) // Todo: verificar o ciclo de vida dos fragmentos
-        }
-        transaction.commit()
-    }
+
+
 
 
 

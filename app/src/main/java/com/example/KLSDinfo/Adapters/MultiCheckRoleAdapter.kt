@@ -6,12 +6,13 @@ import com.example.KLSDinfo.ViewHolders.MultiCheckPersonViewHolder
 import com.example.KLSDinfo.ViewHolders.RoleViewHolder
 import com.example.KLSDinfo.Models.MultiCheckRole
 import com.example.KLSDinfo.Models.Person
+import com.example.KLSDinfo.Models.Person2
 import com.example.KLSDinfo.R
 import com.thoughtbot.expandablecheckrecyclerview.CheckableChildRecyclerViewAdapter
 import com.thoughtbot.expandablecheckrecyclerview.models.CheckedExpandableGroup
 
 
-class MultiCheckRoleAdapter(groups: List <MultiCheckRole>) :
+class MultiCheckRoleAdapter(groups: MutableList <MultiCheckRole>) :
     CheckableChildRecyclerViewAdapter<RoleViewHolder, MultiCheckPersonViewHolder>(groups) {
 
 
@@ -27,8 +28,8 @@ class MultiCheckRoleAdapter(groups: List <MultiCheckRole>) :
         holder: MultiCheckPersonViewHolder, position: Int,
         group: CheckedExpandableGroup, childIndex: Int
     ) {
-        val person = group.items[childIndex] as Person
-        holder.setArtistName(person.name)
+        val person = group.items[childIndex] as Person2
+        holder.setArtistName(person.shortName)
     }
 
     override fun onCreateGroupViewHolder(parent: ViewGroup, viewType: Int): RoleViewHolder {

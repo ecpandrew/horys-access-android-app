@@ -1,5 +1,6 @@
 package com.example.KLSDinfo.RealTime
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
@@ -12,19 +13,25 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.*
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.example.KLSDinfo.Adapters.PhysicalSpaceAdapter
-import com.example.KLSDinfo.Fragments.DialogFragments.FullscreenDialogFragment
 import com.example.KLSDinfo.Fragments.DialogFragments.TableOneDialog
 import com.example.KLSDinfo.Models.Location
-import com.example.KLSDinfo.Models.MultiCheckRole
 import com.example.KLSDinfo.Models.PhysicalSpace
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Requests.FakeRequest
 import com.example.KLSDinfo.UtilClasses.Tools
-import com.google.gson.GsonBuilder
+import com.example.KLSDinfo.Volley.VolleySingleton
+import com.example.KLSDinfo.Volley.JavaCustomJsonArrayRequest
+import com.example.KLSDinfo.Volley.JavaCustomJsonObjectRequest
+import org.json.JSONArray
+import org.json.JSONObject
 import java.util.*
 
 class RSelectionLocationFragment: Fragment() {
+
 
     lateinit var recyclerView: RecyclerView
     lateinit var mAdapter: PhysicalSpaceAdapter
@@ -33,7 +40,14 @@ class RSelectionLocationFragment: Fragment() {
     private var actionMode: ActionMode? = null
     lateinit var back: Button
     lateinit var get: Button
+    lateinit var url: String
+    lateinit var dialog: AlertDialog
 
+    var listPhysicalSpaces: List<PhysicalSpace> = listOf()
+    lateinit var rq: RequestQueue
+
+
+    var params: Map<String, String>? = null
 
     companion object {
         fun newInstance(): RSelectionLocationFragment {
@@ -43,9 +57,18 @@ class RSelectionLocationFragment: Fragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
         val view: View = inflater.inflate(R.layout.select_location_real_layout, container, false)
 
+
+        url = "http://smartlab.lsdi.ufma.br/semantic/api/physical_spaces/roots"
+        rq = Volley.newRequestQueue(context)
+
         initComponents(view)
+
+
+
+
 
         print("onCreateView")
         return view
@@ -53,18 +76,18 @@ class RSelectionLocationFragment: Fragment() {
 
 
 
+
     private fun initComponents(view: View) {
 
+
         recyclerView = view.findViewById(R.id.selectionRealRecyclerView)
+        recyclerView.visibility = View.GONE
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)
-
         pilha = Stack()
-        pilha.push(FakeRequest().getAllPhysicalSpaces())
-        mAdapter = PhysicalSpaceAdapter(context!!, FakeRequest().getAllPhysicalSpaces())
+//        pilha.push(listPhysicalSpaces)
 
-        Log.i("debug", GsonBuilder().setPrettyPrinting().create().toJson(FakeRequest().getAllPhysicalSpaces()))
-
+        mAdapter = PhysicalSpaceAdapter(context!!, listPhysicalSpaces)
         recyclerView.adapter = mAdapter
 
         back = view.findViewById(R.id.backToParent)
@@ -132,6 +155,7 @@ class RSelectionLocationFragment: Fragment() {
                         mAdapter.setItems(obj.children)
                         mAdapter.notifyDataSetChanged()
 
+
                     }
 
                 }
@@ -141,28 +165,38 @@ class RSelectionLocationFragment: Fragment() {
 
         mAdapter.setOnClickListener(obj)
         actionModeCallback = ActionModeCallback()
+
+
+        val queue= VolleySingleton.getInstance(context).requestQueue
+        val url = "http://smartlab.lsdi.ufma.br/semantic/api/physical_spaces/roots"
+
+
+
+
+        val stringRequest = StringRequest(
+            Request.Method.GET,
+            url,
+            Response.Listener<String> { response ->
+                // Display the first 500 characters of the response string.
+                VolleyLog.v("Response:%n %s", response)
+                val lista: List<PhysicalSpace> = FakeRequest().getAllPhysicalSpaces(response)
+                pilha.push(lista)
+                mAdapter.setItems(lista)
+                mAdapter.notifyDataSetChanged()
+                recyclerView.visibility = View.VISIBLE
+
+
+            },
+            Response.ErrorListener {
+                VolleyLog.e("Error: ", it.message)
+            })
+
+        // Add the request to the RequestQueue.
+
+        stringRequest.retryPolicy = DefaultRetryPolicy(20 * 1000, 3, 1.0f)
+        queue.add(stringRequest)
     }
 
-
-//    private fun getSelectedElements(): MutableList<Parcelable> {
-//
-//        val locations: MutableList<Parcelable> = mutableListOf()
-//        val locations: List<PhysicalSpace> = mAdapter.groups as List<MultiCheckRole>
-//
-//        for(i in 0 until roles.size){
-//            for (j in 0 until roles[i].selectedChildren.size){
-//                when(roles[i].selectedChildren[j]){
-//                    true -> { persons.add(items[i].persons[j])
-//
-//                    }
-//                }
-//            }
-//
-//        }
-//        Log.i("debug", "Enviado: $persons")
-//        return persons
-//
-//    }
 
 
     private fun enableActionMode(position: Int) {
@@ -183,12 +217,6 @@ class RSelectionLocationFragment: Fragment() {
             actionMode!!.invalidate()
         }
     }
-
-
-
-
-
-
 
 
     private inner class ActionModeCallback : ActionMode.Callback {
@@ -290,6 +318,61 @@ class RSelectionLocationFragment: Fragment() {
 
     private fun print(msg: String){
         Log.d("Lifecycle", "Real Time: Location Selection Fragment: $msg")
+    }
+
+
+
+    fun callByJsonObjectRequest(view: View){
+
+        params = null
+
+        val request = JavaCustomJsonObjectRequest(
+            url,
+            params,
+            Response.Listener<JSONObject> {
+                Log.i("script",it.toString())
+
+                listPhysicalSpaces = FakeRequest().getAllPhysicalSpaces(it.toString())
+                mAdapter.clearSelections()
+                mAdapter.setItems(listPhysicalSpaces)
+                mAdapter.notifyDataSetChanged()
+            },
+            Response.ErrorListener {
+                Toast.makeText(context,"Error: $it",Toast.LENGTH_LONG).show()
+            })
+
+
+        request.tag = "tag"
+
+        rq.add(request)
+    }
+
+
+    fun callByJsonArrayRequest(){
+        params = null
+
+        val request = JavaCustomJsonArrayRequest(
+            url,
+            params,
+            object : Response.Listener<JSONArray> {
+                override fun onResponse(response: JSONArray?) {
+                    Log.i("scipt",response.toString())
+                    listPhysicalSpaces = FakeRequest().getAllPhysicalSpaces(response.toString())
+                }
+
+            },
+            object: Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError?) {
+                    Toast.makeText(context,"Error: $error",Toast.LENGTH_LONG).show()
+                }
+            })
+
+
+        request.tag = "tag"
+
+        rq.add(request)
+
+
     }
 
 

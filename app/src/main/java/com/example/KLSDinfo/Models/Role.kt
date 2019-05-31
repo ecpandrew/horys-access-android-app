@@ -1,7 +1,6 @@
 package com.example.KLSDinfo.Models
 
 import android.os.Parcel
-import android.os.Parcelable
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 
 data class Role(val name: String, val persons: List<Person>, val iconResId: Int) : ExpandableGroup<Person>(name, persons) {

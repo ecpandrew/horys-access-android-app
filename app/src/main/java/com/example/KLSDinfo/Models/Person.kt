@@ -59,6 +59,6 @@ data class Person(val name:String, val isFavorite: Boolean) : Parcelable {
             return arrayOfNulls(size)
         }
     }
-
-
 }
+
+

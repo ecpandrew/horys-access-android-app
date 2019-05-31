@@ -14,14 +14,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.DefaultRetryPolicy
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.VolleyLog
+import com.android.volley.toolbox.StringRequest
 import com.example.KLSDinfo.Adapters.MultiCheckRoleAdapter
-import com.example.KLSDinfo.Fragments.DialogFragments.FullscreenDialogFragment
-import com.example.KLSDinfo.Fragments.DialogFragments.TableOneDialog
 import com.example.KLSDinfo.Fragments.DialogFragments.TableTwoDialog
-import com.example.KLSDinfo.Models.MultiCheckRole
-import com.example.KLSDinfo.Models.Person
-import com.example.KLSDinfo.Models.Role
+import com.example.KLSDinfo.Models.*
 import com.example.KLSDinfo.R
+import com.example.KLSDinfo.Requests.FakeRequest
+import com.example.KLSDinfo.Volley.VolleySingleton
 
 
 open class RSelectionPersonFragment : Fragment() {
@@ -30,6 +33,8 @@ open class RSelectionPersonFragment : Fragment() {
     lateinit var items: MutableList<MultiCheckRole>
     lateinit var  LL : LinearLayout
     lateinit var checkList: MutableList<CheckBox>
+    lateinit var listOfPersons: List<Person2>
+    lateinit var listOfRoles: List<Role2>
 
     companion object {
         fun newInstance(): RSelectionPersonFragment {
@@ -45,7 +50,7 @@ open class RSelectionPersonFragment : Fragment() {
         LL = view.findViewById(R.id.LL)
 
 
-        mAdapter = MultiCheckRoleAdapter(getMultiCheckRoles())
+        mAdapter = MultiCheckRoleAdapter(mutableListOf())
 
         rv.layoutManager = layoutManager
         rv.adapter = mAdapter
@@ -62,7 +67,6 @@ open class RSelectionPersonFragment : Fragment() {
             mAdapter.checkChild(true, 0, 0)
         }
 
-        initCheckBoxes()
 
         val btnSend : Button = view.findViewById(R.id.btn_request)
 
@@ -86,11 +90,123 @@ open class RSelectionPersonFragment : Fragment() {
         }
         print("onCreateView")
 
+        val queue= VolleySingleton.getInstance(context).requestQueue
+        val url = "http://smartlab.lsdi.ufma.br/semantic/api/persons"
+        val url_roles = "http://smartlab.lsdi.ufma.br/semantic/api/roles"
+
+
+        val stringRequest = StringRequest(
+            Request.Method.GET,
+            url,
+            Response.Listener<String> { response ->
+                // Display the first 500 characters of the response string.
+                VolleyLog.v("Response:%n %s", response)
+                val lista: MutableList<Person2> = FakeRequest().getAllPersons(response)
+                val mCheckRoles : MutableList<MultiCheckRole> = getMultiCheckRoles2(listOfRoles, lista)
+                mAdapter = MultiCheckRoleAdapter(mCheckRoles)
+                rv.layoutManager = layoutManager
+                rv.adapter = mAdapter
+
+                initCheckBoxes(mCheckRoles)
+
+
+
+            },
+            Response.ErrorListener {
+                VolleyLog.e("Error: ", it.message)
+            })
+
+        // Add the request to the RequestQueue.
+
+        stringRequest.retryPolicy = DefaultRetryPolicy(20 * 1000, 3, 1.0f)
+
+
+
+        val roleRequest = StringRequest(
+            Request.Method.GET,
+            url_roles,
+            Response.Listener<String> { response ->
+                // Display the first 500 characters of the response string.
+                VolleyLog.v("Response:%n %s", response)
+                listOfRoles = FakeRequest().getAllRoles(response)
+                queue.add(stringRequest)
+
+            },
+            Response.ErrorListener {
+                VolleyLog.e("Error: ", it.message)
+            })
+
+        // Add the request to the RequestQueue.
+
+        stringRequest.retryPolicy = DefaultRetryPolicy(20 * 1000, 3, 1.0f)
+
+
+        queue.add(roleRequest)
+
+
+//        initCheckBoxes()
+
+
+
+
+
+
+
+
+
+
+
+
+
         return view
     }
 
-    private fun initCheckBoxes() {
-        val roles: MutableList<MultiCheckRole> = getMultiCheckRoles()
+    private fun getMultiCheckRoles2(listRoles: List<Role2>,lista: MutableList<Person2>): MutableList<MultiCheckRole> {
+
+        val map : MutableMap<String,MutableList<Person2>> = mutableMapOf()
+
+        listRoles.map {
+            map[it.name] = mutableListOf()
+        }
+
+
+
+        for (person in lista) {
+            for (role in person.roles!!) {
+                val list = map[role.name]
+                list!!.add(person)
+                map[role.name] = list
+            }
+        }
+
+
+        val multiRoles: MutableList<MultiCheckRole> = mutableListOf()
+
+
+
+
+        map.map {
+            multiRoles.add(MultiCheckRole(it.key, it.value, R.mipmap.ic_aluno))
+        }
+
+
+
+
+        items = multiRoles.filterNot {
+            it.persons.isEmpty()
+        } as MutableList<MultiCheckRole>
+
+        return items
+
+
+
+
+
+
+    }
+
+    private fun initCheckBoxes(roles: MutableList<MultiCheckRole>) {
+
         for (i in 0 until roles.size) {
             val ch = CheckBox(context)
             ch.text = roles[i].name
@@ -155,38 +271,38 @@ open class RSelectionPersonFragment : Fragment() {
 
 
 
-    fun getMultiCheckRoles() : MutableList<MultiCheckRole>{
-
-
-
-        val professors: MutableList<Person> = mutableListOf()
-        professors.add(Person("Francisco Silva", true))
-        professors.add(Person("Alex Barradas", true))
-        professors.add(Person("Davi", true))
-
-        val graduacao: MutableList<Person> = mutableListOf()
-        graduacao.add(Person("André Luiz", false))
-        graduacao.add(Person("Alysson Cirilo", true))
-        graduacao.add(Person("Daniel CP", false))
-
-        val master: MutableList<Person> = mutableListOf()
-        master.add(Person("Aluno Mestrado 1", false))
-        master.add(Person("Aluno Mestrado 2", true))
-        master.add(Person("Aluno Mestrado 3", true))
-
-
-
-        val professor = MultiCheckRole("Professores",professors, R.mipmap.ic_prof)
-        val student = MultiCheckRole("Alunos de Graduação", graduacao, R.mipmap.ic_aluno)
-        val masters = MultiCheckRole("Alunos de Mestrado", master, R.mipmap.ic_master)
-
-        val roles: MutableList<MultiCheckRole> = mutableListOf()
-        roles.add(professor)
-        roles.add(masters)
-        roles.add(student)
-        items = roles
-        return roles
-    }
+//    fun getMultiCheckRoles() : MutableList<MultiCheckRole>{
+//
+//
+//
+//        val professors: MutableList<Person> = mutableListOf()
+//        professors.add(Person("Francisco Silva", true))
+//        professors.add(Person("Alex Barradas", true))
+//        professors.add(Person("Davi", true))
+//
+//        val graduacao: MutableList<Person> = mutableListOf()
+//        graduacao.add(Person("André Luiz", false))
+//        graduacao.add(Person("Alysson Cirilo", true))
+//        graduacao.add(Person("Daniel CP", false))
+//
+//        val master: MutableList<Person> = mutableListOf()
+//        master.add(Person("Aluno Mestrado 1", false))
+//        master.add(Person("Aluno Mestrado 2", true))
+//        master.add(Person("Aluno Mestrado 3", true))
+//
+//
+//
+//        val professor = MultiCheckRole("Professores",professors, R.mipmap.ic_prof)
+//        val student = MultiCheckRole("Alunos de Graduação", graduacao, R.mipmap.ic_aluno)
+//        val masters = MultiCheckRole("Alunos de Mestrado", master, R.mipmap.ic_master)
+//
+//        val roles: MutableList<MultiCheckRole> = mutableListOf()
+//        roles.add(professor)
+//        roles.add(masters)
+//        roles.add(student)
+//        items = roles
+//        return roles
+//    }
 
 
 

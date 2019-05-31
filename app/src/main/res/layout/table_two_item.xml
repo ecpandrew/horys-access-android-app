@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow
+        android:padding="5dp" android:layout_width="match_parent"
+        android:layout_height="match_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView
+            android:id="@+id/table_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/colorPrimary"
+            android:text="Francisco Silva"/>
+    <TextView
+            android:id="@+id/table_item_physical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/colorPrimary"
+            android:text="Reunion Room" />
+    <TextView
+            android:id="@+id/table_item_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="33dp"
+            android:textColor="@color/colorPrimary"
+            android:text="2"/>
+</TableRow>

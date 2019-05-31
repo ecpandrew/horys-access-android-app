@@ -1,0 +1,218 @@
+<androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        xmlns:app="http://schemas.android.com/tools"
+        android:id="@+id/parent_card"
+        android:layout_width="379dp"
+        android:layout_height="wrap_content"
+        android:minHeight="200dp"
+        card_view:cardElevation="2dp"
+        card_view:cardCornerRadius="5dp"
+        app:strokeColor="@color/colorPrimary"
+        app:strokeWidth="1dp"
+        android:layout_marginBottom="8dp"
+        app:ignore="NamespaceTypo">
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Professores"
+                android:textColor="@color/colorPrimary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" android:id="@+id/parent_title"
+                android:layout_marginStart="13dp" android:layout_marginTop="8dp"/>
+        <ImageButton
+                android:id="@+id/parent_options"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:src="@drawable/ic_dotsdp"
+                app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="8dp"
+                app:layout_constraintTop_toTopOf="parent" android:layout_marginEnd="8dp"
+                />
+        <TableLayout
+                android:id="@+id/parent_table_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:stretchColumns="0,2"
+                app:layout_constraintTop_toBottomOf="@+id/parent_options"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="8dp" android:layout_marginTop="8dp"
+                app:layout_constraintHorizontal_bias="0.0">
+
+
+            <TableRow
+                    android:padding="5dp">
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/colorPrimary"
+                        android:text="Nome"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/colorPrimary"
+                        android:text="Location" android:id="@+id/textView5"/>
+                <RelativeLayout
+                        android:id="@+id/parent_relative_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="left">
+
+                    <ImageButton
+                            android:id="@+id/parent_sort_duration"
+                            android:layout_width="19dp"
+                            android:layout_height="19dp"
+                            android:src="@drawable/ic_keyboard_arrow_up_black_24dp"
+                            android:background="@color/transparent"
+                            android:layout_marginEnd="5dp"
+                            android:layout_toLeftOf="@+id/parent_text2"
+                            android:layout_marginRight="21dp"/>
+
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="@color/colorPrimary"
+                            android:text="Duration (h)" android:id="@+id/parent_text2"/>
+                </RelativeLayout>
+            </TableRow>
+            <View android:layout_width="fill_parent" android:layout_height="1px"
+                  android:background="@color/grey"
+            />
+
+            <TableRow
+                    android:padding="5dp" android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/colorPrimary"
+                        android:text="Francisco Silva"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/colorPrimary"
+                        android:text="Reunion Room" android:id="@+id/textView6"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="33dp"
+                        android:textColor="@color/colorPrimary"
+                        android:text="2"/>
+            </TableRow>
+            <View android:layout_width="fill_parent" android:layout_height="1px"
+                  android:background="@color/grey"
+            />
+            <TableRow
+                    android:padding="5dp" android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/colorPrimary"
+                        android:text="Davi"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/colorPrimary"
+                        android:text="LSDi Lab" android:id="@+id/textView7"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="33dp"
+                        android:textColor="@color/colorPrimary"
+                        android:text="0.3"/>
+            </TableRow>
+            <View android:layout_width="fill_parent" android:layout_height="1px"
+                  android:background="@color/grey"
+            />
+            <TableRow
+                    android:padding="5dp">
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/colorPrimary"
+                        android:text="Alex"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/colorPrimary"
+                        android:text="Reunion Room" android:id="@+id/textView8"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="33dp"
+                        android:textColor="@color/colorPrimary"
+                        android:text="2"/>
+            </TableRow>
+            <View android:layout_width="fill_parent" android:layout_height="1px"
+                  android:background="@color/grey"
+            />
+        </TableLayout>
+        <TextView
+                android:text="1-3 of 3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/parent_pagination_txt"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toStartOf="@+id/parent_pagination_left"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/parent_table_layout"/>
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                app:srcCompat="@drawable/ic_keyboard_arrow_left_black_24dp"
+                android:id="@+id/parent_pagination_left"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/parent_pagination_right"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/parent_table_layout"/>
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_keyboard_arrow_right_black_24dp"
+                android:background="@color/transparent"
+                android:id="@+id/parent_pagination_right"
+                app:layout_constraintEnd_toEndOf="@+id/parent_table_layout"
+                android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/parent_table_layout"/>
+        <TextView
+                android:text="TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/parent_footer"
+                android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/parent_table_layout"
+                android:layout_marginStart="8dp" android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/parent_table_layout"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

@@ -127,3 +127,13 @@ data class TableFourResource(val shortName: String, val physical_space: String, 
     }
 }
 
+data class TableThreeResource(val physical_space: String, val persons: List<ShortPerson>, val arrive: Long, val depart: Long){
+
+    fun getDuration(): Long{
+        return (this.depart - this.arrive)
+    }
+
+}
+
+data class ShortPerson(val shortName: String)
+

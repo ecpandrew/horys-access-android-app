@@ -59,7 +59,7 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
     private var calendar: Calendar? = null
     private var calendar2: Calendar? = null
     private var unixTime: Long? = null
-    private var unixOneWeekAgo: Long? = null
+    private var unixTimePast: Long? = null
 
     companion object {
         fun newInstance(): HSelectionPersonFragment {
@@ -76,6 +76,9 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
         cardDate = view.findViewById(R.id.textView13)
         cardDate2 = view.findViewById(R.id.textView14)
+        clearDate()
+
+
         LL = view.findViewById(R.id.LL)
 
 
@@ -103,7 +106,8 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
         btnClear.setOnClickListener {
             Toast.makeText(context,"TODO", Toast.LENGTH_SHORT).show()
-            mAdapter.clearChoices()
+            clearDate()
+//            mAdapter.clearChoices()
         }
 
 
@@ -117,15 +121,17 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
             var date = null
             var date2 = null
 
-            if (calendar == null || calendar2 == null){
+            if (unixTime == null || unixTimePast == null){
                 setDefaultUnixTime()
             }else{
-                setCustomUnixTime()
+//                setCustomUnixTime()
             }
 
             bundle.putParcelableArrayList("resources", seletedElements)
             bundle.putLong("date", unixTime!!)
-            bundle.putLong("date2", unixOneWeekAgo!!)
+            bundle.putLong("date2", unixTimePast!!)
+            bundle.putString("dateStr", cardDate.text.toString())
+            bundle.putString("dateStr2", cardDate.text.toString())
 
             when(methodRef){
                 0 -> {
@@ -225,23 +231,26 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         return view
     }
 
-    private fun setCustomUnixTime() {
-        var timeZone: TimeZone
-        var cals: Date
-        var milis: Long
+    private fun clearDate() {
+        cardDate.text = "yyyy-MM-dd HH:mm"
+        cardDate2.text = "yyyy-MM-dd HH:mm"
+    }
 
-        timeZone = calendar!!.timeZone
-        cals = Calendar.getInstance(TimeZone.getDefault()).time
-        milis = cals.time
+    private fun setCustomUnixTime() {
+
+
+        val timeZone: TimeZone = calendar!!.timeZone
+        val cals: Date = Calendar.getInstance(TimeZone.getDefault()).time
+        var milis: Long = cals.time
         milis += timeZone.getOffset(milis)
         unixTime = milis/1000
 
 
-        timeZone = calendar2!!.timeZone
-        cals = Calendar.getInstance(TimeZone.getDefault()).time
-        milis = cals.time
-        milis += timeZone.getOffset(milis)
-        unixOneWeekAgo = milis/1000
+        val timeZone2: TimeZone = calendar2!!.timeZone
+        val cals2: Date = Calendar.getInstance(TimeZone.getDefault()).time
+        var milis2: Long = cals2.time
+        milis2 += timeZone2.getOffset(milis2)
+        unixTimePast = milis2/1000
 
 
 
@@ -258,7 +267,7 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         milis += timeZone.getOffset(milis)
 
         unixTime = milis/1000
-        unixOneWeekAgo = (milis/1000)-604800
+        unixTimePast = (milis/1000)-604800
 
 
     }
@@ -432,8 +441,7 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         timePickerDialog.isThemeDark = true
 
 
-        calendar = Calendar.getInstance()
-        calendar = Calendar.getInstance()
+
     }
 
     override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute_: Int, second: Int) {
@@ -446,13 +454,31 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
                 (if (hour < 10) "0$hour" else hour) + ":" +
                 if (minute < 10) "0$minute" else minute
 
+
+        //Todo: Verificar esse getOffset zuando o fuso horario..
         if (TAG == 0) {
+
+            val calendar: Calendar = Calendar.getInstance()
+            calendar.set(year,month,day,hour,minute)
             cardDate.text = dateString
-            calendar!!.set(year,month,day,hour,minute)
+
+            val timeZone: TimeZone = calendar.timeZone
+            val cals: Date = calendar.time
+            var milis: Long = cals.time
+            milis += timeZone.getOffset(milis)
+            unixTime = milis/1000
+
 
         } else {
+            val calendar: Calendar = Calendar.getInstance()
+            calendar.set(year,month,day,hour,minute)
             cardDate2.text = dateString
-            calendar2!!.set(year,month,day,hour,minute)
+            val timeZone: TimeZone = calendar.timeZone
+            val cals: Date = calendar.time
+            var milis: Long = cals.time
+            milis += timeZone.getOffset(milis)
+            unixTimePast = milis/1000
+
         }
 
     }
@@ -463,8 +489,7 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         day = 0
         hour = 0
         minute = 0
-        cardDate.text = "yyyy-MM-dd HH:mm"
-        cardDate2.text = "yyyy-MM-dd HH:mm"
+        clearDate()
         calendar = null
         calendar2 = null
     }

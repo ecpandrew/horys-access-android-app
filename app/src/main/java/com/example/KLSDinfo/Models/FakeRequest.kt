@@ -74,4 +74,16 @@ class FakeRequest {
         }
     }
 
+
+    fun getTableThreeData(json:String?): List<TableThreeResource>{
+
+        val gson = Gson()
+
+        return if(json.isNullOrBlank()){
+            listOf()
+        }else {
+            gson.fromJson(json, object : TypeToken<List<TableThreeResource>>() {}.type )
+        }
+    }
+
 }

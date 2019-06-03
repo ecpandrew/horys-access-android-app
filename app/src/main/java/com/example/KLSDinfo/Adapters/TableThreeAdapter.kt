@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.KLSDinfo.Fragments.DialogFragments.FullscreenDialogFragment
 import com.example.KLSDinfo.Fragments.DialogFragments.TableThreeFrag
 import com.example.KLSDinfo.Models.Method
-import com.example.KLSDinfo.Models.TableTwoResource
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.RealTime.RSelectionLocationFragment
 import com.example.KLSDinfo.RealTime.RSelectionPersonFragment
@@ -24,17 +23,16 @@ import kotlinx.android.synthetic.main.table_three_rv_item.view.*
 import java.text.NumberFormat
 import java.util.ArrayList
 
-class TableTwoAdapter(
+class TableThreeAdapter(
     private val context: Context,
-    private val items: MutableMap<String, List<TableTwoResource>>,
-    private val keys: MutableList<String> = items.keys.toMutableList()) : RecyclerView.Adapter<TableTwoAdapter.ResourceTwoViewHolder>()
+    private val items: MutableList<TableThreeFrag.AuxResource3>) : RecyclerView.Adapter<TableThreeAdapter.ResourceThreeViewHolder>()
 
 {
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResourceTwoViewHolder {
-        val itemView: View = LayoutInflater.from(parent.context).inflate(R.layout.table_two_rv_item, parent, false)
-        return ResourceTwoViewHolder(itemView)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResourceThreeViewHolder {
+        val itemView: View = LayoutInflater.from(parent.context).inflate(R.layout.table_three_rv_item, parent, false)
+        return ResourceThreeViewHolder(itemView)
 
     }
 
@@ -43,22 +41,21 @@ class TableTwoAdapter(
         return items.size
     }
 
-    override fun onBindViewHolder(holder: ResourceTwoViewHolder, position: Int) {
-        val src:List<TableTwoResource> = items[keys[position]]!!
+    override fun onBindViewHolder(holder: ResourceThreeViewHolder, position: Int) {
+        val src: TableThreeFrag.AuxResource3 = items[position]
 
         var count: Long = 0
-        for (element in src){
-            count += element.duration
+        for (element in src.resources){
+            count += element.getDuration()
         }
-
         val nf = NumberFormat.getInstance() // get instance
         nf.maximumFractionDigits = 2 // set decimal places
         val s: String = nf.format(count.toFloat() / 3600)
 
 
-        holder.nameTV.text = keys[position]
-        holder.numberRendzTV.text = ("""Nº de pessoas encontradas: """ + src.size)
-        holder.durationTV.text = ("Duração total: $s (h)")
+        holder.nameTV.text = src.nome
+        holder.numberRendzTV.text = ("""Nº de encontros: """ + src.resources.size).trimIndent()
+        holder.durationTV.text = ("Tempo passado com o grupo: $s (h)")
 
 
         holder.optionsIB.setOnClickListener {
@@ -68,8 +65,8 @@ class TableTwoAdapter(
                 when (item.itemId) {
                     R.id.action_details -> {
                         val bundle = Bundle()
-                        bundle.putString("name", keys[position])
-                        bundle.putParcelableArrayList("resources", src as ArrayList<out Parcelable>) // ??
+                        bundle.putString("name", src.nome)
+                        bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
                         val dialog = FullscreenDialogFragment()
                         dialog.arguments = bundle
                         val activity: AppCompatActivity = context as AppCompatActivity // ??
@@ -79,8 +76,8 @@ class TableTwoAdapter(
                     }
                     R.id.action_log -> {
                         val bundle = Bundle()
-                        bundle.putString("name", keys[position])
-                        bundle.putParcelableArrayList("resources", src as ArrayList<out Parcelable>) // ??
+                        bundle.putString("name", src.nome)
+                        bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
                         val dialog = FullscreenDialogFragment()
                         dialog.arguments = bundle
                         val activity: AppCompatActivity = context as AppCompatActivity // ??
@@ -100,7 +97,7 @@ class TableTwoAdapter(
 
 
 
-    class ResourceTwoViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    class ResourceThreeViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
         val nameTV: TextView = itemView.findViewById(R.id.main_title)
         val numberRendzTV: TextView = itemView.findViewById(R.id.main_rating)

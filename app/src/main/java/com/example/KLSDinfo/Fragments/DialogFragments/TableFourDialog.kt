@@ -1,6 +1,7 @@
 package com.example.KLSDinfo.Fragments.DialogFragments
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.opengl.Visibility
@@ -10,10 +11,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.example.KLSDinfo.Models.Person2
@@ -27,7 +27,7 @@ import java.lang.Exception
 import java.text.NumberFormat
 
 
-class TableFourDialog : DialogFragment() {
+class TableFourDialog : Fragment() {
 
     private lateinit var dateStr: String
     private lateinit var dateStr2: String
@@ -38,10 +38,15 @@ class TableFourDialog : DialogFragment() {
     lateinit var linear: LinearLayout
     lateinit var parentLinear: LinearLayout
     private lateinit var queue: RequestQueue
+    lateinit var progress: AlertDialog.Builder
+    lateinit var alertDialog: AlertDialog
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogStyle)
+
+
+    companion object {
+        fun newInstance(): TableFourDialog {
+            return TableFourDialog()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -49,13 +54,7 @@ class TableFourDialog : DialogFragment() {
         val view: View = inflater.inflate(R.layout.table_four_layout, container, false)
 
 
-        val tool: Toolbar = view.findViewById(R.id.toolbar)
 
-
-        tool.setNavigationIcon(R.drawable.ic_close_white_24dp)
-        tool.setNavigationOnClickListener {
-            cancelUpload()
-        }
         queue = VolleySingleton.getInstance(context).requestQueue
 
 
@@ -96,6 +95,12 @@ class TableFourDialog : DialogFragment() {
                 Log.i("recebido", id)
 
                 url = "http://smartlab.lsdi.ufma.br/service/persons/${id}physical_spaces/${unixPast+10800}/${unix+10800}"
+
+                progress = AlertDialog.Builder(context)
+                progress.setCancelable(false)
+                progress.setView(R.layout.loading_dialog_layout)
+                alertDialog = progress.create()
+                alertDialog.show()
                 makeRequest(url)
 
 
@@ -104,11 +109,8 @@ class TableFourDialog : DialogFragment() {
 
 
 
-
         return view
     }
-
-
 
 
 
@@ -193,7 +195,6 @@ class TableFourDialog : DialogFragment() {
                     generateParentTable(map, countMap)
 
 
-//                    generateParentTable(map)
 
                     for (element in childAux){
                         generateTableChild(element.key, element.value)
@@ -202,20 +203,22 @@ class TableFourDialog : DialogFragment() {
 
 
 
-
                 }
-
+                alertDialog.dismiss()
 
 
 
             },
             Response.ErrorListener {
-                VolleyLog.e("Error: ", it.message)
+                VolleyLog.e("Error: "+it.message)
+                alertDialog.dismiss()
+
+                //Todo: Tratar o caso do request falhar
             })
 
         // Add the request to the RequestQueue.
 
-        stringRequest.retryPolicy = DefaultRetryPolicy(20 * 1000, 3, 1.0f)
+        stringRequest.retryPolicy = DefaultRetryPolicy(10 * 1000, 3, 1.0f)
         stringRequest.tag = this
         queue.add(stringRequest)
 
@@ -361,24 +364,6 @@ class TableFourDialog : DialogFragment() {
     }
 
 
-    private fun cancelUpload() {
-        dialog.dismiss()
-        queue.cancelAll(this)
-        VolleyLog.e("Error: ", "Request Cancelado")
-
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val dialog: Dialog? = dialog
-
-        if (dialog != null){
-            val width = ViewGroup.LayoutParams.MATCH_PARENT
-            val height = ViewGroup.LayoutParams.MATCH_PARENT
-            dialog.window?.setLayout(width, height)
-
-        }
-    }
 
     override fun onStop() {
         super.onStop()

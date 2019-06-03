@@ -40,7 +40,9 @@ class RSelectionLocationFragment: Fragment() {
     lateinit var back: Button
     lateinit var get: Button
     lateinit var url: String
-    lateinit var dialog: AlertDialog
+
+    lateinit var progress: AlertDialog.Builder
+    lateinit var alertDialog: AlertDialog
 
     var listPhysicalSpaces: List<PhysicalSpace> = listOf()
     lateinit var rq: RequestQueue
@@ -74,9 +76,9 @@ class RSelectionLocationFragment: Fragment() {
 
 
 
+    //Todo: Organizar esse metodo initComponents
 
     private fun initComponents(view: View) {
-
 
         recyclerView = view.findViewById(R.id.selectionRealRecyclerView)
         recyclerView.visibility = View.GONE
@@ -109,9 +111,8 @@ class RSelectionLocationFragment: Fragment() {
             bundle.putParcelableArrayList("resources", selectedLocations)
             val dialog = TableOneDialog()
             dialog.arguments = bundle
-            val activity: AppCompatActivity = view.context as AppCompatActivity
-            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-            dialog.show(transaction, "FullScreenDialog")
+            navigateToFragment(dialog, true)
+
         }
 
 
@@ -168,9 +169,13 @@ class RSelectionLocationFragment: Fragment() {
         val queue= VolleySingleton.getInstance(context).requestQueue
         val url = "http://smartlab.lsdi.ufma.br/semantic/api/physical_spaces/roots"
 
+        progress = AlertDialog.Builder(context)
+        progress.setCancelable(false)
+        progress.setView(R.layout.loading_dialog_layout)
+        alertDialog = progress.create()
+        alertDialog.show()
 
-
-
+        //Todo: Organizar esse metodo initComponents
         val stringRequest = StringRequest(
             Request.Method.GET,
             url,
@@ -183,15 +188,20 @@ class RSelectionLocationFragment: Fragment() {
                 mAdapter.notifyDataSetChanged()
                 recyclerView.visibility = View.VISIBLE
 
+                alertDialog.dismiss()
 
             },
             Response.ErrorListener {
                 VolleyLog.e("Error: ", it.message)
+                alertDialog.dismiss()
             })
 
         // Add the request to the RequestQueue.
 
+
         stringRequest.retryPolicy = DefaultRetryPolicy(20 * 1000, 3, 1.0f)
+        stringRequest.tag = this
+
         queue.add(stringRequest)
     }
 
@@ -245,6 +255,15 @@ class RSelectionLocationFragment: Fragment() {
         }
     }
 
+    fun navigateToFragment(fragToGo: Fragment, addToBackStack: Boolean = false){
+        val transaction = fragmentManager!!.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragToGo)
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        if(addToBackStack){
+            transaction.addToBackStack(null) // Todo: verificar o ciclo de vida dos fragmentos
+        }
+        transaction.commit()
+    }
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater?.inflate(R.menu.menu_search_setting, menu)

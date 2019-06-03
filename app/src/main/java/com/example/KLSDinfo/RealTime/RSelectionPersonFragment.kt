@@ -1,4 +1,5 @@
 package com.example.KLSDinfo.RealTime
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
@@ -14,10 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.DefaultRetryPolicy
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.VolleyLog
+import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.example.KLSDinfo.Adapters.MultiCheckRoleAdapter
 import com.example.KLSDinfo.Fragments.DialogFragments.TableTwoDialog
@@ -32,9 +30,10 @@ open class RSelectionPersonFragment : Fragment() {
     lateinit var mAdapter: MultiCheckRoleAdapter
     lateinit var items: MutableList<MultiCheckRole>
     lateinit var  LL : LinearLayout
-    lateinit var checkList: MutableList<CheckBox>
-    lateinit var listOfPersons: List<Person2>
     lateinit var listOfRoles: List<Role2>
+    lateinit var progress: AlertDialog.Builder
+    lateinit var alertDialog: AlertDialog
+    private lateinit var queue: RequestQueue
 
     companion object {
         fun newInstance(): RSelectionPersonFragment {
@@ -82,15 +81,16 @@ open class RSelectionPersonFragment : Fragment() {
 
             val dialog = TableTwoDialog()
             dialog.arguments = bundle
-            val activity: AppCompatActivity = view.context as AppCompatActivity
-            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-            dialog.show(transaction, "FullScreenDialog")
+            navigateToFragment(dialog, true)
+
 
 
         }
         print("onCreateView")
 
-        val queue= VolleySingleton.getInstance(context).requestQueue
+
+        // Todo; Arrumar o request Aninhado
+        queue = VolleySingleton.getInstance(context).requestQueue
         val url = "http://smartlab.lsdi.ufma.br/semantic/api/persons"
         val url_roles = "http://smartlab.lsdi.ufma.br/semantic/api/roles"
 
@@ -109,16 +109,17 @@ open class RSelectionPersonFragment : Fragment() {
 
                 initCheckBoxes(mCheckRoles)
 
+                alertDialog.dismiss()
 
 
             },
             Response.ErrorListener {
                 VolleyLog.e("Error: ", it.message)
+                alertDialog.dismiss()
             })
 
         // Add the request to the RequestQueue.
 
-        stringRequest.retryPolicy = DefaultRetryPolicy(20 * 1000, 3, 1.0f)
 
 
 
@@ -131,16 +132,25 @@ open class RSelectionPersonFragment : Fragment() {
                 listOfRoles = FakeRequest().getAllRoles(response)
                 queue.add(stringRequest)
 
+
             },
             Response.ErrorListener {
                 VolleyLog.e("Error: ", it.message)
+                alertDialog.dismiss()
             })
 
         // Add the request to the RequestQueue.
+        // Todo: Eliminar a necessiade de 2 requests
+        stringRequest.retryPolicy = DefaultRetryPolicy(10 * 1000, 3, 1.0f)
+        roleRequest.retryPolicy = DefaultRetryPolicy(5 * 1000, 3, 1.0f)
+        stringRequest.tag = this
+        roleRequest.tag = this
 
-        stringRequest.retryPolicy = DefaultRetryPolicy(20 * 1000, 3, 1.0f)
-
-
+        progress = AlertDialog.Builder(context)
+        progress.setCancelable(false)
+        progress.setView(R.layout.loading_dialog_layout)
+        alertDialog = progress.create()
+        alertDialog.show()
         queue.add(roleRequest)
 
 
@@ -161,6 +171,15 @@ open class RSelectionPersonFragment : Fragment() {
         return view
     }
 
+    fun navigateToFragment(fragToGo: Fragment, addToBackStack: Boolean = false){
+        val transaction = fragmentManager!!.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragToGo)
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        if(addToBackStack){
+            transaction.addToBackStack(null) // Todo: verificar o ciclo de vida dos fragmentos
+        }
+        transaction.commit()
+    }
     private fun getMultiCheckRoles2(listRoles: List<Role2>,lista: MutableList<Person2>): MutableList<MultiCheckRole> {
 
         val map : MutableMap<String,MutableList<Person2>> = mutableMapOf()
@@ -270,78 +289,6 @@ open class RSelectionPersonFragment : Fragment() {
     }
 
 
-
-//    fun getMultiCheckRoles() : MutableList<MultiCheckRole>{
-//
-//
-//
-//        val professors: MutableList<Person> = mutableListOf()
-//        professors.add(Person("Francisco Silva", true))
-//        professors.add(Person("Alex Barradas", true))
-//        professors.add(Person("Davi", true))
-//
-//        val graduacao: MutableList<Person> = mutableListOf()
-//        graduacao.add(Person("André Luiz", false))
-//        graduacao.add(Person("Alysson Cirilo", true))
-//        graduacao.add(Person("Daniel CP", false))
-//
-//        val master: MutableList<Person> = mutableListOf()
-//        master.add(Person("Aluno Mestrado 1", false))
-//        master.add(Person("Aluno Mestrado 2", true))
-//        master.add(Person("Aluno Mestrado 3", true))
-//
-//
-//
-//        val professor = MultiCheckRole("Professores",professors, R.mipmap.ic_prof)
-//        val student = MultiCheckRole("Alunos de Graduação", graduacao, R.mipmap.ic_aluno)
-//        val masters = MultiCheckRole("Alunos de Mestrado", master, R.mipmap.ic_master)
-//
-//        val roles: MutableList<MultiCheckRole> = mutableListOf()
-//        roles.add(professor)
-//        roles.add(masters)
-//        roles.add(student)
-//        items = roles
-//        return roles
-//    }
-
-
-
-    fun getRoles(): MutableList<Role> {
-
-        val professors: MutableList<Person> = mutableListOf()
-        professors.add(Person("Francisco Silva", true))
-        professors.add(Person("Alex Barradas", true))
-        professors.add(Person("Davi", true))
-
-        val graduacao: MutableList<Person> = mutableListOf()
-        graduacao.add(Person("André Luiz", false))
-        graduacao.add(Person("Alysson Cirilo", true))
-        graduacao.add(Person("Daniel CP", false))
-
-        val master: MutableList<Person> = mutableListOf()
-        master.add(Person("Aluno Mestrado 1", false))
-        master.add(Person("Aluno Mestrado 2", true))
-        master.add(Person("Aluno Mestrado 3", true))
-
-
-
-
-
-        val professor: Role = Role("Professores",professors, R.drawable.ic_banjo)
-        val student: Role = Role("Alunos de Graduação", graduacao, R.drawable.ic_banjo)
-        val masters: Role = Role("Alunos de Mestrado", master, R.drawable.ic_banjo)
-
-
-
-        val roles: MutableList<Role> = mutableListOf()
-        roles.add(professor)
-        roles.add(masters)
-        roles.add(student)
-        return roles
-
-
-    }
-
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         print("onAttach")
@@ -375,7 +322,9 @@ open class RSelectionPersonFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        print("onStop")
+        queue.cancelAll(this)
+        VolleyLog.e("Error: ", "Request Cancelado")
+
     }
 
     override fun onDestroyView() {

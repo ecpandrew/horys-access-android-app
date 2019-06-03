@@ -117,7 +117,35 @@ data class Person2(val email:String, val shortName:String, val fullName:String?,
 }
 
 
-data class TableTwoResource(val shortName: String, val physical_space: String, val thingID: String, val duration: Long)
+data class TableTwoResource(val shortName: String, val physical_space: String, val thingID: String, val duration: Long): Parcelable{
+    constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readLong()
+    )
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(shortName)
+        parcel.writeString(physical_space)
+        parcel.writeString(thingID)
+        parcel.writeLong(duration)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<TableTwoResource> {
+        override fun createFromParcel(parcel: Parcel): TableTwoResource {
+            return TableTwoResource(parcel)
+        }
+
+        override fun newArray(size: Int): Array<TableTwoResource?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+}
 
 
 
@@ -127,13 +155,61 @@ data class TableFourResource(val shortName: String, val physical_space: String, 
     }
 }
 
-data class TableThreeResource(val physical_space: String, val persons: List<ShortPerson>, val arrive: Long, val depart: Long){
+data class TableThreeResource(val physical_space: String, val persons: ArrayList<ShortPerson>, val arrive: Long, val depart: Long) : Parcelable{
 
+    constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
+        parcel.createTypedArrayList(ShortPerson)!!,
+        parcel.readLong(),
+        parcel.readLong()
+    )
     fun getDuration(): Long{
         return (this.depart - this.arrive)
     }
 
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(physical_space)
+        parcel.writeTypedList(persons)
+        parcel.writeLong(arrive)
+        parcel.writeLong(depart)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<TableThreeResource> {
+        override fun createFromParcel(parcel: Parcel): TableThreeResource {
+            return TableThreeResource(parcel)
+        }
+
+        override fun newArray(size: Int): Array<TableThreeResource?> {
+            return arrayOfNulls(size)
+        }
+    }
+
 }
 
-data class ShortPerson(val shortName: String)
+data class ShortPerson(val shortName: String): Parcelable{
+    constructor(parcel: Parcel) : this(parcel.readString()!!)
+
+    override fun writeToParcel(dest: Parcel?, flags: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun describeContents(): Int {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    companion object CREATOR : Parcelable.Creator<ShortPerson> {
+        override fun createFromParcel(parcel: Parcel): ShortPerson {
+            return ShortPerson(parcel)
+        }
+
+        override fun newArray(size: Int): Array<ShortPerson?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+}
 

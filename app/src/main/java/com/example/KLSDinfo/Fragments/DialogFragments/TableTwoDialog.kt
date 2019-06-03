@@ -1,20 +1,21 @@
 package com.example.KLSDinfo.Fragments.DialogFragments
 
-import android.app.Dialog
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.DialogFragment
-import com.android.volley.DefaultRetryPolicy
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.VolleyLog
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
+import com.example.KLSDinfo.Adapters.TableThreeAdapter
+import com.example.KLSDinfo.Adapters.TableTwoAdapter
 import com.example.KLSDinfo.Models.Person2
 import com.example.KLSDinfo.Models.TableTwoResource
 import com.example.KLSDinfo.R
@@ -25,44 +26,55 @@ import kotlinx.android.synthetic.main.table_one_layout.view.*
 import java.text.NumberFormat
 
 
-class TableTwoDialog : DialogFragment() {
+class TableTwoDialog : Fragment() {
 
-    val TAG: String = "FullScreenDialog"
     lateinit var cardview: CardView
-    lateinit var layoutparams: LinearLayout.LayoutParams
     lateinit var textview: TextView
-    lateinit var table: TableLayout
-    lateinit var listTables: MutableList<TableLayout>
     lateinit var linear: LinearLayout
     lateinit var map : MutableMap<String, MutableList<Person2>>
-    lateinit var id: String
+    lateinit var mapResults : MutableMap<String, List<TableTwoResource>>
+    lateinit var listResults: MutableList<MutableMap<String, List<TableTwoResource>>>
     lateinit var url: String
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
+    private lateinit var queue: RequestQueue
+    private lateinit var parentMap: MutableMap<String,List<TableTwoResource>>
+    lateinit var progress: AlertDialog.Builder
+    lateinit var alertDialog: AlertDialog
 
+    lateinit var recyclerView: RecyclerView
+    lateinit var mAdapter: TableTwoAdapter
+    lateinit var dividerItemDecoration: DividerItemDecoration
+
+
+    companion object {
+        fun newInstance(): TableTwoDialog {
+            return TableTwoDialog()
+        }
     }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view: View = inflater.inflate(R.layout.table_two_layout, container, false)
+        val linearLayoutManager = LinearLayoutManager(context)
 
-//        val recyclerView : RecyclerView = view.findViewById(R.id.table_two_rv)
-//        recyclerView.layoutManager = GridLayoutManager(context,1)
-//        recyclerView.setHasFixedSize(true)
+
+        recyclerView = view.findViewById(R.id.rv_resource_2)
+        recyclerView.layoutManager = linearLayoutManager
+        recyclerView.setHasFixedSize(true)
+        dividerItemDecoration = DividerItemDecoration(recyclerView.context, linearLayoutManager.orientation)
+        recyclerView.addItemDecoration(dividerItemDecoration)
+
+
+
+
+
+
+
+
 
         linear = view.findViewById(R.id.parent_linear_layout)
-
-
-        val tool: Toolbar = view.findViewById(R.id.toolbar)
-
-
-        tool.setNavigationIcon(R.drawable.ic_close_white_24dp)
-        tool.setNavigationOnClickListener {
-            cancelUpload()
-        }
-
+        parentMap = mutableMapOf()
+        mapResults = mutableMapOf()
         val bundle: Bundle? = arguments
+        queue = VolleySingleton.getInstance(context).requestQueue
 
         if (bundle == null || bundle.isEmpty){
             // Todo: Não há resultados
@@ -72,55 +84,122 @@ class TableTwoDialog : DialogFragment() {
             if (persons == null){
                 // Todo: tratar isso dai
             }else{
-                // A lista veio
+                Log.i("Response", "lista $persons")
 
+                // classificar por role
                 map = mutableMapOf()
-                var ids : String = "/"
-                for(element in persons){
-                    ids += "${element.holder.id}/"
-                    for (role in element.roles!!){
-                        map[role.name] = mutableListOf()
-                    }
-                }
-                for(element in persons){
-                    for (role in element.roles!!){
-                        val list: MutableList<Person2>? = map[role.name]
-                        list!!.add(element)
-                        map[role.name] = list
+
+                for(person in persons){
+                    if(person.roles != null){
+                        for(role in person.roles){
+                            if(!map.containsKey(role.name)){
+                                map[role.name] = mutableListOf(person)
+                            }else{
+                                val aux = map[role.name]
+                                aux!!.add(person)
+                                map[role.name] = aux
+                            }
+                        }
                     }
                 }
 
-                for(entry in map){
-                    id = "/"
+                Log.i("Response", "map $map")
+
+
+                for (entry in map){
+                    var id = "/"
                     for(person in entry.value){
-                        id += "${person.holder.id}/"
+                        id+="${person.holder.id}/"
                     }
                     url = "http://smartlab.lsdi.ufma.br/service/persons/${id}physical_spaces/"
+
                     makeRequest(url, entry.key)
 
                 }
+
+
+                Log.i("Response", "map $mapResults")
+
+
+
+
+
+
+//                map = mutableMapOf()
+//                var ids : String = "/"
+//                for(element in persons){
+//                    ids += "${element.holder.id}/"
+//                    for (role in element.roles!!){
+//                        map[role.name] = mutableListOf()
+//                    }
+//                }
+//                url = "http://smartlab.lsdi.ufma.br/service/persons/${ids}physical_spaces/"
+//
+//                makeRequest(url)
+//
+//
+////
+//                for(element in persons){
+//                    for (role in element.roles!!){
+//                        val list: MutableList<Person2>? = map[role.name]
+//                        list!!.add(element)
+//                        map[role.name] = list
+//                    }
+//                }
+
+
+                //Todo: Esta funcionando, porem não é eficiente
+//                progress = AlertDialog.Builder(context)
+//                progress.setCancelable(false)
+//                progress.setView(R.layout.loading_dialog_layout)
+//                alertDialog = progress.create()
+//                alertDialog.show()
+//                var id: String? = null
+//                for(entry in map){
+//                    id = "/"
+//                    for(person in entry.value){
+//                        id += "${person.holder.id}/"
+//                    }
+//                    url = "http://smartlab.lsdi.ufma.br/service/persons/${id}physical_spaces/"
+////                    makeRequest(url, entry.key)
+//
+//                }
             }
         }
+
+//        alertDialog.dismiss()
 
         return view
     }
 
 
     private fun makeRequest(url: String, role: String) {
-        val queue= VolleySingleton.getInstance(context).requestQueue
         val stringRequest = StringRequest(
             Request.Method.GET,
             url,
             Response.Listener<String> { response ->
                 // Display the first 500 characters of the response string.
-                Log.i("Response", response)
-                val lista: List<TableTwoResource> = FakeRequest().getTableTwoData(response)
+//                Log.i("Response", response)
+                val r: List<TableTwoResource> = FakeRequest().getTableTwoData(response)
 
-                if(lista.isNotEmpty()){
-                    generateTable(lista, role)
+                if(r.isNotEmpty()){
+                    //generateTable(lista, role)
+//                    Log.i("Response", "lista $lista")
+                    mapResults[role] = r
+
+                    mAdapter = TableTwoAdapter(context!!, mapResults)
+                    recyclerView.adapter = mAdapter
+                    mAdapter.notifyDataSetChanged()
+
+
+
+                    Log.i("Response", "map $mapResults")
+
+                    // setar o adapter
+
+
                 }
-
-
+//
 
 
             },
@@ -128,15 +207,23 @@ class TableTwoDialog : DialogFragment() {
                 VolleyLog.e("Error: ", it.message)
             })
 
+
+
         // Add the request to the RequestQueue.
 
         stringRequest.retryPolicy = DefaultRetryPolicy(20 * 1000, 3, 1.0f)
+        stringRequest.tag = this
         queue.add(stringRequest)
 
     }
 
 
+
     private fun generateTable(src: List<TableTwoResource>, role: String) {
+
+
+
+
 
         val card: CardView = LayoutInflater.from(context).inflate(R.layout.table_two_card, null) as CardView
         (card.findViewById(R.id.parent_title) as TextView).text = role
@@ -185,62 +272,11 @@ class TableTwoDialog : DialogFragment() {
     }
 
 
-    private fun initTables(map: MutableMap<String, MutableList<Person2>>, element: TableTwoResource, list: List<TableTwoResource> ) {
+    override fun onStop() {
+        super.onStop()
+        queue.cancelAll(this)
+        VolleyLog.e("Error: ", "Request Cancelado")
 
-        map.map { entry ->
-
-            val card: CardView = LayoutInflater.from(context).inflate(R.layout.table_two_card, null) as CardView
-            (card.findViewById(R.id.parent_title) as TextView).text = entry.key
-            (card.findViewById(R.id.parent_options) as ImageButton).setOnClickListener {
-                Toast.makeText(context, entry.key,Toast.LENGTH_SHORT).show()
-            }
-
-            val table: TableLayout = card.findViewById(R.id.parent_table_layout)
-
-
-
-
-            val row: TableRow = LayoutInflater.from(context).inflate(R.layout.table_two_item, null) as TableRow
-
-            (row.findViewById(R.id.table_item_name) as TextView).text = element.shortName
-            (row.findViewById(R.id.table_item_physical) as TextView).text = element.physical_space
-
-            (row.findViewById(R.id.table_item_duration) as TextView).text = "${element.duration/60}"
-
-            val view: View = View(context).also {
-                it.setBackgroundColor(resources.getColor(grey))
-                it.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,1)
-
-            }
-
-            table.addView(row)
-            table.addView(view)
-
-            linear.addView(card)
-        }
-        Log.i("debug","Recebido: $map")
-
-
-    }
-
-
-
-
-
-    private fun cancelUpload() {
-        dialog.dismiss()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val dialog: Dialog? = dialog
-
-        if (dialog != null){
-            val width = ViewGroup.LayoutParams.MATCH_PARENT
-            val height = ViewGroup.LayoutParams.MATCH_PARENT
-            dialog.window?.setLayout(width, height)
-
-        }
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.KLSDinfo.Historic
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -27,6 +28,7 @@ import com.example.KLSDinfo.Models.PhysicalSpace
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Models.FakeRequest
 import com.example.KLSDinfo.UtilClasses.Tools
+import com.example.KLSDinfo.Volley.VolleySingleton
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import java.util.*
@@ -53,7 +55,10 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
     private var minute: Int = 0
 
     var listPhysicalSpaces: List<PhysicalSpace> = listOf()
-    lateinit var rq: RequestQueue
+    lateinit var progress: AlertDialog.Builder
+    lateinit var alertDialog: AlertDialog
+    private lateinit var queue: RequestQueue
+
 
 
     companion object {
@@ -84,6 +89,7 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
         recyclerView.setHasFixedSize(true)
         pilha = Stack()
 //        pilha.push(FakeRequest().getAllPhysicalSpaces(null))
+        queue = VolleySingleton.getInstance(context).requestQueue
 
 
         mAdapter = PhysicalSpaceAdapter(context!!, listPhysicalSpaces)
@@ -177,7 +183,6 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
         mAdapter.setOnClickListener(obj)
         actionModeCallback = ActionModeCallback()
 
-        val queue = Volley.newRequestQueue(context)
         val url = "http://smartlab.lsdi.ufma.br/semantic/api/physical_spaces/roots"
 
         // Request a string response from the provided URL.
@@ -192,14 +197,20 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
                 mAdapter.setItems(lista)
                 mAdapter.notifyDataSetChanged()
                 recyclerView.visibility = View.VISIBLE
-
+                alertDialog.dismiss()
 
             },
             Response.ErrorListener {
                 Log.i("debug","Response is: reqeust failled}")
+                alertDialog.dismiss()
             })
-
+        stringRequest.tag = this
         // Add the request to the RequestQueue.
+        progress = AlertDialog.Builder(context)
+        progress.setCancelable(false)
+        progress.setView(R.layout.loading_dialog_layout)
+        alertDialog = progress.create()
+        alertDialog.show()
         queue.add(stringRequest)
     }
 
@@ -424,9 +435,9 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
 
     override fun onStop() {
         super.onStop()
-        print("onStop")
-    }
+        queue.cancelAll(this)
 
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         print("onDestroyView")

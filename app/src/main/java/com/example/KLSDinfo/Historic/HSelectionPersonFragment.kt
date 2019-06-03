@@ -1,4 +1,5 @@
 package com.example.KLSDinfo.Historic
+import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -13,10 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.DefaultRetryPolicy
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.VolleyLog
+import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.example.KLSDinfo.Adapters.MultiCheckRoleAdapter
 import com.example.KLSDinfo.Fragments.DialogFragments.*
@@ -27,12 +25,6 @@ import com.example.KLSDinfo.Volley.VolleySingleton
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import java.util.*
-
-
-
-
-
-
 
 
 
@@ -60,6 +52,9 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
     private var calendar2: Calendar? = null
     private var unixTime: Long? = null
     private var unixTimePast: Long? = null
+    lateinit var progress: AlertDialog.Builder
+    lateinit var alertDialog: AlertDialog
+    private lateinit var queue: RequestQueue
 
     companion object {
         fun newInstance(): HSelectionPersonFragment {
@@ -69,8 +64,7 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.select_person_history_layout, container, false)
-
-        val rv : RecyclerView = view.findViewById(R.id.recycler_view)
+        val rv : RecyclerView = view.findViewById(R.id.recycler_view) as RecyclerView
         val layoutManager = LinearLayoutManager(context)
 
 
@@ -78,6 +72,7 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         cardDate2 = view.findViewById(R.id.textView14)
         clearDate()
 
+        queue = VolleySingleton.getInstance(context).requestQueue
 
         LL = view.findViewById(R.id.LL)
 
@@ -131,16 +126,14 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
             bundle.putLong("date", unixTime!!)
             bundle.putLong("date2", unixTimePast!!)
             bundle.putString("dateStr", cardDate.text.toString())
-            bundle.putString("dateStr2", cardDate.text.toString())
+            bundle.putString("dateStr2", cardDate2.text.toString())
 
             when(methodRef){
                 0 -> {
                     Log.i("debug","go1")
-                    val dialog = TableThreeDialog()
+                    val dialog = TableThreeFrag()
                     dialog.arguments = bundle
-                    val activity: AppCompatActivity = view.context as AppCompatActivity
-                    val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-                    dialog.show(transaction, "FullScreenDialog")
+                    navigateToFragment(dialog,true)
                 }
 
                 1 -> {
@@ -148,9 +141,8 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
                     val dialog = TableFourDialog()
                     dialog.arguments = bundle
-                    val activity: AppCompatActivity = view.context as AppCompatActivity
-                    val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-                    dialog.show(transaction, "FullScreenDialog")
+                    navigateToFragment(dialog,true)
+
                 }
                 else -> {
                     Log.i("debug","else")
@@ -167,13 +159,6 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
 
 
-
-
-
-
-
-
-        val queue= VolleySingleton.getInstance(context).requestQueue
         val url = "http://smartlab.lsdi.ufma.br/semantic/api/persons"
         val url_roles = "http://smartlab.lsdi.ufma.br/semantic/api/roles"
 
@@ -186,23 +171,24 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
                 VolleyLog.v("Response:%n %s", response)
                 val lista: MutableList<Person2> = FakeRequest().getAllPersons(response)
 
+                Log.i("response", listOfRoles.toString())
                 val mCheckRoles : MutableList<MultiCheckRole> = getMultiCheckRoles2(listOfRoles, lista)
                 mAdapter = MultiCheckRoleAdapter(mCheckRoles)
                 rv.layoutManager = layoutManager
                 rv.adapter = mAdapter
 
                 initCheckBoxes(mCheckRoles)
-
+                alertDialog.dismiss()
 
 
             },
             Response.ErrorListener {
                 VolleyLog.e("Error: ", it.message)
+                alertDialog.dismiss()
             })
 
         // Add the request to the RequestQueue.
 
-        stringRequest.retryPolicy = DefaultRetryPolicy(20 * 1000, 3, 1.0f)
 
 
 
@@ -218,15 +204,24 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
             },
             Response.ErrorListener {
                 VolleyLog.e("Error: ", it.message)
+                alertDialog.dismiss()
+
             })
 
         // Add the request to the RequestQueue.
 
-        stringRequest.retryPolicy = DefaultRetryPolicy(20 * 1000, 3, 1.0f)
+        stringRequest.retryPolicy = DefaultRetryPolicy(15 * 1000, 3, 1.0f)
+        roleRequest.retryPolicy = DefaultRetryPolicy(15 * 1000, 3, 1.0f)
+        stringRequest.tag = this
+        roleRequest.tag = this
 
+        progress = AlertDialog.Builder(context)
+        progress.setCancelable(false)
+        progress.setView(R.layout.loading_dialog_layout)
+        alertDialog = progress.create()
 
+        alertDialog.show()
         queue.add(roleRequest)
-
 
         return view
     }
@@ -494,6 +489,15 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         calendar2 = null
     }
 
+    fun navigateToFragment(fragToGo: Fragment, addToBackStack: Boolean = false){
+        val transaction = fragmentManager!!.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragToGo)
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        if(addToBackStack){
+            transaction.addToBackStack(null) // Todo: verificar o ciclo de vida dos fragmentos
+        }
+        transaction.commit()
+    }
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -528,7 +532,8 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
     override fun onStop() {
         super.onStop()
-        print("onStop")
+        queue.cancelAll(this)
+
     }
 
     override fun onDestroyView() {

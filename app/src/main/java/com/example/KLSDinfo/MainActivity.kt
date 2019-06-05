@@ -103,8 +103,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 title = "Home Page"
             }
             R.id.nav_gallery -> {
-                Toast.makeText(baseContext, "Acontecendo Agora", Toast.LENGTH_LONG).show()
-                title = "Acontecendo Agora"
+                Toast.makeText(baseContext,"Happening Now", Toast.LENGTH_LONG).show()
+                title = "Happening Now"
                 clearBackStack()
                 navigateToFragment(RealFragment.newInstance())
             }
@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        drawerLayout.closeDrawer(GravityCompat.START)
+        drawerLayout.closeDrawer(START)
         return true
     }
 

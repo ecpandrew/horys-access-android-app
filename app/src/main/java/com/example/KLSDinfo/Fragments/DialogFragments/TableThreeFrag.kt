@@ -26,8 +26,9 @@ import kotlinx.android.synthetic.main.table_three_layout.view.*
 import java.lang.Exception
 import java.text.NumberFormat
 import androidx.recyclerview.widget.DividerItemDecoration
-
-
+import com.android.volley.toolbox.HttpHeaderParser
+import com.example.KLSDinfo.Models.AuxResource3
+import java.io.UnsupportedEncodingException
 
 
 class TableThreeFrag : Fragment() {
@@ -129,7 +130,7 @@ class TableThreeFrag : Fragment() {
 
 
     private fun makeRequest(url: String) {
-        val stringRequest = StringRequest(
+        val stringRequest = VolleyUTF8EncodingStringRequest(
             Request.Method.GET,
             url,
             Response.Listener<String> { response ->
@@ -376,6 +377,31 @@ class TableThreeFrag : Fragment() {
 
     }
 
-    data class AuxResource3 (val nome: String, val resources: MutableList<TableThreeResource>)
+
+    class VolleyUTF8EncodingStringRequest(
+        method: Int, url: String, private val mListener: Response.Listener<String>,
+        errorListener: Response.ErrorListener
+    ) : Request<String>(method, url, errorListener) {
+
+        override fun deliverResponse(response: String) {
+            mListener.onResponse(response)
+        }
+
+        override fun parseNetworkResponse(response: NetworkResponse): Response<String> {
+            var parsed = ""
+
+            val encoding = charset(HttpHeaderParser.parseCharset(response.headers))
+
+            try {
+                parsed = String(response.data, encoding)
+                val bytes = parsed.toByteArray(encoding)
+                parsed = String(bytes, charset("UTF-8"))
+
+                return Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response))
+            } catch (e: UnsupportedEncodingException) {
+                return Response.error(ParseError(e))
+            }
+        }
+    }
 
 }

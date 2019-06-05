@@ -37,8 +37,8 @@ class RealFragment : Fragment(){
     private fun addItems(){
 
         items.clear()
-        items.add(Method("Busca por Espaço Físico","Verifica todas as pessoas em encontros com o espaço físico escolhido",R.drawable.ic_location_on_black_24dp))
-        items.add(Method("Busca por Pessoas","Verifica a localização atual da(s) pessoa(s) selecionadas.",R.drawable.ic_location_on_black_24dp))
+        items.add(Method("Find Parson by Physical Space","Find all persons in rendezvous with the selected location or it's children.",R.drawable.ic_location_on_black_24dp))
+        items.add(Method("Find Physical Space by Person/Role","Find all the physical spaces where the people selected are.",R.drawable.ic_location_on_black_24dp))
 
     }
 

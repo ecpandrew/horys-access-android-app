@@ -147,6 +147,58 @@ data class TableTwoResource(val shortName: String, val physical_space: String, v
 
 }
 
+data class AuxResource4 (val name: String, val resources: MutableList<TableFourResource>){
+
+    fun getplacesCount(): Int{
+        val map : MutableMap<String, Unit> = mutableMapOf()
+
+        for(i in resources){
+            if(!map.containsKey(i.physical_space)) map[i.physical_space] = Unit
+
+        }
+        return map.size
+    }
+
+    fun getDuration(): Long{
+
+        var dur: Long = 0
+        for(i in resources){
+            dur += i.getDuration()
+        }
+        return dur
+    }
+
+
+
+}
+
+
+//
+//data class AuxResource4 (val place: String, val resources: MutableList<TableFourResource>){
+//
+//    fun getPeopleCount(): Int{
+//        val map : MutableMap<String, Unit> = mutableMapOf()
+//
+//        for(i in resources){
+//            if(!map.containsKey(i.shortName)) map[i.shortName] = Unit
+//
+//        }
+//        return map.size
+//    }
+//
+//    fun getDuration(): Long{
+//
+//        var dur: Long = 0
+//        for(i in resources){
+//            dur += i.getDuration()
+//        }
+//        return dur
+//    }
+//
+//}
+
+
+data class AuxResource3 (val nome: String, val resources: MutableList<TableThreeResource>)
 
 
 data class TableFourResource(val shortName: String, val physical_space: String, val thingID: String, val arrive: Long, val depart: Long){
@@ -210,6 +262,8 @@ data class ShortPerson(val shortName: String): Parcelable{
             return arrayOfNulls(size)
         }
     }
+
+
 
 }
 

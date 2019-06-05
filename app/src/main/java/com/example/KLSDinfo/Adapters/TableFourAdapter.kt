@@ -14,8 +14,9 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.example.KLSDinfo.Fragments.DialogFragments.FullscreenDialogFragment
 import com.example.KLSDinfo.Fragments.DialogFragments.TableThreeFrag
-import com.example.KLSDinfo.Models.AuxResource3
+import com.example.KLSDinfo.Models.AuxResource4
 import com.example.KLSDinfo.Models.Method
+import com.example.KLSDinfo.Models.TableFourResource
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.RealTime.RSelectionLocationFragment
 import com.example.KLSDinfo.RealTime.RSelectionPersonFragment
@@ -24,16 +25,16 @@ import kotlinx.android.synthetic.main.table_three_rv_item.view.*
 import java.text.NumberFormat
 import java.util.ArrayList
 
-class TableThreeAdapter(
+class TableFourAdapter(
     private val context: Context,
-    private val items: MutableList<AuxResource3>) : RecyclerView.Adapter<TableThreeAdapter.ResourceThreeViewHolder>()
+    private val items: MutableList<AuxResource4>) : RecyclerView.Adapter<TableFourAdapter.ResourceFourViewHolder>()
 
 {
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResourceThreeViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResourceFourViewHolder {
         val itemView: View = LayoutInflater.from(parent.context).inflate(R.layout.table_three_rv_item, parent, false)
-        return ResourceThreeViewHolder(itemView)
+        return ResourceFourViewHolder(itemView)
 
     }
 
@@ -42,21 +43,22 @@ class TableThreeAdapter(
         return items.size
     }
 
-    override fun onBindViewHolder(holder: ResourceThreeViewHolder, position: Int) {
-        val src: AuxResource3 = items[position]
-
-        var count: Long = 0
-        for (element in src.resources){
-            count += element.getDuration()
-        }
-        val nf = NumberFormat.getInstance() // get instance
-        nf.maximumFractionDigits = 2 // set decimal places
-        val s: String = nf.format(count.toFloat() / 3600)
+    override fun onBindViewHolder(holder: ResourceFourViewHolder, position: Int) {
+        val src: AuxResource4 = items[position]
 
 
-        holder.nameTV.text = src.nome
-        holder.numberRendzTV.text = ("""Nº de encontros: """ + src.resources.size).trimIndent()
-        holder.durationTV.text = ("Tempo passado com o grupo: $s (h)")
+//        var count: Long = 0
+//        for (element in src.resources){
+//            count += element.getDuration()
+//        }
+//        val nf = NumberFormat.getInstance() // get instance
+//        nf.maximumFractionDigits = 2 // set decimal places
+//        val s: String = nf.format(count.toFloat() / 3600)
+
+
+        holder.nameTV.text = src.name
+        holder.numberRendzTV.text = ("Places Visited: ${src.getplacesCount()}")
+        holder.durationTV.text = ("Total Time Elapsed: ${src.getDuration()}")
 
 
         holder.optionsIB.setOnClickListener {
@@ -66,7 +68,7 @@ class TableThreeAdapter(
                 when (item.itemId) {
                     R.id.action_details -> {
                         val bundle = Bundle()
-                        bundle.putString("name", src.nome)
+                        bundle.putString("name", src.name)
                         bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
                         val dialog = FullscreenDialogFragment()
                         dialog.arguments = bundle
@@ -77,7 +79,7 @@ class TableThreeAdapter(
                     }
                     R.id.action_log -> {
                         val bundle = Bundle()
-                        bundle.putString("name", src.nome)
+                        bundle.putString("name", src.name)
                         bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
                         val dialog = FullscreenDialogFragment()
                         dialog.arguments = bundle
@@ -98,14 +100,13 @@ class TableThreeAdapter(
 
 
 
-    class ResourceThreeViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    class ResourceFourViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
         val nameTV: TextView = itemView.findViewById(R.id.main_title)
         val numberRendzTV: TextView = itemView.findViewById(R.id.main_rating)
         val durationTV: TextView = itemView.findViewById(R.id.main_duration)
         val optionsIB: ImageButton = itemView.findViewById(R.id.main_options)
     }
-
 
 
 

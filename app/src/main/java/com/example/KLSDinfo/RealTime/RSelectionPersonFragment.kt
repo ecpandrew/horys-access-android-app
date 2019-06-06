@@ -10,15 +10,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
-import com.example.KLSDinfo.Adapters.MultiCheckRoleAdapter
-import com.example.KLSDinfo.Fragments.DialogFragments.TableTwoDialog
+import com.example.KLSDinfo.UtilClasses.MultiCheckRoleAdapter
 import com.example.KLSDinfo.Models.*
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Models.FakeRequest

@@ -1,11 +1,8 @@
-package com.example.KLSDinfo.Adapters
+package com.example.KLSDinfo.UtilClasses
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.example.KLSDinfo.ViewHolders.MultiCheckPersonViewHolder
-import com.example.KLSDinfo.ViewHolders.RoleViewHolder
 import com.example.KLSDinfo.Models.MultiCheckRole
-import com.example.KLSDinfo.Models.Person
 import com.example.KLSDinfo.Models.Person2
 import com.example.KLSDinfo.R
 import com.thoughtbot.expandablecheckrecyclerview.CheckableChildRecyclerViewAdapter

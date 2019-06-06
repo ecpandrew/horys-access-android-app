@@ -1,25 +1,17 @@
-package com.example.KLSDinfo.Fragments.DialogFragments
+package com.example.KLSDinfo.RealTime
 
 import android.app.AlertDialog
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.android.volley.RequestQueue
 import com.android.volley.VolleyLog
-import com.example.KLSDinfo.Models.Person2
 import com.example.KLSDinfo.Models.PhysicalSpace
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Volley.VolleySingleton
-import kotlinx.android.synthetic.main.table_one_layout.view.*
-
-
 
 
 class TableOneDialog : Fragment() {

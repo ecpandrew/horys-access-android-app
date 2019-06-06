@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Fragments.DialogFragments
+package com.example.KLSDinfo.Historic
 
 import android.app.Dialog
 import android.os.Bundle
@@ -15,18 +15,20 @@ import com.example.KLSDinfo.R
 
 
 
-class ErrorFragment : DialogFragment() {
+class TableFiveDialog : DialogFragment() {
 
     val TAG: String = "FullScreenDialog"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.Theme_MaterialComponents_Light_Dialog_Alert)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogStyle)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        val view: View = inflater.inflate(R.layout.fullscreen_layout, container, false)
+        val view: View = inflater.inflate(R.layout.table_five_layout, container, false)
+
+
         val tool: Toolbar = view.findViewById(R.id.toolbar)
 
 
@@ -34,10 +36,6 @@ class ErrorFragment : DialogFragment() {
         tool.setNavigationOnClickListener {
             cancelUpload()
         }
-
-
-
-
 
 
 

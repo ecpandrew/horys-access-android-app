@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.KLSDinfo.Adapters.RMethodsAdapter
 import com.example.KLSDinfo.Models.Method
 import com.example.KLSDinfo.R
 

@@ -20,9 +20,7 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-import com.example.KLSDinfo.Adapters.PhysicalSpaceAdapter
-import com.example.KLSDinfo.Fragments.DialogFragments.TableFiveDialog
+import com.example.KLSDinfo.UtilClasses.PhysicalSpaceAdapter
 import com.example.KLSDinfo.Models.Location
 import com.example.KLSDinfo.Models.PhysicalSpace
 import com.example.KLSDinfo.R

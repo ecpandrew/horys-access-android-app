@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.ViewHolders
+package com.example.KLSDinfo.UtilClasses
 import android.view.animation.Animation.RELATIVE_TO_SELF
 import android.view.animation.RotateAnimation
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup

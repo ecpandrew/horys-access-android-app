@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Adapters
+package com.example.KLSDinfo.RealTime
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -14,8 +14,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.example.KLSDinfo.Models.Method
 import com.example.KLSDinfo.R
-import com.example.KLSDinfo.RealTime.RSelectionLocationFragment
-import com.example.KLSDinfo.RealTime.RSelectionPersonFragment
 
 class RMethodsAdapter(
     private val context: Context,

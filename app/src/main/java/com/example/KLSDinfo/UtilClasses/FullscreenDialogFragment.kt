@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Fragments.DialogFragments
+package com.example.KLSDinfo.UtilClasses
 
 import android.app.Dialog
 import android.os.Bundle
@@ -15,7 +15,7 @@ import com.example.KLSDinfo.R
 
 
 
-class TableFiveDialog : DialogFragment() {
+class FullscreenDialogFragment : DialogFragment() {
 
     val TAG: String = "FullScreenDialog"
 
@@ -26,9 +26,7 @@ class TableFiveDialog : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        val view: View = inflater.inflate(R.layout.table_five_layout, container, false)
-
-
+        val view: View = inflater.inflate(R.layout.fullscreen_layout, container, false)
         val tool: Toolbar = view.findViewById(R.id.toolbar)
 
 
@@ -36,6 +34,32 @@ class TableFiveDialog : DialogFragment() {
         tool.setNavigationOnClickListener {
             cancelUpload()
         }
+
+        val txt: TextView = view.findViewById(R.id.resource_TV)
+
+
+
+        val lista: ArrayList<Parcelable>? = arguments?.getParcelableArrayList<Parcelable>("resources")
+
+        Log.i("debug", "Recebido: $lista" )
+
+
+        when{
+            lista == null ->{
+                txt.text = "No Results Came"
+            }
+
+            lista.isEmpty() -> {
+                txt.text = "No Results Came"
+
+            }
+            else -> {
+                txt.text = lista.toList().toString()
+
+            }
+        }
+
+
 
 
 

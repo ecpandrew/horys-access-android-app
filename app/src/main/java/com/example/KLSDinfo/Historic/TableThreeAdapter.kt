@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Adapters
+package com.example.KLSDinfo.Historic
 
 import android.content.Context
 import android.os.Bundle
@@ -8,18 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
-import com.example.KLSDinfo.Fragments.DialogFragments.FullscreenDialogFragment
-import com.example.KLSDinfo.Fragments.DialogFragments.TableThreeFrag
+import com.example.KLSDinfo.CustomTable.CustomTableDialog
+import com.example.KLSDinfo.UtilClasses.FullscreenDialogFragment
 import com.example.KLSDinfo.Models.AuxResource3
-import com.example.KLSDinfo.Models.Method
 import com.example.KLSDinfo.R
-import com.example.KLSDinfo.RealTime.RSelectionLocationFragment
-import com.example.KLSDinfo.RealTime.RSelectionPersonFragment
-import kotlinx.android.synthetic.main.table_three_layout.view.*
 import kotlinx.android.synthetic.main.table_three_rv_item.view.*
 import java.text.NumberFormat
 import java.util.ArrayList
@@ -65,25 +59,22 @@ class TableThreeAdapter(
             popup.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.action_details -> {
+                        Toast.makeText(context,"Not Implemented Yet",Toast.LENGTH_SHORT).show()
+
+
+                    }
+                    R.id.action_log -> {
                         val bundle = Bundle()
-                        bundle.putString("name", src.nome)
+                        var ref ="log3"
+                        bundle.putString("ref", ref)
+                        bundle.putString("person", src.nome)
                         bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
-                        val dialog = FullscreenDialogFragment()
+                        val dialog = CustomTableDialog()
                         dialog.arguments = bundle
                         val activity: AppCompatActivity = context as AppCompatActivity // ??
                         val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
                         dialog.show(transaction, "FullScreenDialog")
 
-                    }
-                    R.id.action_log -> {
-                        val bundle = Bundle()
-                        bundle.putString("name", src.nome)
-                        bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
-                        val dialog = FullscreenDialogFragment()
-                        dialog.arguments = bundle
-                        val activity: AppCompatActivity = context as AppCompatActivity // ??
-                        val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-                        dialog.show(transaction, "FullScreenDialog")
                     }
                 }
                 false

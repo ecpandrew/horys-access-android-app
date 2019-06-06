@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.ViewHolders
+package com.example.KLSDinfo.UtilClasses
 
 import android.view.View
 import android.widget.TextView

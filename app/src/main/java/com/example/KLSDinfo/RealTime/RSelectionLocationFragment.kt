@@ -8,15 +8,13 @@ import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
-import com.example.KLSDinfo.Adapters.PhysicalSpaceAdapter
-import com.example.KLSDinfo.Fragments.DialogFragments.TableOneDialog
+import com.example.KLSDinfo.UtilClasses.PhysicalSpaceAdapter
 import com.example.KLSDinfo.Models.Location
 import com.example.KLSDinfo.Models.PhysicalSpace
 import com.example.KLSDinfo.R
@@ -339,58 +337,7 @@ class RSelectionLocationFragment: Fragment() {
 
 
 
-    fun callByJsonObjectRequest(view: View){
 
-        params = null
-
-        val request = JavaCustomJsonObjectRequest(
-            url,
-            params,
-            Response.Listener<JSONObject> {
-                Log.i("script",it.toString())
-
-                listPhysicalSpaces = FakeRequest().getAllPhysicalSpaces(it.toString())
-                mAdapter.clearSelections()
-                mAdapter.setItems(listPhysicalSpaces)
-                mAdapter.notifyDataSetChanged()
-            },
-            Response.ErrorListener {
-                Toast.makeText(context,"Error: $it",Toast.LENGTH_LONG).show()
-            })
-
-
-        request.tag = "tag"
-
-        rq.add(request)
-    }
-
-
-    fun callByJsonArrayRequest(){
-        params = null
-
-        val request = JavaCustomJsonArrayRequest(
-            url,
-            params,
-            object : Response.Listener<JSONArray> {
-                override fun onResponse(response: JSONArray?) {
-                    Log.i("scipt",response.toString())
-                    listPhysicalSpaces = FakeRequest().getAllPhysicalSpaces(response.toString())
-                }
-
-            },
-            object: Response.ErrorListener {
-                override fun onErrorResponse(error: VolleyError?) {
-                    Toast.makeText(context,"Error: $error",Toast.LENGTH_LONG).show()
-                }
-            })
-
-
-        request.tag = "tag"
-
-        rq.add(request)
-
-
-    }
 
 
 }

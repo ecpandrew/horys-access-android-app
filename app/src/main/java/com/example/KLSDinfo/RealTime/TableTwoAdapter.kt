@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Adapters
+package com.example.KLSDinfo.RealTime
 
 import android.content.Context
 import android.os.Bundle
@@ -8,18 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
-import com.example.KLSDinfo.Fragments.DialogFragments.FullscreenDialogFragment
-import com.example.KLSDinfo.Fragments.DialogFragments.TableThreeFrag
-import com.example.KLSDinfo.Models.Method
+import com.example.KLSDinfo.UtilClasses.FullscreenDialogFragment
 import com.example.KLSDinfo.Models.TableTwoResource
 import com.example.KLSDinfo.R
-import com.example.KLSDinfo.RealTime.RSelectionLocationFragment
-import com.example.KLSDinfo.RealTime.RSelectionPersonFragment
-import kotlinx.android.synthetic.main.table_three_layout.view.*
 import kotlinx.android.synthetic.main.table_three_rv_item.view.*
 import java.text.NumberFormat
 import java.util.ArrayList

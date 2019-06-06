@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Fragments.DialogFragments
+package com.example.KLSDinfo.UtilClasses
 
 import android.app.Dialog
 import android.os.Bundle
@@ -15,13 +15,13 @@ import com.example.KLSDinfo.R
 
 
 
-class FullscreenDialogFragment : DialogFragment() {
+class ErrorFragment : DialogFragment() {
 
     val TAG: String = "FullScreenDialog"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogStyle)
+        setStyle(STYLE_NORMAL, R.style.Theme_MaterialComponents_Light_Dialog_Alert)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -35,29 +35,7 @@ class FullscreenDialogFragment : DialogFragment() {
             cancelUpload()
         }
 
-        val txt: TextView = view.findViewById(R.id.resource_TV)
 
-
-
-        val lista: ArrayList<Parcelable>? = arguments?.getParcelableArrayList<Parcelable>("resources")
-
-        Log.i("debug", "Recebido: $lista" )
-
-
-        when{
-            lista == null ->{
-                txt.text = "No Results Came"
-            }
-
-            lista.isEmpty() -> {
-                txt.text = "No Results Came"
-
-            }
-            else -> {
-                txt.text = lista.toList().toString()
-
-            }
-        }
 
 
 

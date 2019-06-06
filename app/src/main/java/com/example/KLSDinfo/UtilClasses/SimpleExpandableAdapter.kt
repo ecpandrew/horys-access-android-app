@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Adapters
+package com.example.KLSDinfo.UtilClasses
 import android.content.Context
 import android.graphics.Typeface
 import android.util.Log

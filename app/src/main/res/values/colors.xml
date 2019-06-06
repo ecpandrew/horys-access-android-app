@@ -33,6 +33,7 @@
     <color name="colorWhite">#FFF</color>
     <color name="blue_300">#0088ff</color>
     <color name="primaryBlue">#0336ff</color>
+    <color name="cell_background_color">#FFF</color>
 
 
 </resources>

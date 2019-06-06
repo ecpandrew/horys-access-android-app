@@ -1,34 +1,35 @@
-package com.example.KLSDinfo.Fragments.DialogFragments
+package com.example.KLSDinfo.Historic
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
-import com.android.volley.toolbox.StringRequest
-import com.example.KLSDinfo.Adapters.PhysicalSpaceAdapter
-import com.example.KLSDinfo.Adapters.TableThreeAdapter
 import com.example.KLSDinfo.Models.FakeRequest
 import com.example.KLSDinfo.Models.Person2
 import com.example.KLSDinfo.Models.TableThreeResource
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Volley.VolleySingleton
 import kotlinx.android.synthetic.main.table_one_layout.view.parent_options
-import kotlinx.android.synthetic.main.table_three_layout.view.*
 import java.lang.Exception
 import java.text.NumberFormat
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.android.volley.toolbox.HttpHeaderParser
+import com.example.KLSDinfo.CustomTable.CustomTableDialog
 import com.example.KLSDinfo.Models.AuxResource3
 import java.io.UnsupportedEncodingException
+import java.util.ArrayList
 
 
 class TableThreeFrag : Fragment() {
@@ -137,7 +138,7 @@ class TableThreeFrag : Fragment() {
                 // Display the first 500 characters of the response string.
                 Log.i("Response", response)
                 val lista: List<TableThreeResource> = FakeRequest().getTableThreeData(response)
-                if(lista.isNotEmpty()){
+                if (lista.isNotEmpty()) {
 
 
                     //Todo: esse trecho está funcionando, porem não da melhor forma possivel
@@ -151,8 +152,6 @@ class TableThreeFrag : Fragment() {
                     recyclerView.adapter = mAdapter
                     mAdapter.notifyDataSetChanged()
                     //generateChildCard(lista, pessoas)
-
-
 
 
                 }
@@ -190,10 +189,29 @@ class TableThreeFrag : Fragment() {
             popup.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.action_details -> {
-                        Toast.makeText(context,"Expand Table - General Info", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context,"Not Implemented Yet",Toast.LENGTH_SHORT).show()
+//                        val bundle = Bundle()
+//                        var ref ="detail"
+//                        bundle.putString("ref", ref)
+//                        bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
+//                        val dialog = CustomTableDialog()
+//                        dialog.arguments = bundle
+//                        val activity: AppCompatActivity = context as AppCompatActivity // ??
+//                        val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+//                        dialog.show(transaction, "FullScreenDialog")
+
                     }
                     R.id.action_log -> {
-                        Toast.makeText(context,"Log - General Info", Toast.LENGTH_LONG).show()
+                        val bundle = Bundle()
+                        var ref ="log3"
+                        bundle.putString("ref", ref)
+                        bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
+                        val dialog = CustomTableDialog()
+                        dialog.arguments = bundle
+                        val activity: AppCompatActivity = context as AppCompatActivity // ??
+                        val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+                        dialog.show(transaction, "FullScreenDialog")
+
                     }
                 }
                 false
@@ -268,109 +286,6 @@ class TableThreeFrag : Fragment() {
     }
 
 
-//    private fun generateChildCard(
-//        lista: List<TableThreeResource>,
-//        pessoas: MutableList<String>
-//    ) {
-//
-//        val card: CardView = view!!.findViewById(R.id.parent_card2)
-//        (card.findViewById(R.id.parent_title2) as TextView).text = "Informações Individuais"
-//
-//
-//
-//        (card.findViewById(R.id.parent_options2) as ImageButton).setOnClickListener {
-//            val popup = PopupMenu(context, it.parent_options2)
-//            popup.inflate(R.menu.menu_card)
-//            popup.setOnMenuItemClickListener { item ->
-//                when (item.itemId) {
-//                    R.id.action_details -> {
-//                        Toast.makeText(context,"Expand Table - General Info", Toast.LENGTH_LONG).show()
-//                    }
-//                    R.id.action_log -> {
-//                        Toast.makeText(context,"Log - General Info", Toast.LENGTH_LONG).show()
-//                    }
-//                }
-//                false
-//            }
-//            popup.show()
-//        }
-//
-//        val table: TableLayout = card.findViewById(R.id.parent_table_layout2)
-//        var row: TableRow = LayoutInflater.from(context).inflate(R.layout.table_four_parent_item, null) as TableRow
-//        (row.findViewById(R.id.table_item_name) as TextView).text = "Grupo Selecionado"
-//        (row.findViewById(R.id.table_item_count) as TextView).text = "Nº de Encontros"
-//        (row.findViewById(R.id.table_item_duration) as TextView).text = "Duração com o Grupo (h)"
-//        var view: View = View(context).also {
-//            it.setBackgroundColor(ContextCompat.getColor(context!!, R.color.grey))
-//            it.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,1)
-//        }
-//
-//        table.addView(row)
-//        table.addView(view)
-//
-//
-//
-//        // Compute
-//
-//        val map: MutableMap<String, MutableList<TableThreeResource>> = mutableMapOf()
-//        for (resource in lista){
-//            for(person in resource.persons){
-//                if(!map.containsKey(person.shortName)){
-//                    map[person.shortName] = mutableListOf(resource)
-//                }else{
-//                    val aux : MutableList<TableThreeResource> = map[person.shortName]!!
-//                    aux.add(resource)
-//                    map[person.shortName] = aux
-//                }
-//
-//            }
-//        }
-//
-//        val mapDuration: MutableMap<String, Long> = mutableMapOf()
-//        for (element in map){
-//
-//            var dur: Long = 0
-//            element.value.forEach {
-//                dur+= it.getDuration()
-//            }
-//
-//            mapDuration[element.key] = dur
-//
-//        }
-//
-//
-//
-//        var count = 0
-//        for (element in mapDuration){
-//            if(count == 5) break
-//            val nf = NumberFormat.getInstance() // get instance
-//            nf.maximumFractionDigits = 2 // set decimal places
-//
-//            row = LayoutInflater.from(context).inflate(R.layout.table_four_parent_item, null) as TableRow
-//            (row.findViewById(R.id.table_item_name) as TextView).text = element.key
-//            (row.findViewById(R.id.table_item_count) as TextView).text = "${map[element.key]!!.size}/${lista.size}"
-//            (row.findViewById(R.id.table_item_duration) as TextView).text = nf.format(element.value.toFloat()/3600)
-//            table.addView(row)
-//            view = View(context).also {
-//                it.setBackgroundColor(ContextCompat.getColor(context!!, R.color.grey))
-//                it.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,1)
-//            }
-//            table.addView(view)
-//
-//
-//
-//
-//        // Pagination
-//            (card.findViewById(R.id.parent_pagination_txt2) as TextView).text = "1-5 of ${mapDuration.size}"
-//            count++
-//
-//            Log.i("recebido", "map: ${map.toString()}")
-//            Log.i("recebido", "mapDuration: ${mapDuration.toString()}")
-//
-//        }
-//
-//    }
-
     override fun onStop() {
         super.onStop()
         queue.cancelAll(this)
@@ -392,14 +307,14 @@ class TableThreeFrag : Fragment() {
 
             val encoding = charset(HttpHeaderParser.parseCharset(response.headers))
 
-            try {
+            return try {
                 parsed = String(response.data, encoding)
                 val bytes = parsed.toByteArray(encoding)
                 parsed = String(bytes, charset("UTF-8"))
 
-                return Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response))
+                Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response))
             } catch (e: UnsupportedEncodingException) {
-                return Response.error(ParseError(e))
+                Response.error(ParseError(e))
             }
         }
     }

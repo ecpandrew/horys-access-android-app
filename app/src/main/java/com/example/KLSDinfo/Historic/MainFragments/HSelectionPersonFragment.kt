@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Historic
+package com.example.KLSDinfo.Historic.MainFragments
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
+import com.example.KLSDinfo.Historic.TableFragments.TableFourFrag
+import com.example.KLSDinfo.Historic.TableFragments.TableThreeFrag
 import com.example.KLSDinfo.UtilClasses.MultiCheckRoleAdapter
 import com.example.KLSDinfo.Models.*
 import com.example.KLSDinfo.R
@@ -137,7 +139,7 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
                 1 -> {
                     Log.i("debug","go2")
 
-                    val dialog = TableFourDialog()
+                    val dialog = TableFourFrag()
                     dialog.arguments = bundle
                     navigateToFragment(dialog,true)
 

@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.RealTime
+package com.example.KLSDinfo.RealTime.TableFragments
 
 import android.app.AlertDialog
 import android.os.Bundle

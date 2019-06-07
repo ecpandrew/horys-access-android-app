@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.RealTime
+package com.example.KLSDinfo.RealTime.MainFragments
 
 import android.content.Context
 import android.view.LayoutInflater

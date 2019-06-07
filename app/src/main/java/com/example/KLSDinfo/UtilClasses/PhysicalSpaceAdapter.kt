@@ -84,6 +84,7 @@ class PhysicalSpaceAdapter(
 
     private fun toggleCheckedIcon(holder: SelectViewHolder, position: Int) {
 
+
         if (selectedItems.get(position, false)) {
             holder.lyt_image.visibility = View.GONE
             holder.lyt_checked.visibility = View.VISIBLE
@@ -93,6 +94,7 @@ class PhysicalSpaceAdapter(
             holder.lyt_image.visibility = View.VISIBLE
             if (current_selected_idx == position) resetCurrentIndex()
         }
+
     }
 
     private fun resetCurrentIndex() {

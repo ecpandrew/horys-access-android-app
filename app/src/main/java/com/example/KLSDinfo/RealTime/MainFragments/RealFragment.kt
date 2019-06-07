@@ -1,5 +1,4 @@
-package com.example.KLSDinfo.Historic
-
+package com.example.KLSDinfo.RealTime.MainFragments
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -12,22 +11,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.KLSDinfo.Models.Method
 import com.example.KLSDinfo.R
 
-class HistoryFragment : Fragment(){
+class RealFragment : Fragment(){
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var methodsAdapter: HistoryMethodsAdapter
+    private lateinit var methodsAdapter: RMethodsAdapter
     private var items: MutableList<Method> = mutableListOf()
 
     companion object {
-        fun newInstance(): HistoryFragment {
-            return HistoryFragment()
+        fun newInstance(): RealFragment {
+            return RealFragment()
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         print("onCreateView")
-        val view: View = inflater.inflate(R.layout.main_history_layout, container, false)
+        val view: View = inflater.inflate(R.layout.main_real_time_layout, container, false)
         initComponents(view)
+
+
         return view
     }
 
@@ -35,27 +36,23 @@ class HistoryFragment : Fragment(){
     private fun addItems(){
 
         items.clear()
-        items.add(Method("Encontros com Grupos","Exibe quantos encontros houveram entre pessoas e o tempo  em que cada uma pessoa passou com o grupo de pessoas selecionadas.",R.drawable.ic_location_on_black_24dp))
-        items.add(Method("Verificar Histórico de Pessoas","Exibe os encontros das pessoas selecionadas num dado intervalo de tempo.",R.drawable.ic_location_on_black_24dp))
-        items.add(Method("Verificar Histórico de Espaço Físico","Exibe os encontros que aconteceram no local num dado intervalo de tempo",R.drawable.ic_location_on_black_24dp))
-
+        items.add(Method("Find Parson by Physical Space","Find all persons in rendezvous with the selected location or it's children.",R.drawable.ic_location_on_black_24dp))
+        items.add(Method("Find Physical Space by Person/Role","Find all the physical spaces where the people selected are.",R.drawable.ic_location_on_black_24dp))
 
     }
 
     private fun initComponents(view: View) {
 
-        recyclerView = view.findViewById(R.id.historyRecyclerView)
+        recyclerView = view.findViewById(R.id.realTimeRecyclerView)
         recyclerView.layoutManager = GridLayoutManager(context,1)
         recyclerView.setHasFixedSize(true)
         addItems()
-        methodsAdapter = HistoryMethodsAdapter(context!!, items)
-
-
-
+        methodsAdapter = RMethodsAdapter(context!!, items)
         recyclerView.adapter = methodsAdapter
 
-    }
 
+
+    }
 
 
 
@@ -106,10 +103,12 @@ class HistoryFragment : Fragment(){
         print("onDestroy")
     }
 
-    fun print(msg: String){
-        Log.d("Lifecycle", "HistoryFragment: $msg")
+    private fun print(msg: String){
+        Log.d("Lifecycle", "RealFragment: $msg")
     }
 
 
 
 }
+
+

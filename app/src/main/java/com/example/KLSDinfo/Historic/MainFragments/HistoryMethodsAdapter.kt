@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Historic
+package com.example.KLSDinfo.Historic.MainFragments
 
 import android.content.Context
 import android.os.Bundle
@@ -47,14 +47,16 @@ class HistoryMethodsAdapter(
             when(position){
                 0 -> { // person
 
-                    val frag = HSelectionPersonFragment.newInstance()
+                    val frag =
+                        HSelectionPersonFragment.newInstance()
                     val bundle = Bundle()
                     bundle.putInt("ref", 0)
                     frag.arguments = bundle
                     navigateToFragment(frag, it,true)
                 }
                 1 -> {// person: Here we algo need to choose target person
-                    val frag = HSelectionPersonFragment.newInstance()
+                    val frag =
+                        HSelectionPersonFragment.newInstance()
                     val bundle = Bundle()
                     bundle.putInt("ref", 1)
                     frag.arguments = bundle
@@ -64,7 +66,8 @@ class HistoryMethodsAdapter(
 
                 2 -> {
                     val bundle = Bundle()
-                    val frag = HSelectionLocationFragment.newInstance()
+                    val frag =
+                        HSelectionLocationFragment.newInstance()
                     bundle.putInt("ref", 2)
                     frag.arguments = bundle
                     navigateToFragment(frag, it,true)

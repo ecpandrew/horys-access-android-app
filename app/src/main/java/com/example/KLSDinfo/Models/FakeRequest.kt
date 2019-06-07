@@ -73,6 +73,16 @@ class FakeRequest {
             gson.fromJson(json, object : TypeToken<List<TableFourResource>>() {}.type )
         }
     }
+    fun getTableFiveData(json:String?): List<TableFiveResource>{
+
+        val gson = Gson()
+
+        return if(json.isNullOrBlank()){
+            listOf()
+        }else {
+            gson.fromJson(json, object : TypeToken<List<TableFiveResource>>() {}.type )
+        }
+    }
 
 
     fun getTableThreeData(json:String?): List<TableThreeResource>{

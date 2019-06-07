@@ -202,8 +202,71 @@ data class AuxResource4 (val name: String, val resources: MutableList<TableFourR
 }
 
 
+data class AuxResource5 (val name: String, val resources: MutableList<TableFiveResource>){
+
+    fun getPersonCount(): Int{
+        val map : MutableMap<String, Unit> = mutableMapOf()
+
+        for(i in resources){
+            if(!map.containsKey(i.shortName)) map[i.shortName] = Unit
+
+        }
+        return map.size
+    }
+
+    fun getDuration(): Long{
+
+        var dur: Long = 0
+        for(i in resources){
+            dur += i.getDuration()
+        }
+        return dur
+    }
+
+
+
+}
+
 
 data class AuxResource3 (val nome: String, val resources: MutableList<TableThreeResource>)
+
+
+data class TableFiveResource(val shortName: String, val email: String, val physical_space: String, val arrive: Long, val depart: Long): Parcelable{
+    constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readLong(),
+        parcel.readLong()
+    ) {
+    }
+
+    fun getDuration(): Long{
+        return (this.depart - this.arrive)
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(shortName)
+        parcel.writeString(email)
+        parcel.writeString(physical_space)
+        parcel.writeLong(arrive)
+        parcel.writeLong(depart)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<TableFourResource> {
+        override fun createFromParcel(parcel: Parcel): TableFourResource {
+            return TableFourResource(parcel)
+        }
+
+        override fun newArray(size: Int): Array<TableFourResource?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
 
 
 data class TableFourResource(val shortName: String, val physical_space: String, val thingID: String, val arrive: Long, val depart: Long): Parcelable{

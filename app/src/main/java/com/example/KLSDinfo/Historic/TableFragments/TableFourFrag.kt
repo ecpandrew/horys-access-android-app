@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Historic
+package com.example.KLSDinfo.Historic.TableFragments
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.HttpHeaderParser
 import com.example.KLSDinfo.CustomTable.CustomTableDialog
+import com.example.KLSDinfo.Historic.adapters.TableFourAdapter
 import com.example.KLSDinfo.Models.*
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Volley.VolleySingleton
@@ -26,7 +27,7 @@ import java.io.UnsupportedEncodingException
 import java.lang.Exception
 
 
-class TableFourDialog : Fragment() {
+class TableFourFrag : Fragment() {
 
     private lateinit var dateStr: String
     private lateinit var dateStr2: String
@@ -46,8 +47,8 @@ class TableFourDialog : Fragment() {
 
 
     companion object {
-        fun newInstance(): TableFourDialog {
-            return TableFourDialog()
+        fun newInstance(): TableFourFrag {
+            return TableFourFrag()
         }
     }
 
@@ -171,12 +172,12 @@ class TableFourDialog : Fragment() {
 
                     val countMap: MutableMap<String, Int> = mutableMapOf()
 
-                    for (entry in childAux){
-                        for (element in entry.value){
+                    for (entry in childAux) {
+                        for (element in entry.value) {
 
-                            if(!countMap.containsKey(element.key)){
+                            if (!countMap.containsKey(element.key)) {
                                 countMap[element.key] = 1
-                            }else{
+                            } else {
                                 countMap[element.key] = countMap[element.key]!! + 1
                             }
                         }
@@ -220,11 +221,6 @@ class TableFourDialog : Fragment() {
                     recyclerView.adapter = mAdapter
                     mAdapter.notifyDataSetChanged()
 
-
-//                    for (element in childAux){
-//                        generateTableChild(element.key, element.value)
-//
-//                    }
 
 
                 }

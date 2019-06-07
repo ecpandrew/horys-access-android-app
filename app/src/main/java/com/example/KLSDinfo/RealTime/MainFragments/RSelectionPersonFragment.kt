@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.RealTime
+package com.example.KLSDinfo.RealTime.MainFragments
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
@@ -20,6 +20,7 @@ import com.example.KLSDinfo.UtilClasses.MultiCheckRoleAdapter
 import com.example.KLSDinfo.Models.*
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Models.FakeRequest
+import com.example.KLSDinfo.RealTime.TableFragments.TableTwoDialog
 import com.example.KLSDinfo.Volley.VolleySingleton
 
 

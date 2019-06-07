@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Historic
+package com.example.KLSDinfo.Historic.MainFragments
 
 import android.app.AlertDialog
 import android.content.Context
@@ -10,7 +10,6 @@ import android.view.*
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -20,6 +19,7 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
+import com.example.KLSDinfo.Historic.TableFragments.TableFiveFrag
 import com.example.KLSDinfo.UtilClasses.PhysicalSpaceAdapter
 import com.example.KLSDinfo.Models.Location
 import com.example.KLSDinfo.Models.PhysicalSpace
@@ -44,7 +44,8 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
 
     lateinit var dateTxt: TextView
     lateinit var dateTxt2: TextView
-
+    private var unixTime: Long? = null
+    private var unixTimePast: Long? = null
     private var TAG: Int = 0
     private var year: Int = 0
     private var month: Int = 0
@@ -112,17 +113,22 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
                 selectedLocations.add(pilha.peek()[i])
             }
 
+            if (unixTime == null || unixTimePast == null){
+                setDefaultUnixTime()
+            }else{
+//                setCustomUnixTime()
+            }
+
+
             val bundle = Bundle()
-
-
-            Log.i("debug", "Enviado: $selectedLocations")
-
+            Log.i("debugh", "Enviado: $selectedLocations")
+            bundle.putLong("date", unixTime!!)
+            bundle.putLong("date2", unixTimePast!!)
             bundle.putParcelableArrayList("resources", selectedLocations)
-            val dialog = TableFiveDialog()
+            val dialog = TableFiveFrag()
+            Log.i("debugh","go1")
             dialog.arguments = bundle
-            val activity: AppCompatActivity = view.context as AppCompatActivity
-            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-            dialog.show(transaction, "FullScreenDialog")
+            navigateToFragment(dialog,true)
 
         }
 
@@ -214,6 +220,15 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
 
 
 
+    fun navigateToFragment(fragToGo: Fragment, addToBackStack: Boolean = false){
+        val transaction = fragmentManager!!.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragToGo)
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        if(addToBackStack){
+            transaction.addToBackStack(null) // Todo: verificar o ciclo de vida dos fragmentos
+        }
+        transaction.commit()
+    }
 
     private fun enableActionMode(position: Int) {
         if (actionMode == null) {
@@ -398,6 +413,24 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
         minute = 0
         dateTxt.text = "yyyy-MM-dd HH:mm"
         dateTxt2.text = "yyyy-MM-dd HH:mm"
+    }
+
+
+
+
+    private fun setDefaultUnixTime() {
+
+        val calendar = Calendar.getInstance()
+        val timeZone: TimeZone = calendar!!.timeZone
+        val cals: Date = Calendar.getInstance(TimeZone.getDefault()).time
+        var milis: Long = cals.time
+
+        milis += timeZone.getOffset(milis)
+
+        unixTime = milis/1000
+        unixTimePast = (milis/1000)-1204800
+
+
     }
 
     override fun onAttach(context: Context?) {

@@ -10,14 +10,13 @@ import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.View
 import android.widget.Toast
-import androidx.core.view.GravityCompat
 import androidx.core.view.GravityCompat.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import com.example.KLSDinfo.Historic.HistoryFragment
+import com.example.KLSDinfo.Historic.MainFragments.HistoryFragment
 import com.example.KLSDinfo.Home.HomeFragment
-import com.example.KLSDinfo.RealTime.RealFragment
+import com.example.KLSDinfo.RealTime.MainFragments.RealFragment
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {

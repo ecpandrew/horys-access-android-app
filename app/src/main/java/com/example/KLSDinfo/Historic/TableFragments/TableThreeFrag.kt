@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Historic
+package com.example.KLSDinfo.Historic.TableFragments
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -27,6 +27,7 @@ import java.text.NumberFormat
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.android.volley.toolbox.HttpHeaderParser
 import com.example.KLSDinfo.CustomTable.CustomTableDialog
+import com.example.KLSDinfo.Historic.adapters.TableThreeAdapter
 import com.example.KLSDinfo.Models.AuxResource3
 import java.io.UnsupportedEncodingException
 import java.util.ArrayList
@@ -190,15 +191,15 @@ class TableThreeFrag : Fragment() {
                 when (item.itemId) {
                     R.id.action_details -> {
                         Toast.makeText(context,"Not Implemented Yet",Toast.LENGTH_SHORT).show()
-//                        val bundle = Bundle()
-//                        var ref ="detail"
-//                        bundle.putString("ref", ref)
-//                        bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
-//                        val dialog = CustomTableDialog()
-//                        dialog.arguments = bundle
-//                        val activity: AppCompatActivity = context as AppCompatActivity // ??
-//                        val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-//                        dialog.show(transaction, "FullScreenDialog")
+                        val bundle = Bundle()
+                        var ref ="detail3"
+                        bundle.putString("ref", ref)
+                        bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
+                        val dialog = CustomTableDialog()
+                        dialog.arguments = bundle
+                        val activity: AppCompatActivity = context as AppCompatActivity // ??
+                        val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+                        dialog.show(transaction, "FullScreenDialog")
 
                     }
                     R.id.action_log -> {

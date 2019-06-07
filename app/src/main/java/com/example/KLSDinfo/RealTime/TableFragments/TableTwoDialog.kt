@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.RealTime
+package com.example.KLSDinfo.RealTime.TableFragments
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -17,11 +17,9 @@ import com.android.volley.toolbox.StringRequest
 import com.example.KLSDinfo.Models.Person2
 import com.example.KLSDinfo.Models.TableTwoResource
 import com.example.KLSDinfo.R
-import com.example.KLSDinfo.R.color.grey
 import com.example.KLSDinfo.Models.FakeRequest
+import com.example.KLSDinfo.RealTime.Adapters.TableTwoAdapter
 import com.example.KLSDinfo.Volley.VolleySingleton
-import kotlinx.android.synthetic.main.table_one_layout.view.*
-import java.text.NumberFormat
 
 
 class TableTwoDialog : Fragment() {

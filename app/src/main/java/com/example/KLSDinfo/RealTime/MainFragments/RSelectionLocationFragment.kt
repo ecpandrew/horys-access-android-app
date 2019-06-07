@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.RealTime
+package com.example.KLSDinfo.RealTime.MainFragments
 
 import android.app.AlertDialog
 import android.content.Context
@@ -19,12 +19,9 @@ import com.example.KLSDinfo.Models.Location
 import com.example.KLSDinfo.Models.PhysicalSpace
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Models.FakeRequest
+import com.example.KLSDinfo.RealTime.TableFragments.TableOneDialog
 import com.example.KLSDinfo.UtilClasses.Tools
 import com.example.KLSDinfo.Volley.VolleySingleton
-import com.example.KLSDinfo.Volley.JavaCustomJsonArrayRequest
-import com.example.KLSDinfo.Volley.JavaCustomJsonObjectRequest
-import org.json.JSONArray
-import org.json.JSONObject
 import java.util.*
 
 class RSelectionLocationFragment: Fragment() {

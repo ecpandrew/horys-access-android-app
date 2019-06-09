@@ -31,6 +31,11 @@ class CustomTableDialog : DialogFragment() {
     lateinit var tool: Toolbar
 
 
+    override fun getTheme(): Int {
+        return R.style.FullScreenDialogStyle
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)

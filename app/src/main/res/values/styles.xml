@@ -10,7 +10,24 @@
     </style>
 
 
+
+
+    <style name="AppTheme.NoActionBar.FullScreenDialog">
+        <item name="android:windowAnimationStyle">@style/Animation.WindowSlideUpDown</item>
+    </style>
+
+    <style name="Animation.WindowSlideUpDown" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@anim/slide_up</item>
+        <item name="android:windowExitAnimation">@anim/slide_down</item>
+    </style>
+
+
+
+
+
     <style name="FullScreenDialogStyle" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowAnimationStyle">@style/Animation.WindowSlideUpDown</item>
+
         <item name="android:windowNoTitle">true</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimary">@color/colorPrimary</item>

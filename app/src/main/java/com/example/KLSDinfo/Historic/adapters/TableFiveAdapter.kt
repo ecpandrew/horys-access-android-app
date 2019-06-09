@@ -3,19 +3,21 @@ package com.example.KLSDinfo.Historic.adapters
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
+import android.transition.Transition
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageButton
+import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.example.KLSDinfo.CustomTable.CustomTableDialog
-import com.example.KLSDinfo.Models.AuxResource4
 import com.example.KLSDinfo.Models.AuxResource5
 import com.example.KLSDinfo.R
 import kotlinx.android.synthetic.main.table_three_rv_item.view.*
-import java.util.ArrayList
+import java.util.*
 
 class TableFiveAdapter(
     private val context: Context,
@@ -38,15 +40,6 @@ class TableFiveAdapter(
 
     override fun onBindViewHolder(holder: ResourceFourViewHolder, position: Int) {
         val src: AuxResource5 = items[position]
-
-
-//        var count: Long = 0
-//        for (element in src.resources){
-//            count += element.getDuration()
-//        }
-//        val nf = NumberFormat.getInstance() // get instance
-//        nf.maximumFractionDigits = 2 // set decimal places
-//        val s: String = nf.format(count.toFloat() / 3600)
 
 
         holder.nameTV.text = src.name

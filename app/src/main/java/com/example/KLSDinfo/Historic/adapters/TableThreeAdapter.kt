@@ -6,7 +6,10 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageButton
+import android.widget.PopupMenu
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +18,7 @@ import com.example.KLSDinfo.Models.AuxResource3
 import com.example.KLSDinfo.R
 import kotlinx.android.synthetic.main.table_three_rv_item.view.*
 import java.text.NumberFormat
-import java.util.ArrayList
+import java.util.*
 
 class TableThreeAdapter(
     private val context: Context,

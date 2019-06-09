@@ -3,6 +3,7 @@ package com.example.KLSDinfo.Historic.MainFragments
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
@@ -21,12 +22,13 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.example.KLSDinfo.Historic.TableFragments.TableFiveFrag
 import com.example.KLSDinfo.Historic.adapters.PhysicalSpaceAdapter
+import com.example.KLSDinfo.Models.FakeRequest
 import com.example.KLSDinfo.Models.Location
 import com.example.KLSDinfo.Models.PhysicalSpace
 import com.example.KLSDinfo.R
-import com.example.KLSDinfo.Models.FakeRequest
 import com.example.KLSDinfo.UtilClasses.Tools
 import com.example.KLSDinfo.Volley.VolleySingleton
+import com.google.android.material.button.MaterialButton
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import java.util.*
@@ -38,8 +40,8 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
     private lateinit var actionModeCallback: ActionModeCallback
     private var actionMode: ActionMode? = null
     lateinit var pilha: Stack<List<PhysicalSpace>>
-    lateinit var back: Button
-    lateinit var get: Button
+    lateinit var back: MaterialButton
+    lateinit var get: MaterialButton
 
 
 
@@ -171,7 +173,7 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
 
 
 
-        val btnGet: Button = view.findViewById(R.id.buttonGet)
+        get = view.findViewById(R.id.buttonGet)
         back = view.findViewById(R.id.backToParent)
 
 
@@ -182,7 +184,7 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
 
 
 
-        btnGet.setOnClickListener {
+        get.setOnClickListener {
             val selectedItemPositions = mAdapter.getSelectedItems()
             val selectedLocations = ArrayList<Parcelable>()
 
@@ -211,22 +213,8 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
 
 
 
+        validateBackParentButton(false)
 
-        back.setOnClickListener {
-
-
-            when(pilha.size){
-                1 -> {Toast.makeText(context,"There are no parent nodes", Toast.LENGTH_LONG).show()}
-                else -> {
-                    pilha.pop()
-                    mAdapter.clearSelections()
-                    mAdapter.setItems(pilha.peek())
-                    mAdapter.notifyDataSetChanged()
-
-                }
-            }
-
-        }
 
         val obj = object: PhysicalSpaceAdapter.OnClickListener {
             override fun onItemLongClick(view: View, obj: PhysicalSpace, pos: Int) {
@@ -250,6 +238,8 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
                         pilha.push(obj.children)
                         mAdapter.setItems(obj.children)
                         mAdapter.notifyDataSetChanged()
+                        validateBackParentButton(true)
+
 
                     }
 
@@ -295,6 +285,47 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
         queue.add(stringRequest)
     }
 
+    private fun validateBackParentButton(b: Boolean) {
+
+        if(b){
+            back.setTextColor(resources.getColor(R.color.colorPrimary))
+            back.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.colorWhite))
+            back.setOnClickListener {
+
+                when(pilha.size){
+                    1 -> {
+                        Toast.makeText(context,"There are no parent nodes", Toast.LENGTH_LONG).show()
+                        validateBackParentButton(false)
+
+                    }
+                    2 -> {
+                        pilha.pop()
+                        mAdapter.clearSelections()
+                        mAdapter.setItems(pilha.peek())
+                        mAdapter.notifyDataSetChanged()
+                        validateBackParentButton(false)
+                    }
+                    else -> {
+                        pilha.pop()
+                        mAdapter.clearSelections()
+                        mAdapter.setItems(pilha.peek())
+                        mAdapter.notifyDataSetChanged()
+
+                    }
+                }
+
+            }
+            back.isClickable = true
+        }else{
+            back.setTextColor(resources.getColor(R.color.grey2))
+            back.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.grey))
+            back.setOnClickListener(null)
+            back.isClickable = false
+        }
+
+
+
+    }
 
 
     fun navigateToFragment(fragToGo: Fragment, addToBackStack: Boolean = false){

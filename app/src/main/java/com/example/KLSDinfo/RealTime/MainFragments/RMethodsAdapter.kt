@@ -36,11 +36,11 @@ class RMethodsAdapter(
     override fun onBindViewHolder(holder: MethodViewHolder, position: Int) {
         val method: Method = items[position]
 
+        holder.overviewTV.text = "Happening Now"
         holder.nameTV.text = method.name
         holder.descTV.text = method.description
 
         holder.cardView.setOnClickListener {
-            Toast.makeText(context,"Metodo: ${items[position].name}", Toast.LENGTH_LONG).show()
             when(position){
                 0 -> {
                     navigateToFragment(RSelectionLocationFragment.newInstance(),it,true)
@@ -82,10 +82,11 @@ class RMethodsAdapter(
 
     class MethodViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
-        val nameTV: TextView = itemView.findViewById(R.id.method_description)
-        val descTV: TextView = itemView.findViewById(R.id.method_description2)
-        val imgView: ImageView = itemView.findViewById(R.id.method_photo)
+        val nameTV: TextView = itemView.findViewById(R.id.method_name)
+        val overviewTV: TextView = itemView.findViewById(R.id.header)
+        val descTV: TextView = itemView.findViewById(R.id.method_description)
         val cardView: CardView = itemView.findViewById(R.id.card_view)
+        val imgView: ImageView = itemView.findViewById(R.id.method_image)
     }
 
 

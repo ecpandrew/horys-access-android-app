@@ -5,10 +5,12 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
+import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.util.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -166,54 +168,36 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
             Request.Method.GET,
             url,
             Response.Listener<String> { response ->
-                // Display the first 500 characters of the response string.
                 VolleyLog.v("Response:%n %s", response)
+
+
                 val lista: MutableList<Person2> = FakeRequest().getAllPersons(response)
-
-                Log.i("response", listOfRoles.toString())
                 mCheckRoles = getMultiCheckRoles2(listOfRoles, lista)
-                Log.i("response", mCheckRoles.toString())
-                Log.i("response", mCheckRoles.size.toString())
-
                 mAdapter = MultiCheckRoleAdapter(mCheckRoles)
-
                 rv.layoutManager = layoutManager
                 rv.setHasFixedSize(true)
-
                 rv.adapter = mAdapter
-
-
 
 
                 val obj = object: MultiCheckRoleAdapter.OnClickListener{
                     override fun onClick(view: View, group: ExpandableGroup<*> , pos: Int) {
                         mAdapter.toggleSelection(pos)
-
                         mAdapter.getSelectedItems()
-//                        Log.i("group",mAdapter.getSelectedItems().toString())
-                        Log.i("group", mAdapter.getBoolArray().toString())
-                        when ((view as CheckBox).isChecked) {
-                            true -> {
-                               selectAllOfGroup(true, pos, mCheckRoles[pos].persons.size)
+                        val status: Boolean = (view as CheckBox).isChecked
+                        for(i in 0 until mCheckRoles.size){
+                            if(mCheckRoles[i].name == group.title){
 
-                            }
-                            false -> {
-                                selectAllOfGroup(false,pos, mCheckRoles[pos].persons.size)
-
+                                run {
+                                    for(j in 0 until group.itemCount){
+                                        mAdapter.checkChild(status, i, j)
+                                    }
+                                }
                             }
                         }
                     }
-
                 }
-
                 mAdapter.setCheckBoxOnClickListener(obj)
-
-
-
-
                 alertDialog.dismiss()
-
-
             },
             Response.ErrorListener {
                 VolleyLog.e("Error: ", it.message)
@@ -264,26 +248,6 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         cardDate2.text = "yyyy-MM-dd HH:mm"
     }
 
-    private fun setCustomUnixTime() {
-
-
-        val timeZone: TimeZone = calendar!!.timeZone
-        val cals: Date = Calendar.getInstance(TimeZone.getDefault()).time
-        var milis: Long = cals.time
-        milis += timeZone.getOffset(milis)
-        unixTime = milis/1000
-
-
-        val timeZone2: TimeZone = calendar2!!.timeZone
-        val cals2: Date = Calendar.getInstance(TimeZone.getDefault()).time
-        var milis2: Long = cals2.time
-        milis2 += timeZone2.getOffset(milis2)
-        unixTimePast = milis2/1000
-
-
-
-
-    }
 
     private fun setDefaultUnixTime() {
 
@@ -375,10 +339,19 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
 
 
-    private fun selectAllOfGroup(status: Boolean, group: Int, child: Int) {
+    private fun selectAllOfGroup(
+        group: ExpandableGroup<*>,
+        boolArray: SparseBooleanArray
+    ) {
 
-        for (i in 0 until child)
-            mAdapter.checkChild(status,group, i)
+        for(i in 0 until boolArray.size){
+
+            if(boolArray[i]){
+                mAdapter.checkChild(true, i, group.itemCount)
+            }else{
+                mAdapter.checkChild(true, i, group.itemCount)
+            }
+        }
 
 
     }

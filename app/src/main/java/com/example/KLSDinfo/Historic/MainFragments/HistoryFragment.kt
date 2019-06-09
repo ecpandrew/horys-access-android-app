@@ -36,9 +36,9 @@ class HistoryFragment : Fragment(){
     private fun addItems(){
 
         items.clear()
-        items.add(Method("Encontros com Grupos","Exibe quantos encontros houveram entre pessoas e o tempo  em que cada uma pessoa passou com o grupo de pessoas selecionadas.",R.drawable.ic_location_on_black_24dp))
-        items.add(Method("Verificar Histórico de Pessoas","Exibe os encontros das pessoas selecionadas num dado intervalo de tempo.",R.drawable.ic_location_on_black_24dp))
-        items.add(Method("Verificar Histórico de Espaço Físico","Exibe os encontros que aconteceram no local num dado intervalo de tempo",R.drawable.ic_location_on_black_24dp))
+        items.add(Method("Group History","Given a group and a time interval this section display how many encounters the group had and the time each person spent with the group.",R.drawable.ic_location_on_black_24dp))
+        items.add(Method("People History","Given a group and a time interval this section display the places where each person was and for how long they have been there.",R.drawable.ic_location_on_black_24dp))
+        items.add(Method("Physical Space History","Given a physical space and a time interval this section displays the people who visited that physical space and/or the physical spaces within it.",R.drawable.ic_location_on_black_24dp))
 
 
     }

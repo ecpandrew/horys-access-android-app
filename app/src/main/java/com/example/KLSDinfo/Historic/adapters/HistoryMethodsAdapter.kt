@@ -39,6 +39,7 @@ class HistoryMethodsAdapter(
     override fun onBindViewHolder(holder: MethodViewHolder, position: Int) {
         val method: Method = items[position]
 
+        holder.overlineTV.text = "Acessing History"
         holder.nameTV.text = method.name
         holder.descTV.text = method.description
 
@@ -77,27 +78,28 @@ class HistoryMethodsAdapter(
             }
         }
 
-        displayImage(holder, method)
+//        displayImage(holder, method)
 
 
     }
 
 
-    private fun displayImage(holder: MethodViewHolder, method: Method){
-        if(method.image != null){
-            holder.imgView.setImageResource(method.image!!)
-            holder.imgView.colorFilter = null
-        }else{
-            holder.imgView.setImageResource(R.mipmap.ic_launcher)
-        }
-    }
+//    private fun displayImage(holder: MethodViewHolder, method: Method){
+//        if(method.image != null){
+//            holder.imgView.setImageResource(method.image!!)
+//            holder.imgView.colorFilter = null
+//        }else{
+//            holder.imgView.setImageResource(R.mipmap.ic_launcher)
+//        }
+//    }
 
 
     class MethodViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
-        val nameTV: TextView = itemView.findViewById(R.id.method_description)
-        val descTV: TextView = itemView.findViewById(R.id.method_description2)
-        val imgView: ImageView = itemView.findViewById(R.id.method_photo)
+        val overlineTV: TextView = itemView.findViewById(R.id.header)
+        val nameTV: TextView = itemView.findViewById(R.id.method_name)
+        val descTV: TextView = itemView.findViewById(R.id.method_description)
+//        val imgView: ImageView = itemView.findViewById(R.id.method_photo)
         val cardView: CardView = itemView.findViewById(R.id.card_view)
     }
 

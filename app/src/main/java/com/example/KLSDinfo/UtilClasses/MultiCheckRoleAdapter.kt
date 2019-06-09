@@ -122,8 +122,8 @@ class MultiCheckRoleAdapter(
         return items
     }
 
-    fun getBoolArray():BooleanArray{
-        return checkedArr!!
+    fun getBoolArray(): SparseBooleanArray {
+        return selectedItems
     }
 
     internal fun toggleSelection(pos: Int) {

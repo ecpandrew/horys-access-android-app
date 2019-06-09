@@ -6,7 +6,9 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageButton
+import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
@@ -14,7 +16,7 @@ import com.example.KLSDinfo.CustomTable.CustomTableDialog
 import com.example.KLSDinfo.Models.AuxResource4
 import com.example.KLSDinfo.R
 import kotlinx.android.synthetic.main.table_three_rv_item.view.*
-import java.util.ArrayList
+import java.util.*
 
 class TableFourAdapter(
     private val context: Context,

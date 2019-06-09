@@ -1,5 +1,6 @@
 package com.example.KLSDinfo.Historic.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
@@ -51,6 +52,9 @@ class PhysicalSpaceAdapter(
         val location: PhysicalSpace = items[position]
 
         holder.name.text = location.name
+        if (location.children == null) holder.nChilds.text = ("0 children found")
+        else holder.nChilds.text = ("${location.children.size} children found")
+
 
 //        holder.lyt_parent.isActivated = selectedItems.get(position, false)
 
@@ -138,15 +142,14 @@ class PhysicalSpaceAdapter(
         notifyItemChanged(pos)
     }
 
-    fun createLocation(position: Int): PhysicalSpace {
 
-        return items[position]
-    }
 
     class SelectViewHolder(view: View): RecyclerView.ViewHolder(view){
         val name: TextView = view.findViewById(R.id.physical_space_name)
+        val nChilds: TextView = view.findViewById(R.id.childsTV)
         val checkBox: CheckBox = view.findViewById(R.id.physical_space_select)
         val lyt_parent: View = view.findViewById(R.id.lyt_parent)
+
 
     }
 

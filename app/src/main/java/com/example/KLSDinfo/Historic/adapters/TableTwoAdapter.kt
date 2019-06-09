@@ -6,16 +6,18 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageButton
+import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
-import com.example.KLSDinfo.UtilClasses.FullscreenDialogFragment
 import com.example.KLSDinfo.Models.TableTwoResource
 import com.example.KLSDinfo.R
+import com.example.KLSDinfo.UtilClasses.FullscreenDialogFragment
 import kotlinx.android.synthetic.main.table_three_rv_item.view.*
 import java.text.NumberFormat
-import java.util.ArrayList
+import java.util.*
 
 class TableTwoAdapter(
     private val context: Context,

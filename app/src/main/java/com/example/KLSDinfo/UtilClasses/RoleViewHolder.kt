@@ -20,17 +20,16 @@ class RoleViewHolder(itemView: View): GroupViewHolder(itemView) {
     val checkRole: CheckBox = itemView.findViewById(R.id.groupCheckBox)
     private val genreName: TextView = itemView.findViewById(R.id.list_item_genre_name)
     private val arrow: ImageView = itemView.findViewById(R.id.list_item_genre_arrow)
-    private val icon: ImageView = itemView.findViewById(R.id.list_item_genre_icon)
 
 
     fun setGenreTitle(role: ExpandableGroup<*>) {
         if (role is Role) {
             genreName.text = role.title
-            icon.setBackgroundResource(role.iconResId)
+//            icon.setBackgroundResource(role.iconResId)
         }
         if (role is MultiCheckRole) {
             genreName.text = role.title
-            icon.setBackgroundResource(role.iconResId)
+//            icon.setBackgroundResource(role.iconResId)
         }
 
     }

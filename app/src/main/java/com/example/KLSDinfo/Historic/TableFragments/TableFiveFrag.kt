@@ -81,7 +81,7 @@ class TableFiveFrag : Fragment() {
             }catch (e:Exception){}
 
 
-            if (places == null){
+            if (places == null || places.isEmpty()){
                 // Todo: tratar isso dai
             }else{
                 Log.i("recebido5", places.toString())

@@ -22,17 +22,19 @@ import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Models.FakeRequest
 import com.example.KLSDinfo.RealTime.TableFragments.TableTwoDialog
 import com.example.KLSDinfo.Volley.VolleySingleton
+import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 
 
 open class RSelectionPersonFragment : Fragment() {
 
     lateinit var mAdapter: MultiCheckRoleAdapter
     lateinit var items: MutableList<MultiCheckRole>
-    lateinit var  LL : LinearLayout
     lateinit var listOfRoles: List<Role2>
     lateinit var progress: AlertDialog.Builder
     lateinit var alertDialog: AlertDialog
-    private lateinit var queue: RequestQueue
+    lateinit var queue: RequestQueue
+    lateinit var mCheckRoles : MutableList<MultiCheckRole>
+
 
     companion object {
         fun newInstance(): RSelectionPersonFragment {
@@ -45,7 +47,6 @@ open class RSelectionPersonFragment : Fragment() {
 
         val rv : RecyclerView = view.findViewById(R.id.recycler_view)
         val layoutManager = LinearLayoutManager(context)
-        LL = view.findViewById(R.id.LL)
 
 
         mAdapter = MultiCheckRoleAdapter(mutableListOf())
@@ -60,10 +61,6 @@ open class RSelectionPersonFragment : Fragment() {
             mAdapter.clearChoices()
         }
 
-//        val check = view.findViewById(R.id.check_first_child) as Button
-//        check.setOnClickListener {
-//            mAdapter.checkChild(true, 0, 0)
-//        }
 
 
         val btnSend : Button = view.findViewById(R.id.btn_request)
@@ -89,10 +86,10 @@ open class RSelectionPersonFragment : Fragment() {
 
 
         // Todo; Arrumar o request Aninhado
+
         queue = VolleySingleton.getInstance(context).requestQueue
         val url = "http://smartlab.lsdi.ufma.br/semantic/api/persons"
         val url_roles = "http://smartlab.lsdi.ufma.br/semantic/api/roles"
-
 
         val stringRequest = StringRequest(
             Request.Method.GET,
@@ -101,13 +98,31 @@ open class RSelectionPersonFragment : Fragment() {
                 // Display the first 500 characters of the response string.
                 VolleyLog.v("Response:%n %s", response)
                 val lista: MutableList<Person2> = FakeRequest().getAllPersons(response)
-                val mCheckRoles : MutableList<MultiCheckRole> = getMultiCheckRoles2(listOfRoles, lista)
+                mCheckRoles = getMultiCheckRoles2(listOfRoles, lista)
                 mAdapter = MultiCheckRoleAdapter(mCheckRoles)
                 rv.layoutManager = layoutManager
+                rv.setHasFixedSize(true)
                 rv.adapter = mAdapter
 
-                initCheckBoxes(mCheckRoles)
 
+                val obj = object: MultiCheckRoleAdapter.OnClickListener{
+                    override fun onClick(view: View, group: ExpandableGroup<*>, pos: Int) {
+                        mAdapter.toggleSelection(pos)
+                        mAdapter.getSelectedItems()
+                        val status: Boolean = (view as CheckBox).isChecked
+                        for(i in 0 until mCheckRoles.size){
+                            if(mCheckRoles[i].name == group.title){
+
+                                run {
+                                    for(j in 0 until group.itemCount){
+                                        mAdapter.checkChild(status, i, j)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                mAdapter.setCheckBoxOnClickListener(obj)
                 alertDialog.dismiss()
 
 
@@ -151,20 +166,6 @@ open class RSelectionPersonFragment : Fragment() {
         alertDialog = progress.create()
         alertDialog.show()
         queue.add(roleRequest)
-
-
-//        initCheckBoxes()
-
-
-
-
-
-
-
-
-
-
-
 
 
         return view
@@ -223,37 +224,9 @@ open class RSelectionPersonFragment : Fragment() {
 
     }
 
-    private fun initCheckBoxes(roles: MutableList<MultiCheckRole>) {
-
-        for (i in 0 until roles.size) {
-            val ch = CheckBox(context)
-            ch.text = roles[i].name
-
-            ch.setOnClickListener {
-
-                when (ch.isChecked) {
-                    true -> {
-                        selectAllOfGroup(true, i, roles[i].persons.size)
-
-                    }
-                    false -> {
-                        selectAllOfGroup(false, i, roles[i].persons.size)
-
-                    }
-                }
-            }
-
-            LL.addView(ch)
-        }
-    }
-
-    private fun selectAllOfGroup(status: Boolean, group: Int, child: Int) {
-
-        for (i in 0 until child)
-            mAdapter.checkChild(status,group, i)
 
 
-    }
+
 
     private fun getSelectedElements(): ArrayList<Parcelable> {
 

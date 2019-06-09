@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Historic.MainFragments
+package com.example.KLSDinfo.Historic.adapters
 
 import android.content.Context
 import android.os.Bundle
@@ -13,6 +13,8 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
+import com.example.KLSDinfo.Historic.MainFragments.HSelectionLocationFragment
+import com.example.KLSDinfo.Historic.MainFragments.HSelectionPersonFragment
 import com.example.KLSDinfo.Models.Method
 import com.example.KLSDinfo.R
 

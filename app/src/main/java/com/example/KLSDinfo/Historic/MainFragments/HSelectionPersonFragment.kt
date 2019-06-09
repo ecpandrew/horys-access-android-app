@@ -22,6 +22,7 @@ import com.example.KLSDinfo.Models.*
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Models.FakeRequest
 import com.example.KLSDinfo.Volley.VolleySingleton
+import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import java.util.*
@@ -55,6 +56,7 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
     lateinit var progress: AlertDialog.Builder
     lateinit var alertDialog: AlertDialog
     private lateinit var queue: RequestQueue
+    lateinit var mCheckRoles : MutableList<MultiCheckRole>
 
     companion object {
         fun newInstance(): HSelectionPersonFragment {
@@ -74,7 +76,6 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
         queue = VolleySingleton.getInstance(context).requestQueue
 
-        LL = view.findViewById(R.id.LL)
 
 
         // Todo: tratar esse -> !!
@@ -94,20 +95,18 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         mAdapter = MultiCheckRoleAdapter(mutableListOf())
 
         rv.layoutManager = layoutManager
+
         rv.adapter = mAdapter
 
 
         val btnClear : Button = view.findViewById(R.id.clear_button)
-
         btnClear.setOnClickListener {
             Toast.makeText(context,"TODO", Toast.LENGTH_SHORT).show()
             clearDate()
 //            mAdapter.clearChoices()
         }
 
-
         val btnSend : Button = view.findViewById(R.id.btn_request)
-
         btnSend.setOnClickListener {
 
 
@@ -172,12 +171,46 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
                 val lista: MutableList<Person2> = FakeRequest().getAllPersons(response)
 
                 Log.i("response", listOfRoles.toString())
-                val mCheckRoles : MutableList<MultiCheckRole> = getMultiCheckRoles2(listOfRoles, lista)
+                mCheckRoles = getMultiCheckRoles2(listOfRoles, lista)
+                Log.i("response", mCheckRoles.toString())
+                Log.i("response", mCheckRoles.size.toString())
+
                 mAdapter = MultiCheckRoleAdapter(mCheckRoles)
+
                 rv.layoutManager = layoutManager
+                rv.setHasFixedSize(true)
+
                 rv.adapter = mAdapter
 
-                initCheckBoxes(mCheckRoles)
+
+
+
+                val obj = object: MultiCheckRoleAdapter.OnClickListener{
+                    override fun onClick(view: View, group: ExpandableGroup<*> , pos: Int) {
+                        mAdapter.toggleSelection(pos)
+
+                        mAdapter.getSelectedItems()
+//                        Log.i("group",mAdapter.getSelectedItems().toString())
+                        Log.i("group", mAdapter.getBoolArray().toString())
+                        when ((view as CheckBox).isChecked) {
+                            true -> {
+                               selectAllOfGroup(true, pos, mCheckRoles[pos].persons.size)
+
+                            }
+                            false -> {
+                                selectAllOfGroup(false,pos, mCheckRoles[pos].persons.size)
+
+                            }
+                        }
+                    }
+
+                }
+
+                mAdapter.setCheckBoxOnClickListener(obj)
+
+
+
+
                 alertDialog.dismiss()
 
 
@@ -340,28 +373,7 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
     }
 
-    private fun initCheckBoxes(roles: MutableList<MultiCheckRole>) {
-        for (i in 0 until roles.size) {
-            val ch = CheckBox(context)
-            ch.text = roles[i].name
 
-            ch.setOnClickListener {
-
-                when (ch.isChecked) {
-                    true -> {
-                        selectAllOfGroup(true, i, roles[i].persons.size)
-
-                    }
-                    false -> {
-                        selectAllOfGroup(false, i, roles[i].persons.size)
-
-                    }
-                }
-            }
-
-            LL.addView(ch)
-        }
-    }
 
     private fun selectAllOfGroup(status: Boolean, group: Int, child: Int) {
 

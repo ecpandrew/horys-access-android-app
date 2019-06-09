@@ -60,10 +60,10 @@ open class RSelectionPersonFragment : Fragment() {
             mAdapter.clearChoices()
         }
 
-        val check = view.findViewById(R.id.check_first_child) as Button
-        check.setOnClickListener {
-            mAdapter.checkChild(true, 0, 0)
-        }
+//        val check = view.findViewById(R.id.check_first_child) as Button
+//        check.setOnClickListener {
+//            mAdapter.checkChild(true, 0, 0)
+//        }
 
 
         val btnSend : Button = view.findViewById(R.id.btn_request)

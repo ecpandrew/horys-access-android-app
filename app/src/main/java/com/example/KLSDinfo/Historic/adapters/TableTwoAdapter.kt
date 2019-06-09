@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.RealTime.Adapters
+package com.example.KLSDinfo.Historic.adapters
 
 import android.content.Context
 import android.os.Bundle

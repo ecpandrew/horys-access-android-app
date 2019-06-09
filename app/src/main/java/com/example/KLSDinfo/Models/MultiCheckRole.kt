@@ -11,5 +11,8 @@ data class MultiCheckRole(val name: String, val persons: List<Person2>, val icon
 
         return MultiCheckExpandableGroup(name, persons)
     }
+    fun getChildCount(): Int{
+        return persons.size
+    }
 
 }

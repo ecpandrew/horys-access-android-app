@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
-import com.example.KLSDinfo.UtilClasses.PhysicalSpaceAdapter
+import com.example.KLSDinfo.Historic.adapters.PhysicalSpaceAdapter
 import com.example.KLSDinfo.Models.Location
 import com.example.KLSDinfo.Models.PhysicalSpace
 import com.example.KLSDinfo.R
@@ -131,15 +131,17 @@ class RSelectionLocationFragment: Fragment() {
 
         val obj = object: PhysicalSpaceAdapter.OnClickListener {
             override fun onItemLongClick(view: View, obj: PhysicalSpace, pos: Int) {
-                enableActionMode(pos)
+//                enableActionMode(pos)
 
+            }
+            override fun onCheckBoxClick(view: View, obj: PhysicalSpace, pos: Int) {
+                toggleSelection(pos)
             }
 
             override fun onItemClick(view: View, obj: PhysicalSpace, pos: Int) {
                 if (mAdapter.getSelectedItemCount() > 0) run {
-                    enableActionMode(pos)
-                    Log.i("onclick", "onClick if")
-
+//                    enableActionMode(pos)
+//                    Log.i("onclick", "onClick if")
 
                 }else{
                     Toast.makeText(context,"onClick: ${obj.name}", Toast.LENGTH_LONG).show()
@@ -211,14 +213,14 @@ class RSelectionLocationFragment: Fragment() {
 
     private fun toggleSelection(position: Int) {
         mAdapter.toggleSelection(position)
-        val count = mAdapter.getSelectedItemCount()
-
-        if (count == 0) {
-            actionMode!!.finish()
-        } else {
-            actionMode!!.title = count.toString()
-            actionMode!!.invalidate()
-        }
+//        val count = mAdapter.getSelectedItemCount()
+//
+//        if (count == 0) {
+//            actionMode!!.finish()
+//        } else {
+//            actionMode!!.title = count.toString()
+//            actionMode!!.invalidate()
+//        }
     }
 
 

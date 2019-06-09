@@ -17,7 +17,6 @@
 
             android:checkMark="?android:attr/listChoiceIndicatorMultiple"
             android:gravity="center"
-            android:textAllCaps="true"
             tools:text="Artist Name" />
 
 

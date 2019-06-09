@@ -18,7 +18,7 @@ import com.example.KLSDinfo.Models.Person2
 import com.example.KLSDinfo.Models.TableTwoResource
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Models.FakeRequest
-import com.example.KLSDinfo.RealTime.Adapters.TableTwoAdapter
+import com.example.KLSDinfo.Historic.adapters.TableTwoAdapter
 import com.example.KLSDinfo.Volley.VolleySingleton
 
 

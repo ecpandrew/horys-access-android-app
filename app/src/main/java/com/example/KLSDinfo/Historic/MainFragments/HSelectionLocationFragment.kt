@@ -20,7 +20,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.example.KLSDinfo.Historic.TableFragments.TableFiveFrag
-import com.example.KLSDinfo.UtilClasses.PhysicalSpaceAdapter
+import com.example.KLSDinfo.Historic.adapters.PhysicalSpaceAdapter
 import com.example.KLSDinfo.Models.Location
 import com.example.KLSDinfo.Models.PhysicalSpace
 import com.example.KLSDinfo.R
@@ -42,8 +42,7 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
     lateinit var get: Button
 
 
-    lateinit var dateTxt: TextView
-    lateinit var dateTxt2: TextView
+
     private var unixTime: Long? = null
     private var unixTimePast: Long? = null
     private var TAG: Int = 0
@@ -58,7 +57,21 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
     lateinit var alertDialog: AlertDialog
     private lateinit var queue: RequestQueue
 
+//    lateinit var dateTxt2: TextView
+//    lateinit var dateTxt: TextView
 
+    lateinit var cardDate: CardView
+    lateinit var dayTv: TextView
+    lateinit var monthTv: TextView
+    lateinit var yearTv: TextView
+    lateinit var timeTv: TextView
+
+
+    lateinit var cardDate2: CardView
+    lateinit var dayTv2: TextView
+    lateinit var monthTv2: TextView
+    lateinit var yearTv2: TextView
+    lateinit var timeTv2: TextView
 
     companion object {
         fun newInstance(): HSelectionLocationFragment {
@@ -74,9 +87,65 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
 
 
 
+        initDateComponents(view)
+        setDefaultTime()
+
         return view
     }
 
+    private fun setDefaultTime(){
+        val calendar = Calendar.getInstance()
+        val timeZone: TimeZone = calendar!!.timeZone
+        val cals: Date = Calendar.getInstance(TimeZone.getDefault()).time
+        var milis: Long = cals.time
+        milis += timeZone.getOffset(milis)
+
+        unixTime = milis/1000
+        unixTimePast = (milis/1000)-604800
+
+        dayTv.text = calendar.get(Calendar.DAY_OF_MONTH).toString()
+        monthTv.text = getMonth(calendar.get(Calendar.MONTH))//calendar.getDisplayName(Calendar.MONTH, Calendar.LONG,Locale.getDefault()).substring(0,3)//(calendar.get(Calendar.MONTH)+1).toString()
+        yearTv.text = calendar.get(Calendar.YEAR).toString()
+        // Todo: arrumar a string dos minutos
+        val time = "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
+        timeTv.text = time
+
+        val calendar2 = Calendar.getInstance()
+        calendar2.timeInMillis = unixTimePast!! * 1000
+
+        dayTv2.text = calendar2.get(Calendar.DAY_OF_MONTH).toString()
+        monthTv2.text = getMonth(calendar2.get(Calendar.MONTH))//calendar2.getDisplayName(Calendar.MONTH, Calendar.LONG,Locale.getDefault()).substring(0,3)//(calendar2.get(Calendar.MONTH)+1).toString()
+        yearTv2.text = calendar2.get(Calendar.YEAR).toString()
+        val time2 = "${calendar2.get(Calendar.HOUR_OF_DAY)}:${calendar2.get(Calendar.MINUTE)}"
+        timeTv2.text = time2
+
+
+    }
+
+    private fun initDateComponents(view: View) {
+        cardDate = view.findViewById(R.id.date_card_view)
+        dayTv = view.findViewById(R.id.dayTV)
+        monthTv = view.findViewById(R.id.monthTV)
+        yearTv = view.findViewById(R.id.yearTV)
+        timeTv = view.findViewById(R.id.timeTV)
+
+        cardDate2 = view.findViewById(R.id.date_card_view2)
+        dayTv2 = view.findViewById(R.id.dayTV2)
+        monthTv2 = view.findViewById(R.id.monthTV2)
+        yearTv2 = view.findViewById(R.id.yearTV2)
+        timeTv2 = view.findViewById(R.id.timeTV2)
+
+        cardDate.setOnClickListener {
+            TAG = 0
+            pickData()
+
+        }
+        cardDate2.setOnClickListener {
+            TAG = 1
+            pickData()
+        }
+
+    }
 
 
     private fun initComponents(view: View) {
@@ -91,17 +160,25 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
         queue = VolleySingleton.getInstance(context).requestQueue
 
 
+
         mAdapter = PhysicalSpaceAdapter(context!!, listPhysicalSpaces)
         recyclerView.adapter = mAdapter
 
+//        cardDate = view.findViewById(R.id.date_card_view)
+//        cardDate2 = view.findViewById(R.id.date_card_view2)
 
 
-        val cardDate: CardView = view.findViewById(R.id.card_view3)
-        val cardDate2: CardView = view.findViewById(R.id.card_view4)
+
+
+
         val btnGet: Button = view.findViewById(R.id.buttonGet)
         back = view.findViewById(R.id.backToParent)
-        dateTxt = view.findViewById(R.id.data1)
-        dateTxt2 = view.findViewById(R.id.data2)
+
+
+
+//
+//        dateTxt = view.findViewById(R.id.dayTV)
+//        dateTxt2 = view.findViewById(R.id.data2)
 
 
 
@@ -114,7 +191,7 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
             }
 
             if (unixTime == null || unixTimePast == null){
-                setDefaultUnixTime()
+                setDefaultTime()
             }else{
 //                setCustomUnixTime()
             }
@@ -133,15 +210,7 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
         }
 
 
-        cardDate.setOnClickListener {
-            TAG = 0
-            pickData()
 
-        }
-        cardDate2.setOnClickListener {
-            TAG = 1
-            pickData()
-        }
 
         back.setOnClickListener {
 
@@ -158,15 +227,20 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
             }
 
         }
+
         val obj = object: PhysicalSpaceAdapter.OnClickListener {
             override fun onItemLongClick(view: View, obj: PhysicalSpace, pos: Int) {
-                enableActionMode(pos)
+//                enableActionMode(pos)
 
+            }
+
+            override fun onCheckBoxClick(view: View, obj: PhysicalSpace, pos: Int) {
+                toggleSelection(pos)
             }
 
             override fun onItemClick(view: View, obj: PhysicalSpace, pos: Int) {
                 if (mAdapter.getSelectedItemCount() > 0) run {
-                    enableActionMode(pos)
+//                    enableActionMode(pos)
                     Log.i("onclick", "onClick if")
 
 
@@ -182,6 +256,9 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
                 }
             }
         }
+
+
+
 
 
         mAdapter.setOnClickListener(obj)
@@ -234,19 +311,19 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
         if (actionMode == null) {
             actionMode = this@HSelectionLocationFragment.activity!!.startActionMode(actionModeCallback)
         }
-        toggleSelection(position)
+//        toggleSelection(position)
     }
 
     private fun toggleSelection(position: Int) {
         mAdapter.toggleSelection(position)
-        val count = mAdapter.getSelectedItemCount()
-
-        if (count == 0) {
-            actionMode!!.finish()
-        } else {
-            actionMode!!.title = count.toString()
-            actionMode!!.invalidate()
-        }
+//        val count = mAdapter.getSelectedItemCount()
+//
+//        if (count == 0) {
+//            actionMode!!.finish()
+//        } else {
+//            actionMode!!.title = count.toString()
+//            actionMode!!.invalidate()
+//        }
     }
 
 
@@ -256,6 +333,7 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
 
 
 
+    // Todo: possivelmente isso não esta sendo relevante
     private inner class ActionModeCallback : ActionMode.Callback {
         override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
             Tools.setSystemBarColor(activity, R.color.colorDarkBlue2)// comentar isso;
@@ -396,10 +474,25 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
                 if (minute < 10) "0$minute" else minute
 
         if (TAG == 0) {
-            dateTxt.text = dateString
+
+            dayTv.text = (if (day < 10) "0$day" else "$day")
+            monthTv.text = getMonth(month)//(if (month + 1 < 10) "0" + (month + 1) else "${month + 1}")
+            yearTv.text = year.toString()
+
+            val h = (if (hour < 10) "0$hour" else "$hour")
+            val m =   if (minute < 10) "0$minute" else "$minute"
+            val time = "$h:$m"
+            timeTv.text = time
 
         } else {
-            dateTxt2.text = dateString
+            dayTv2.text = (if (day < 10) "0$day" else "$day")
+            monthTv2.text = getMonth(month)// (if (month + 1 < 10) "0" + (month + 1) else "${month + 1}")
+            yearTv2.text = year.toString()
+
+            val h = (if (hour < 10) "0$hour" else "$hour")
+            val m =   if (minute < 10) "0$minute" else "$minute"
+            val time = "$h:$m"
+            timeTv2.text = time
         }
 
 
@@ -411,27 +504,32 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
         day = 0
         hour = 0
         minute = 0
-        dateTxt.text = "yyyy-MM-dd HH:mm"
-        dateTxt2.text = "yyyy-MM-dd HH:mm"
+        setDefaultTime()
+    }
+
+
+    private fun getMonth(m:Int): String{
+        when(m){
+            0 -> return "JAN"
+            1 -> return "FEV"
+            2 -> return "MAR"
+            3 -> return "ABR"
+            4 -> return "MAI"
+            5 -> return "JUN"
+            6 -> return "JUL"
+            7 -> return "AGO"
+            8 -> return "SET"
+            9 -> return "OUT"
+            10 -> return "NOV"
+            11 -> return "DEC"
+            else -> {
+                return "error"
+            }
+        }
     }
 
 
 
-
-    private fun setDefaultUnixTime() {
-
-        val calendar = Calendar.getInstance()
-        val timeZone: TimeZone = calendar!!.timeZone
-        val cals: Date = Calendar.getInstance(TimeZone.getDefault()).time
-        var milis: Long = cals.time
-
-        milis += timeZone.getOffset(milis)
-
-        unixTime = milis/1000
-        unixTimePast = (milis/1000)-1204800
-
-
-    }
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)

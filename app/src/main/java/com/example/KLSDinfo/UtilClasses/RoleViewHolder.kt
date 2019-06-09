@@ -3,6 +3,7 @@ import android.view.animation.Animation.RELATIVE_TO_SELF
 import android.view.animation.RotateAnimation
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 import android.view.View
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.KLSDinfo.Models.MultiCheckRole
@@ -11,16 +12,15 @@ import com.example.KLSDinfo.R
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder
 
 
-class RoleViewHolder(itemView: View) : GroupViewHolder(itemView) {
+class RoleViewHolder(itemView: View): GroupViewHolder(itemView) {
 
 
 
 
-
-    private val genreName: TextView = itemView.findViewById(R.id.list_item_genre_name) as TextView
-    private val arrow: ImageView = itemView.findViewById(R.id.list_item_genre_arrow) as ImageView
-    private val icon: ImageView = itemView.findViewById(R.id.list_item_genre_icon) as ImageView
-
+    val checkRole: CheckBox = itemView.findViewById(R.id.groupCheckBox)
+    private val genreName: TextView = itemView.findViewById(R.id.list_item_genre_name)
+    private val arrow: ImageView = itemView.findViewById(R.id.list_item_genre_arrow)
+    private val icon: ImageView = itemView.findViewById(R.id.list_item_genre_icon)
 
 
     fun setGenreTitle(role: ExpandableGroup<*>) {
@@ -34,6 +34,8 @@ class RoleViewHolder(itemView: View) : GroupViewHolder(itemView) {
         }
 
     }
+
+
 
 
 

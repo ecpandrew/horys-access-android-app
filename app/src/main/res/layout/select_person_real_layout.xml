@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
+        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
@@ -15,46 +15,16 @@
             app:layout_constraintHorizontal_bias="0.5" app:layout_constraintEnd_toStartOf="@+id/btn_request"
             android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <Button
-            android:id="@+id/check_first_child"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_below="@id/clear_button"
-            android:visibility="gone"
-            android:text="programmatically check 'Francisco'"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginStart="8dp" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/card_view"/>
 
-
-    <androidx.cardview.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/card_view"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            card_view:cardUseCompatPadding="true"
-            card_view:cardCornerRadius="8dp"
-            android:layout_marginStart="8dp"
-            card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toTopOf="parent"
-            card_view:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="8dp"
-            card_view:layout_constraintHorizontal_bias="1.0"
-            android:layout_marginBottom="8dp"
-            card_view:layout_constraintBottom_toTopOf="@+id/LL">
-
-
-        <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/check_first_child"
-                android:layout_alignParentStart="true"
-                app:layout_constraintTop_toBottomOf="@+id/clear_button"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/btn_request"/>
-    </androidx.cardview.widget.CardView>
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/check_first_child"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="8dp" android:layout_marginEnd="8dp"/>
     <Button
             android:text="   GET   "
             android:layout_width="0dp"

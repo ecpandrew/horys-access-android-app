@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
@@ -58,10 +59,10 @@ class TableFourFrag : Fragment() {
         val linearLayoutManager = LinearLayoutManager(context)
 
         recyclerView = view.findViewById(R.id.tableFourRV)
-        recyclerView.layoutManager = linearLayoutManager
+        recyclerView.layoutManager = GridLayoutManager(context,2)
         recyclerView.setHasFixedSize(true)
-        dividerItemDecoration = DividerItemDecoration(recyclerView.context, linearLayoutManager.orientation)
-        recyclerView.addItemDecoration(dividerItemDecoration)
+//        dividerItemDecoration = DividerItemDecoration(recyclerView.context, linearLayoutManager.orientation)
+//        recyclerView.addItemDecoration(dividerItemDecoration)
 
         queue = VolleySingleton.getInstance(context).requestQueue
 
@@ -275,7 +276,6 @@ class TableFourFrag : Fragment() {
 
         val card: CardView = view!!.findViewById(R.id.tableFourCardView)
 
-        (card.findViewById(R.id.textView9) as TextView).text = "Person History - General Info"
 
         (card.findViewById(R.id.btn_detail) as Button).setOnClickListener {
             // Todo: details
@@ -290,8 +290,6 @@ class TableFourFrag : Fragment() {
             dialog.show(transaction, "FullScreenDialog")
 
         }
-
-
         (card.findViewById(R.id.btn_log) as Button).setOnClickListener {
 
             val bundle = Bundle()
@@ -315,19 +313,12 @@ class TableFourFrag : Fragment() {
             }
         }
 
-        val table: TableLayout = card.findViewById(R.id.parent_table_layout)
-        var row: TableRow = LayoutInflater.from(context).inflate(R.layout.table_four_parent_item, null) as TableRow
-        (row.findViewById(R.id.table_item_name) as TextView).text = "${map.size}"
-        (row.findViewById(R.id.table_item_count) as TextView).text = "${childAux.size}"
-        (row.findViewById(R.id.table_item_duration) as TextView).text = "$count"
-        var view: View = View(context).also {
-            it.setBackgroundColor(ContextCompat.getColor(context!!, R.color.grey))
-            it.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,1)
-        }
 
-        table.addView(row)
-        table.addView(view)
-        card.visibility = View.VISIBLE
+        (card.findViewById(R.id.nameTV4) as TextView).text = ("Person History")
+        (card.findViewById(R.id.descriptionTV4) as TextView).text = ("People Found: ${map.size}")
+        (card.findViewById(R.id.nplacesTV4) as TextView).text = ("Physical Spaces Found: ${childAux.size}")
+        (card.findViewById(R.id.durationTV4) as TextView).text = ("Total Time Elapsed: ${count/60} min")
+
     }
 
 

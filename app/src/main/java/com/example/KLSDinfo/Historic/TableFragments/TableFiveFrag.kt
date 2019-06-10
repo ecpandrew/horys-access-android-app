@@ -10,10 +10,10 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
@@ -56,10 +56,10 @@ class TableFiveFrag : Fragment() {
         val linearLayoutManager = LinearLayoutManager(context)
 
         recyclerView = view.findViewById(R.id.tableFourRV)
-        recyclerView.layoutManager = linearLayoutManager
+        recyclerView.layoutManager = GridLayoutManager(context,2)
         recyclerView.setHasFixedSize(true)
-        dividerItemDecoration = DividerItemDecoration(recyclerView.context, linearLayoutManager.orientation)
-        recyclerView.addItemDecoration(dividerItemDecoration)
+//        dividerItemDecoration = DividerItemDecoration(recyclerView.context, linearLayoutManager.orientation)
+//        recyclerView.addItemDecoration(dividerItemDecoration)
 
         queue = VolleySingleton.getInstance(context).requestQueue
 
@@ -280,7 +280,6 @@ class TableFiveFrag : Fragment() {
 
 
         val card: CardView = view!!.findViewById(R.id.tableFourCardView)
-        (card.findViewById(R.id.textView9) as TextView).text = "Physical Space History - General Info"
 
         (card.findViewById(R.id.btn_detail) as Button).setOnClickListener {
             // Todo: details
@@ -318,18 +317,10 @@ class TableFiveFrag : Fragment() {
             count += entry.value
         }
 
-        val table: TableLayout = card.findViewById(R.id.parent_table_layout)
-        var row: TableRow = LayoutInflater.from(context).inflate(R.layout.table_five_parent_item, null) as TableRow
 
-        (row.findViewById(R.id.table_item_name) as TextView).text = "${map.size}"
-        (row.findViewById(R.id.table_item_duration) as TextView).text = "$count"
-        var view: View = View(context).also {
-            it.setBackgroundColor(ContextCompat.getColor(context!!, R.color.grey))
-            it.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,1)
-        }
-
-        table.addView(row)
-        table.addView(view)
+        (card.findViewById(R.id.nameTV4) as TextView).text = ("Physical Space History")
+        (card.findViewById(R.id.descriptionTV4) as TextView).text =("Physical Spaces Found: ${map.size}")
+        (card.findViewById(R.id.nplacesTV4) as TextView).text = ("Total Time Elapsed: ${count/60}m")
         card.visibility = View.VISIBLE
     }
 

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.KLSDinfo.CustomTable.CustomTableDialog
 import com.example.KLSDinfo.Models.AuxResource5
 import com.example.KLSDinfo.R
+import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.table_three_rv_item.view.*
 import java.util.*
 
@@ -44,48 +45,34 @@ class TableFiveAdapter(
 
         holder.nameTV.text = src.name
         holder.numberRendzTV.text = ("People Found: ${src.getPersonCount()}")
-        holder.durationTV.text = ("Total Time Elapsed: ${src.getDuration()}")
+        holder.durationTV.text = ("Time Elapsed: ${src.getDuration()/60} min")
 
 
-        holder.optionsIB.setOnClickListener {
-            val popup = PopupMenu(context, it.main_options)
-            popup.inflate(R.menu.menu_card)
-            popup.setOnMenuItemClickListener { item ->
-                when (item.itemId) {
-                    R.id.action_details -> {
-                        val bundle = Bundle()
-                        var ref ="child_detail5"
-                        bundle.putString("ref", ref)
-                        bundle.putString("person", src.name)
-                        bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
-                        val dialog = CustomTableDialog()
-                        dialog.arguments = bundle
-                        val activity: AppCompatActivity = context as AppCompatActivity // ??
-                        val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-                        dialog.show(transaction, "FullScreenDialog")
-
-
-
-                    }
-                    R.id.action_log -> {
-                        val bundle = Bundle()
-                        var ref ="child_log5"
-                        bundle.putString("ref", ref)
-                        bundle.putString("person", src.name)
-                        bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
-                        val dialog = CustomTableDialog()
-                        dialog.arguments = bundle
-                        val activity: AppCompatActivity = context as AppCompatActivity // ??
-                        val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-                        dialog.show(transaction, "FullScreenDialog")
-                    }
-                }
-                false
-            }
-            popup.show()
+        holder.btnDetail.setOnClickListener {
+            val bundle = Bundle()
+            var ref ="child_detail5"
+            bundle.putString("ref", ref)
+            bundle.putString("person", src.name)
+            bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
+            val dialog = CustomTableDialog()
+            dialog.arguments = bundle
+            val activity: AppCompatActivity = context as AppCompatActivity // ??
+            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+            dialog.show(transaction, "FullScreenDialog")
         }
 
-
+        holder.btnLog.setOnClickListener {
+            val bundle = Bundle()
+            var ref ="child_log5"
+            bundle.putString("ref", ref)
+            bundle.putString("person", src.name)
+            bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
+            val dialog = CustomTableDialog()
+            dialog.arguments = bundle
+            val activity: AppCompatActivity = context as AppCompatActivity // ??
+            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+            dialog.show(transaction, "FullScreenDialog")
+        }
 
     }
 
@@ -97,7 +84,8 @@ class TableFiveAdapter(
         val nameTV: TextView = itemView.findViewById(R.id.main_title)
         val numberRendzTV: TextView = itemView.findViewById(R.id.main_rating)
         val durationTV: TextView = itemView.findViewById(R.id.main_duration)
-        val optionsIB: ImageButton = itemView.findViewById(R.id.main_options)
+        val btnDetail: MaterialButton = itemView.findViewById(R.id.btn_detail)
+        val btnLog: MaterialButton = itemView.findViewById(R.id.btn_log)
     }
 
 

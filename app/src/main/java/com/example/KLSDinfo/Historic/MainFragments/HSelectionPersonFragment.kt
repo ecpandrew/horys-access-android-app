@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.core.util.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -24,6 +25,7 @@ import com.example.KLSDinfo.Models.*
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Models.FakeRequest
 import com.example.KLSDinfo.Volley.VolleySingleton
+import com.google.android.material.button.MaterialButton
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
@@ -49,8 +51,6 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
     private var minute: Int = 0
     lateinit var listOfPersons: List<Person2>
     lateinit var listOfRoles: List<Role2>
-    lateinit var cardDate: TextView
-    lateinit var cardDate2: TextView
     private var calendar: Calendar? = null
     private var calendar2: Calendar? = null
     private var unixTime: Long? = null
@@ -60,6 +60,24 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
     private lateinit var queue: RequestQueue
     lateinit var mCheckRoles : MutableList<MultiCheckRole>
 
+    lateinit var cardDate: CardView
+    lateinit var dayTv: TextView
+    lateinit var monthTv: TextView
+    lateinit var yearTv: TextView
+    lateinit var timeTv: TextView
+
+
+    lateinit var cardDate2: CardView
+    lateinit var dayTv2: TextView
+    lateinit var monthTv2: TextView
+    lateinit var yearTv2: TextView
+    lateinit var timeTv2: TextView
+
+
+    lateinit var clear: MaterialButton
+    lateinit var get: MaterialButton
+    lateinit var rv: RecyclerView
+    lateinit var layoutManager: LinearLayoutManager
     companion object {
         fun newInstance(): HSelectionPersonFragment {
             return HSelectionPersonFragment()
@@ -68,50 +86,21 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.select_person_history_layout, container, false)
-        val rv : RecyclerView = view.findViewById(R.id.recycler_view) as RecyclerView
-        val layoutManager = LinearLayoutManager(context)
+        initComponents(view)
+        initDateComponents(view)
+        setDefaultTime()
+        return view
+    }
 
-
-        cardDate = view.findViewById(R.id.textView13)
-        cardDate2 = view.findViewById(R.id.textView14)
-        clearDate()
-
-        queue = VolleySingleton.getInstance(context).requestQueue
-
-
-
-        // Todo: tratar esse -> !!
-        val methodRef : Int? = arguments?.getInt("ref")
-
-        cardDate.setOnClickListener {
-            TAG = 0
-            pickData()
-
-        }
-        cardDate2.setOnClickListener {
-            TAG = 1
-            pickData()
-        }
-
-
+    private fun initComponents(view: View) {
+        rv = view.findViewById(R.id.recycler_view) as RecyclerView
+        layoutManager = LinearLayoutManager(context)
         mAdapter = MultiCheckRoleAdapter(mutableListOf())
-
         rv.layoutManager = layoutManager
-
         rv.adapter = mAdapter
-
-
-        val btnClear : Button = view.findViewById(R.id.clear_button)
-        btnClear.setOnClickListener {
-            Toast.makeText(context,"TODO", Toast.LENGTH_SHORT).show()
-            clearDate()
-//            mAdapter.clearChoices()
-        }
-
-        val btnSend : Button = view.findViewById(R.id.btn_request)
-        btnSend.setOnClickListener {
-
-
+        get = view.findViewById(R.id.buttonGet)
+        clear = view.findViewById(R.id.buttonClear)
+        get.setOnClickListener {
             val seletedElements: ArrayList<Parcelable> = getSelectedElements()
             val bundle = Bundle()
             var date = null
@@ -123,62 +112,54 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 //                setCustomUnixTime()
             }
 
-            bundle.putParcelableArrayList("resources", seletedElements)
-            bundle.putLong("date", unixTime!!)
-            bundle.putLong("date2", unixTimePast!!)
-            bundle.putString("dateStr", cardDate.text.toString())
-            bundle.putString("dateStr2", cardDate2.text.toString())
-
-            when(methodRef){
-                0 -> {
-                    Log.i("debug","go1")
-                    val dialog = TableThreeFrag()
-                    dialog.arguments = bundle
-                    navigateToFragment(dialog,true)
-                }
-
-                1 -> {
-                    Log.i("debug","go2")
-
-                    val dialog = TableFourFrag()
-                    dialog.arguments = bundle
-                    navigateToFragment(dialog,true)
-
-                }
-                else -> {
-                    Log.i("debug","else")
-
+            if(arguments == null){
+                // Todo: Do nothing
+            }else{
+                val methodRef : Int? = arguments?.getInt("ref")
+                if(methodRef == null){
+                    // Todo: do nothing
+                }else{
+                    bundle.putParcelableArrayList("resources", seletedElements)
+                    bundle.putLong("date", unixTime!!)
+                    bundle.putLong("date2", unixTimePast!!)
+                    when(methodRef){
+                        0 -> {
+                            Log.i("debug","go1")
+                            val dialog = TableThreeFrag()
+                            dialog.arguments = bundle
+                            navigateToFragment(dialog,true)
+                        }
+                        1 -> {
+                            Log.i("debug","go2")
+                            val dialog = TableFourFrag()
+                            dialog.arguments = bundle
+                            navigateToFragment(dialog,true)
+                        }
+                        else -> {
+                            Log.i("debug","else")
+                        }
+                    }
                 }
             }
 
-
-
-
-
-
         }
-
-
-
+        clear.setOnClickListener {
+            setDefaultTime()
+        }
+        queue = VolleySingleton.getInstance(context).requestQueue
         val url = "http://smartlab.lsdi.ufma.br/semantic/api/persons"
         val url_roles = "http://smartlab.lsdi.ufma.br/semantic/api/roles"
-
-
         val stringRequest = StringRequest(
             Request.Method.GET,
             url,
             Response.Listener<String> { response ->
                 VolleyLog.v("Response:%n %s", response)
-
-
                 val lista: MutableList<Person2> = FakeRequest().getAllPersons(response)
                 mCheckRoles = getMultiCheckRoles2(listOfRoles, lista)
                 mAdapter = MultiCheckRoleAdapter(mCheckRoles)
                 rv.layoutManager = layoutManager
                 rv.setHasFixedSize(true)
                 rv.adapter = mAdapter
-
-
                 val obj = object: MultiCheckRoleAdapter.OnClickListener{
                     override fun onClick(view: View, group: ExpandableGroup<*> , pos: Int) {
                         mAdapter.toggleSelection(pos)
@@ -203,12 +184,7 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
                 VolleyLog.e("Error: ", it.message)
                 alertDialog.dismiss()
             })
-
         // Add the request to the RequestQueue.
-
-
-
-
         val roleRequest = StringRequest(
             Request.Method.GET,
             url_roles,
@@ -217,36 +193,94 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
                 VolleyLog.v("Response:%n %s", response)
                 listOfRoles = FakeRequest().getAllRoles(response)
                 queue.add(stringRequest)
-
             },
             Response.ErrorListener {
                 VolleyLog.e("Error: ", it.message)
                 alertDialog.dismiss()
-
             })
-
         // Add the request to the RequestQueue.
 
         stringRequest.retryPolicy = DefaultRetryPolicy(15 * 1000, 3, 1.0f)
         roleRequest.retryPolicy = DefaultRetryPolicy(15 * 1000, 3, 1.0f)
         stringRequest.tag = this
         roleRequest.tag = this
-
         progress = AlertDialog.Builder(context)
         progress.setCancelable(false)
         progress.setView(R.layout.loading_dialog_layout)
         alertDialog = progress.create()
-
         alertDialog.show()
         queue.add(roleRequest)
-
-        return view
     }
+
+
+
+
+    private fun initDateComponents(view: View) {
+        cardDate = view.findViewById(R.id.date_card_view)
+        dayTv = view.findViewById(R.id.dayTV)
+        monthTv = view.findViewById(R.id.monthTV)
+        yearTv = view.findViewById(R.id.yearTV)
+        timeTv = view.findViewById(R.id.timeTV)
+
+        cardDate2 = view.findViewById(R.id.date_card_view2)
+        dayTv2 = view.findViewById(R.id.dayTV2)
+        monthTv2 = view.findViewById(R.id.monthTV2)
+        yearTv2 = view.findViewById(R.id.yearTV2)
+        timeTv2 = view.findViewById(R.id.timeTV2)
+
+        cardDate.setOnClickListener {
+            TAG = 0
+            pickData()
+
+        }
+        cardDate2.setOnClickListener {
+            TAG = 1
+            pickData()
+        }
+
+    }
+
+
 
     private fun clearDate() {
-        cardDate.text = "yyyy-MM-dd HH:mm"
-        cardDate2.text = "yyyy-MM-dd HH:mm"
+//        cardDate.text = "yyyy-MM-dd HH:mm"
+//        cardDate2.text = "yyyy-MM-dd HH:mm"
     }
+
+
+
+
+
+    private fun setDefaultTime(){
+        val calendar = Calendar.getInstance()
+        val timeZone: TimeZone = calendar!!.timeZone
+        val cals: Date = Calendar.getInstance(TimeZone.getDefault()).time
+        var milis: Long = cals.time
+        milis += timeZone.getOffset(milis)
+
+        unixTime = milis/1000
+        unixTimePast = (milis/1000)-604800
+
+        dayTv.text = calendar.get(Calendar.DAY_OF_MONTH).toString()
+        monthTv.text = getMonth(calendar.get(Calendar.MONTH))//calendar.getDisplayName(Calendar.MONTH, Calendar.LONG,Locale.getDefault()).substring(0,3)//(calendar.get(Calendar.MONTH)+1).toString()
+        yearTv.text = calendar.get(Calendar.YEAR).toString()
+        // Todo: arrumar a string dos minutos
+        val time = "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
+        timeTv.text = time
+
+        val calendar2 = Calendar.getInstance()
+        calendar2.timeInMillis = unixTimePast!! * 1000
+
+        dayTv2.text = calendar2.get(Calendar.DAY_OF_MONTH).toString()
+        monthTv2.text = getMonth(calendar2.get(Calendar.MONTH))//calendar2.getDisplayName(Calendar.MONTH, Calendar.LONG,Locale.getDefault()).substring(0,3)//(calendar2.get(Calendar.MONTH)+1).toString()
+        yearTv2.text = calendar2.get(Calendar.YEAR).toString()
+        val time2 = "${calendar2.get(Calendar.HOUR_OF_DAY)}:${calendar2.get(Calendar.MINUTE)}"
+        timeTv2.text = time2
+
+
+    }
+
+
 
 
     private fun setDefaultUnixTime() {
@@ -296,15 +330,10 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
     }
     private fun getMultiCheckRoles2(listRoles: List<Role2>,lista: MutableList<Person2>): MutableList<MultiCheckRole> {
-
         val map : MutableMap<String,MutableList<Person2>> = mutableMapOf()
-
         listRoles.map {
             map[it.name] = mutableListOf()
         }
-
-
-
         for (person in lista) {
             for (role in person.roles!!) {
                 val list = map[role.name]
@@ -322,10 +351,6 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         map.map {
             multiRoles.add(MultiCheckRole(it.key, it.value, R.mipmap.ic_aluno))
         }
-
-
-
-
 
         items = multiRoles.filterNot {
             it.persons.isEmpty()
@@ -397,33 +422,23 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
             }
         }
     }
-
-
     override fun onDateSet(view: DatePickerDialog?, year_: Int, monthOfYear: Int, dayOfMonth: Int) {
         val tDefault = Calendar.getInstance()
         tDefault.set(year, month, day, hour, minute)
-
         year = year_
         month = monthOfYear
         day = dayOfMonth
-
         val timePickerDialog = TimePickerDialog.newInstance(
             this,
             tDefault.get(Calendar.HOUR_OF_DAY),
             tDefault.get(Calendar.MINUTE),
             false
         )
-
-
         timePickerDialog.setOnCancelListener(this)
         timePickerDialog.show(fragmentManager!!, "timePickerDialog")
         timePickerDialog.title = "Escolher Horario"
         timePickerDialog.isThemeDark = true
-
-
-
     }
-
     override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute_: Int, second: Int) {
         hour = hourOfDay
         minute = minute_
@@ -434,35 +449,28 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
                 (if (hour < 10) "0$hour" else hour) + ":" +
                 if (minute < 10) "0$minute" else minute
 
-
-        //Todo: Verificar esse getOffset zuando o fuso horario..
         if (TAG == 0) {
 
-            val calendar: Calendar = Calendar.getInstance()
-            calendar.set(year,month,day,hour,minute)
-            cardDate.text = dateString
+            dayTv.text = (if (day < 10) "0$day" else "$day")
+            monthTv.text = getMonth(month)//(if (month + 1 < 10) "0" + (month + 1) else "${month + 1}")
+            yearTv.text = year.toString()
 
-            val timeZone: TimeZone = calendar.timeZone
-            val cals: Date = calendar.time
-            var milis: Long = cals.time
-            milis += timeZone.getOffset(milis)
-            unixTime = milis/1000
-
+            val h = (if (hour < 10) "0$hour" else "$hour")
+            val m =   if (minute < 10) "0$minute" else "$minute"
+            val time = "$h:$m"
+            timeTv.text = time
 
         } else {
-            val calendar: Calendar = Calendar.getInstance()
-            calendar.set(year,month,day,hour,minute)
-            cardDate2.text = dateString
-            val timeZone: TimeZone = calendar.timeZone
-            val cals: Date = calendar.time
-            var milis: Long = cals.time
-            milis += timeZone.getOffset(milis)
-            unixTimePast = milis/1000
+            dayTv2.text = (if (day < 10) "0$day" else "$day")
+            monthTv2.text = getMonth(month)// (if (month + 1 < 10) "0" + (month + 1) else "${month + 1}")
+            yearTv2.text = year.toString()
 
+            val h = (if (hour < 10) "0$hour" else "$hour")
+            val m =   if (minute < 10) "0$minute" else "$minute"
+            val time = "$h:$m"
+            timeTv2.text = time
         }
-
     }
-
     override fun onCancel(dialog: DialogInterface?) {
         year = 0
         month = 0
@@ -473,8 +481,7 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         calendar = null
         calendar2 = null
     }
-
-    fun navigateToFragment(fragToGo: Fragment, addToBackStack: Boolean = false){
+    private fun navigateToFragment(fragToGo: Fragment, addToBackStack: Boolean = false){
         val transaction = fragmentManager!!.beginTransaction()
         transaction.replace(R.id.fragment_container, fragToGo)
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -483,57 +490,65 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         }
         transaction.commit()
     }
-
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         print("onAttach")
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         print("onCreate")
     }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         print("onActivityCreated")
     }
-
     override fun onStart() {
         super.onStart()
         print("onStart")
 
     }
-
     override fun onResume() {
         super.onResume()
         print("onResume")
     }
-
     override fun onPause() {
         super.onPause()
         print("onPause")
     }
-
     override fun onStop() {
         super.onStop()
         queue.cancelAll(this)
 
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         print("onDestroyView")
     }
-
     override fun onDestroy() {
         super.onDestroy()
         print("onDestroy")
     }
-
     private fun print(msg: String){
         Log.d("Lifecycle", "Historic: Person Selection Fragment: $msg")
     }
-
+    private fun getMonth(m:Int): String{
+        when(m){
+            0 -> return "JAN"
+            1 -> return "FEV"
+            2 -> return "MAR"
+            3 -> return "ABR"
+            4 -> return "MAI"
+            5 -> return "JUN"
+            6 -> return "JUL"
+            7 -> return "AGO"
+            8 -> return "SET"
+            9 -> return "OUT"
+            10 -> return "NOV"
+            11 -> return "DEC"
+            else -> {
+                return "error"
+            }
+        }
+    }
 
 }

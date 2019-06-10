@@ -408,14 +408,7 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
         return super.onOptionsItemSelected(item)
     }
 
-    private fun deleteInboxes() {
-        val selectedItemPositions = mAdapter.getSelectedItems()
-        val selectedLocations = ArrayList<Location>()
 
-        // TODO: implementar ação de escolha da seleção
-
-
-    }
 
 
 
@@ -515,6 +508,9 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
             val time = "$h:$m"
             timeTv.text = time
 
+
+
+
         } else {
             dayTv2.text = (if (day < 10) "0$day" else "$day")
             monthTv2.text = getMonth(month)// (if (month + 1 < 10) "0" + (month + 1) else "${month + 1}")
@@ -524,6 +520,7 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
             val m =   if (minute < 10) "0$minute" else "$minute"
             val time = "$h:$m"
             timeTv2.text = time
+
         }
 
 

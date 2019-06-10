@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.KLSDinfo.CustomTable.CustomTableDialog
 import com.example.KLSDinfo.Models.AuxResource3
 import com.example.KLSDinfo.R
+import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.table_three_rv_item.view.*
 import java.text.NumberFormat
 import java.util.*
@@ -47,45 +48,33 @@ class TableThreeAdapter(
         }
         val nf = NumberFormat.getInstance() // get instance
         nf.maximumFractionDigits = 2 // set decimal places
-        val s: String = nf.format(count.toFloat() / 3600)
+        val s: String = nf.format(count.toFloat() / 60)
 
 
         holder.nameTV.text = src.nome
-        holder.numberRendzTV.text = ("""Nº de encontros: """ + src.resources.size).trimIndent()
-        holder.durationTV.text = ("Tempo passado com o grupo: $s (h)")
+        holder.numberRendzTV.text = ("""Encounters: """ + src.resources.size).trimIndent()
+        holder.durationTV.text = ("Time spent with group: $s min")
 
 
-        holder.optionsIB.setOnClickListener {
-            val popup = PopupMenu(context, it.main_options)
-            popup.inflate(R.menu.menu_card)
-            popup.setOnMenuItemClickListener { item ->
-                when (item.itemId) {
-                    R.id.action_details -> {
-                        Toast.makeText(context,"Not Implemented Yet",Toast.LENGTH_SHORT).show()
-
-
-                    }
-                    R.id.action_log -> {
-                        val bundle = Bundle()
-                        var ref ="log3"
-                        bundle.putString("ref", ref)
-                        bundle.putString("person", src.nome)
-                        bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
-                        val dialog = CustomTableDialog()
-                        dialog.arguments = bundle
-                        val activity: AppCompatActivity = context as AppCompatActivity // ??
-                        val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-                        dialog.show(transaction, "FullScreenDialog")
-
-                    }
-                }
-                false
-            }
-            popup.show()
+        holder.btnDetail.setOnClickListener {
+            Toast.makeText(context,"Not Implemented Yet",Toast.LENGTH_SHORT).show()
         }
 
 
 
+        holder.btnLog.setOnClickListener {
+            val bundle = Bundle()
+            var ref ="log3"
+            bundle.putString("ref", ref)
+            bundle.putString("person", src.nome)
+            bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
+            val dialog = CustomTableDialog()
+            dialog.arguments = bundle
+            val activity: AppCompatActivity = context as AppCompatActivity // ??
+            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+            dialog.show(transaction, "FullScreenDialog") }
+
+//
     }
 
 
@@ -96,7 +85,9 @@ class TableThreeAdapter(
         val nameTV: TextView = itemView.findViewById(R.id.main_title)
         val numberRendzTV: TextView = itemView.findViewById(R.id.main_rating)
         val durationTV: TextView = itemView.findViewById(R.id.main_duration)
-        val optionsIB: ImageButton = itemView.findViewById(R.id.main_options)
+
+        val btnDetail: MaterialButton = itemView.findViewById(R.id.btn_detail)
+        val btnLog: MaterialButton = itemView.findViewById(R.id.btn_log)
     }
 
 

@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,14 +20,15 @@ import com.example.KLSDinfo.Models.Person2
 import com.example.KLSDinfo.Models.TableThreeResource
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Volley.VolleySingleton
-import kotlinx.android.synthetic.main.table_one_layout.view.parent_options
 import java.lang.Exception
 import java.text.NumberFormat
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import com.android.volley.toolbox.HttpHeaderParser
 import com.example.KLSDinfo.CustomTable.CustomTableDialog
 import com.example.KLSDinfo.Historic.adapters.TableThreeAdapter
 import com.example.KLSDinfo.Models.AuxResource3
+import com.google.android.material.button.MaterialButton
 import java.io.UnsupportedEncodingException
 import java.util.ArrayList
 
@@ -64,10 +64,10 @@ class TableThreeFrag : Fragment() {
         val linearLayoutManager = LinearLayoutManager(context)
 
         recyclerView = view.findViewById(R.id.rv_resource_3)
-        recyclerView.layoutManager = linearLayoutManager
+        recyclerView.layoutManager = GridLayoutManager(context, 2)
         recyclerView.setHasFixedSize(true)
-        dividerItemDecoration = DividerItemDecoration(recyclerView.context, linearLayoutManager.orientation)
-        recyclerView.addItemDecoration(dividerItemDecoration)
+//        dividerItemDecoration = DividerItemDecoration(recyclerView.context, linearLayoutManager.orientation)
+//        recyclerView.addItemDecoration(dividerItemDecoration)
 
 
         queue = VolleySingleton.getInstance(context).requestQueue
@@ -89,10 +89,7 @@ class TableThreeFrag : Fragment() {
             val unixPast: Long = bundle.getLong("date2")
             Log.i("recebido", persons.toString())
             Log.i("recebido", "${bundle.getLong("date")} and ${bundle.getLong("date2")}")
-            try{
-                dateStr = bundle.getString("dateStr")!!
-                dateStr2 = bundle.getString("dateStr2")!!
-            }catch (e: Exception){}
+
 
             if (persons == null){
                 // Todo: tratar isso dai
@@ -147,8 +144,6 @@ class TableThreeFrag : Fragment() {
 
                     generateParentTable(lista)
 
-
-
                     mAdapter = TableThreeAdapter(context!!, generateData(lista))
                     recyclerView.adapter = mAdapter
                     mAdapter.notifyDataSetChanged()
@@ -174,64 +169,34 @@ class TableThreeFrag : Fragment() {
 
     private fun generateParentTable(lista: List<TableThreeResource>) {
 
-        val card: CardView = view!!.findViewById(R.id.parent_card)
-        (card.findViewById(R.id.parent_title) as TextView).text = "Encontros do Grupo Selecionado"
-        (card.findViewById(R.id.parent_pagination_txt) as TextView).text = "1-1 of 1"
-        if(dateStr == "yyyy-MM-dd HH:mm" || dateStr2 == "yyyy-MM-dd HH:mm"){
-            (card.findViewById(R.id.parent_footer) as TextView).text = "Last Week"
-            (card.findViewById(R.id.parent_footer2) as TextView).visibility = View.GONE
-        }else{
-            (card.findViewById(R.id.parent_footer) as TextView).text = dateStr
-            (card.findViewById(R.id.parent_footer2) as TextView).text = dateStr2
-        }
-        (card.findViewById(R.id.parent_options) as ImageButton).setOnClickListener {
-            val popup = PopupMenu(context, it.parent_options)
-            popup.inflate(R.menu.menu_card)
-            popup.setOnMenuItemClickListener { item ->
-                when (item.itemId) {
-                    R.id.action_details -> {
-                        Toast.makeText(context,"Not Implemented Yet",Toast.LENGTH_SHORT).show()
-                        val bundle = Bundle()
-                        var ref ="detail3"
-                        bundle.putString("ref", ref)
-                        bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
-                        val dialog = CustomTableDialog()
-                        dialog.arguments = bundle
-                        val activity: AppCompatActivity = context as AppCompatActivity // ??
-                        val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-                        dialog.show(transaction, "FullScreenDialog")
+        val card: CardView = view!!.findViewById(R.id.tableThreeCardView)
 
-                    }
-                    R.id.action_log -> {
-                        val bundle = Bundle()
-                        var ref ="log3"
-                        bundle.putString("ref", ref)
-                        bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
-                        val dialog = CustomTableDialog()
-                        dialog.arguments = bundle
-                        val activity: AppCompatActivity = context as AppCompatActivity // ??
-                        val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-                        dialog.show(transaction, "FullScreenDialog")
+        (card.findViewById(R.id.btn_detail) as MaterialButton).setOnClickListener{
+            Toast.makeText(context,"Not Implemented Yet",Toast.LENGTH_SHORT).show()
 
-                    }
-                }
-                false
-            }
-            popup.show()
+//            val bundle = Bundle()
+//            var ref ="detail3"
+//            bundle.putString("ref", ref)
+//            bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
+//            val dialog = CustomTableDialog()
+//            dialog.arguments = bundle
+//            val activity: AppCompatActivity = context as AppCompatActivity // ??
+//            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+//            dialog.show(transaction, "FullScreenDialog")
         }
 
-        val table: TableLayout = card.findViewById(R.id.parent_table_layout)
-        var row: TableRow = LayoutInflater.from(context).inflate(R.layout.table_four_parent_item, null) as TableRow
-        (row.findViewById(R.id.table_item_name) as TextView).text = "Nº Total de Encontros"
-        (row.findViewById(R.id.table_item_count) as TextView).text = "Tempo Médio (h)"
-        (row.findViewById(R.id.table_item_duration) as TextView).text = "Duração Total (h)"
-        var view: View = View(context).also {
-            it.setBackgroundColor(ContextCompat.getColor(context!!, R.color.grey))
-            it.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,1)
+        (card.findViewById(R.id.btn_log) as MaterialButton).setOnClickListener {
+            val bundle = Bundle()
+            var ref ="log3"
+            bundle.putString("ref", ref)
+            bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
+            val dialog = CustomTableDialog()
+            dialog.arguments = bundle
+            val activity: AppCompatActivity = context as AppCompatActivity // ??
+            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+            dialog.show(transaction, "FullScreenDialog")
         }
 
-        table.addView(row)
-        table.addView(view)
 
         val nf = NumberFormat.getInstance() // get instance
         nf.maximumFractionDigits = 2 // set decimal places
@@ -247,17 +212,12 @@ class TableThreeFrag : Fragment() {
         val tD = nf.format(totalDuration.toFloat()/3600)
 
 
+        (card.findViewById(R.id.nameTV4) as TextView).text = ("Group History")
+        (card.findViewById(R.id.descriptionTV4) as TextView).text = ("Encounters: ${lista.size}")
+        (card.findViewById(R.id.nplacesTV4) as TextView).text = ("Physical Spaces Found: ${mean/60}")
+        (card.findViewById(R.id.durationTV4) as TextView).text = ("Total Time Elapsed: ${totalDuration/60} min")
 
-        row = LayoutInflater.from(context).inflate(R.layout.table_four_parent_item, null) as TableRow
-        (row.findViewById(R.id.table_item_name) as TextView).text = "${lista.size}"
-        (row.findViewById(R.id.table_item_count) as TextView).text = m
-        (row.findViewById(R.id.table_item_duration) as TextView).text = tD
-        table.addView(row)
-        view = View(context).also {
-            it.setBackgroundColor(ContextCompat.getColor(context!!, R.color.grey))
-            it.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,1)
-        }
-        table.addView(view)
+
 
     }
 

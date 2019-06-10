@@ -56,37 +56,37 @@ class TableTwoAdapter(
         holder.durationTV.text = ("Duração total: $s (h)")
 
 
-        holder.optionsIB.setOnClickListener {
-            val popup = PopupMenu(context, it.main_options)
-            popup.inflate(R.menu.menu_card)
-            popup.setOnMenuItemClickListener { item ->
-                when (item.itemId) {
-                    R.id.action_details -> {
-                        val bundle = Bundle()
-                        bundle.putString("name", keys[position])
-                        bundle.putParcelableArrayList("resources", src as ArrayList<out Parcelable>) // ??
-                        val dialog = FullscreenDialogFragment()
-                        dialog.arguments = bundle
-                        val activity: AppCompatActivity = context as AppCompatActivity // ??
-                        val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-                        dialog.show(transaction, "FullScreenDialog")
-
-                    }
-                    R.id.action_log -> {
-                        val bundle = Bundle()
-                        bundle.putString("name", keys[position])
-                        bundle.putParcelableArrayList("resources", src as ArrayList<out Parcelable>) // ??
-                        val dialog = FullscreenDialogFragment()
-                        dialog.arguments = bundle
-                        val activity: AppCompatActivity = context as AppCompatActivity // ??
-                        val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-                        dialog.show(transaction, "FullScreenDialog")
-                    }
-                }
-                false
-            }
-            popup.show()
-        }
+//        holder.optionsIB.setOnClickListener {
+//            val popup = PopupMenu(context, it.main_options)
+//            popup.inflate(R.menu.menu_card)
+//            popup.setOnMenuItemClickListener { item ->
+//                when (item.itemId) {
+//                    R.id.action_details -> {
+//                        val bundle = Bundle()
+//                        bundle.putString("name", keys[position])
+//                        bundle.putParcelableArrayList("resources", src as ArrayList<out Parcelable>) // ??
+//                        val dialog = FullscreenDialogFragment()
+//                        dialog.arguments = bundle
+//                        val activity: AppCompatActivity = context as AppCompatActivity // ??
+//                        val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+//                        dialog.show(transaction, "FullScreenDialog")
+//
+//                    }
+//                    R.id.action_log -> {
+//                        val bundle = Bundle()
+//                        bundle.putString("name", keys[position])
+//                        bundle.putParcelableArrayList("resources", src as ArrayList<out Parcelable>) // ??
+//                        val dialog = FullscreenDialogFragment()
+//                        dialog.arguments = bundle
+//                        val activity: AppCompatActivity = context as AppCompatActivity // ??
+//                        val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+//                        dialog.show(transaction, "FullScreenDialog")
+//                    }
+//                }
+//                false
+//            }
+//            popup.show()
+//        }
 
 
 

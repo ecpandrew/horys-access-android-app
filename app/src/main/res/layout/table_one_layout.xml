@@ -77,7 +77,7 @@
                                 android:src="@drawable/ic_keyboard_arrow_up_black_24dp"
                                 android:background="@color/transparent"
                                 android:layout_marginEnd="20dp"
-                                android:layout_toLeftOf="@+id/parent_text2"
+                                android:layout_toLeftOf="@+id/nplacesTV4"
                                 android:layout_marginRight="21dp"/>
 
 
@@ -86,7 +86,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:textColor="@color/colorPrimary"
-                                android:text="Total Duration (h)" android:id="@+id/parent_text2"/>
+                                android:text="Total Duration (h)" android:id="@+id/nplacesTV4"/>
                     </RelativeLayout>
                 </TableRow>
                 <View android:layout_width="fill_parent" android:layout_height="1px"

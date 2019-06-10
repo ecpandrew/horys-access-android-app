@@ -71,18 +71,18 @@ class CustomTableDialog : DialogFragment() {
             else -> {
 
                 when (ref) {
-                    "log3" -> generateLogTable3(lista, view, title)
+                    "log3" -> generateLogTable3(lista, view, "$title's Log")
                     "detail3" -> Toast.makeText(context,"Not Implemented Yet", Toast.LENGTH_SHORT).show()
 
 
-                    "log4","child_log4" -> generateLogTable4(lista, view, title)
+                    "log4","child_log4" -> generateLogTable4(lista, view,"$title's Log")
                     "detail4" -> generateDetailTable4(lista, view, title)
-                    "child_detail4" -> generateChildDetailTable4(lista, view, title)
+                    "child_detail4" -> generateChildDetailTable4(lista, view, "$title's Detail")
 
 
-                    "log5", "child_log5" -> generateLogTable5(lista,view,title)
-                    "detail5" -> generateDetailTable5(lista, view, title)
-                    "child_detail5" -> generateChildDetailTable5(lista, view, title)
+                    "log5", "child_log5" -> generateLogTable5(lista,view,"$title's Log")
+                    "detail5" -> generateDetailTable5(lista, view, "$title's Detail")
+                    "child_detail5" -> generateChildDetailTable5(lista, view, "$title's Detail")
 
 
                 }
@@ -149,7 +149,7 @@ class CustomTableDialog : DialogFragment() {
         }
         tableView = view.findViewById(R.id.content_container)
 
-        if(title != null) tool.title = "$title's Log" else tool.title = "Complete Details"
+        if(title != null) tool.title = title else tool.title = "Complete Details"
         adapter = MyTableViewAdapter(context)
         tableView.adapter = adapter
         adapter.setAllItems(mColumnHeaderList,mRowHeaderList, mCellList)
@@ -195,7 +195,7 @@ class CustomTableDialog : DialogFragment() {
         }
         tableView = view.findViewById(R.id.content_container)
 
-        if(title != null) tool.title = "$title's Log" else tool.title = "Complete Log"
+        if(title != null) tool.title = title else tool.title = "Undefined Title"
         adapter = MyTableViewAdapter(context)
         tableView.adapter = adapter
         adapter.setAllItems(mColumnHeaderList,mRowHeaderList, mCellList)
@@ -240,7 +240,7 @@ class CustomTableDialog : DialogFragment() {
         }
         tableView = view.findViewById(R.id.content_container)
 
-        if(title != null) tool.title = "$title's Log" else tool.title = "Complete Log"
+        if(title != null) tool.title = title else tool.title = "Complete Log"
         adapter = MyTableViewAdapter(context)
         tableView.adapter = adapter
         adapter.setAllItems(mColumnHeaderList,mRowHeaderList, mCellList)
@@ -280,7 +280,7 @@ class CustomTableDialog : DialogFragment() {
         }
         tableView = view.findViewById(R.id.content_container)
 
-        if(title != null) tool.title = "$title's Log" else tool.title = "Complete Details"
+        if(title != null) tool.title = title else tool.title = "Complete Details"
         adapter = MyTableViewAdapter(context)
         tableView.adapter = adapter
         adapter.setAllItems(mColumnHeaderList,mRowHeaderList, mCellList)
@@ -337,7 +337,7 @@ class CustomTableDialog : DialogFragment() {
     }
         tableView = view.findViewById(R.id.content_container)
 
-        if(title != null) tool.title = "$title's Log" else tool.title = "Complete Details"
+        if(title != null) tool.title = title else tool.title = "Complete Details"
         adapter = MyTableViewAdapter(context)
         tableView.adapter = adapter
         adapter.setAllItems(mColumnHeaderList,mRowHeaderList, mCellList)
@@ -380,7 +380,7 @@ class CustomTableDialog : DialogFragment() {
         }
         tableView = view.findViewById(R.id.content_container)
 
-        if(title != null) tool.title = "$title's Log" else tool.title = "Complete Log"
+        if(title != null) tool.title = title else tool.title = "Complete Log"
         adapter = MyTableViewAdapter(context)
         tableView.adapter = adapter
         adapter.setAllItems(mColumnHeaderList,mRowHeaderList, mCellList)
@@ -419,7 +419,7 @@ class CustomTableDialog : DialogFragment() {
         }
         tableView = view.findViewById(R.id.content_container)
 
-        if(title != null) tool.title = "$title's Log" else tool.title = "Complete Details"
+        if(title != null) tool.title = title else tool.title = "Complete Details"
         adapter = MyTableViewAdapter(context)
         tableView.adapter = adapter
         adapter.setAllItems(mColumnHeaderList,mRowHeaderList, mCellList)
@@ -476,7 +476,7 @@ class CustomTableDialog : DialogFragment() {
         }
         tableView = view.findViewById(R.id.content_container)
 
-        if(title != null) tool.title = "$title's Log" else tool.title = "Complete Details"
+        if(title != null) tool.title = title else tool.title = "Complete Details"
         adapter = MyTableViewAdapter(context)
         tableView.adapter = adapter
         adapter.setAllItems(mColumnHeaderList,mRowHeaderList, mCellList)

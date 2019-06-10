@@ -78,20 +78,20 @@ class HistoryMethodsAdapter(
             }
         }
 
-//        displayImage(holder, method)
+        displayImage(holder, method)
 
 
     }
 
 
-//    private fun displayImage(holder: MethodViewHolder, method: Method){
-//        if(method.image != null){
-//            holder.imgView.setImageResource(method.image!!)
-//            holder.imgView.colorFilter = null
-//        }else{
-//            holder.imgView.setImageResource(R.mipmap.ic_launcher)
-//        }
-//    }
+    private fun displayImage(holder: MethodViewHolder, method: Method){
+        if(method.image != null){
+            holder.imgView.setImageResource(method.image!!)
+            holder.imgView.colorFilter = null
+        }else{
+            holder.imgView.setImageResource(R.mipmap.ic_launcher)
+        }
+    }
 
 
     class MethodViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
@@ -99,7 +99,7 @@ class HistoryMethodsAdapter(
         val overlineTV: TextView = itemView.findViewById(R.id.header)
         val nameTV: TextView = itemView.findViewById(R.id.method_name)
         val descTV: TextView = itemView.findViewById(R.id.method_description)
-//        val imgView: ImageView = itemView.findViewById(R.id.method_photo)
+        val imgView: ImageView = itemView.findViewById(R.id.method_image)
         val cardView: CardView = itemView.findViewById(R.id.card_view)
     }
 

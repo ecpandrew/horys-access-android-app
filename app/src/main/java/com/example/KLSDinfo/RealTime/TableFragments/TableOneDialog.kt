@@ -61,12 +61,8 @@ class TableOneDialog : Fragment() {
                 alertDialog = progress.create()
                 alertDialog.show()
 
-
-
-
                 for (space in listOfPhysicalSpace ){
                     url = "http://smartlab.lsdi.ufma.br/semantic/api/physical_spaces/{id}/things"
-
                 }
 
 

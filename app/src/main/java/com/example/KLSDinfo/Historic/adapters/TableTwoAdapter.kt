@@ -12,9 +12,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
+import com.example.KLSDinfo.CustomTable.CustomTableDialog
 import com.example.KLSDinfo.Models.TableTwoResource
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.UtilClasses.FullscreenDialogFragment
+import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.table_three_rv_item.view.*
 import java.text.NumberFormat
 import java.util.*
@@ -48,47 +50,42 @@ class TableTwoAdapter(
 
         val nf = NumberFormat.getInstance() // get instance
         nf.maximumFractionDigits = 2 // set decimal places
-        val s: String = nf.format(count.toFloat() / 3600)
+        val s: String = nf.format(count.toFloat() / 60)
 
 
         holder.nameTV.text = keys[position]
-        holder.numberRendzTV.text = ("""Nº de pessoas encontradas: """ + src.size)
-        holder.durationTV.text = ("Duração total: $s (h)")
+        holder.numberRendzTV.text = ("""People Found """ + src.size)
+        holder.durationTV.text = ("Time Elapsed: $s min")
 
 
-//        holder.optionsIB.setOnClickListener {
-//            val popup = PopupMenu(context, it.main_options)
-//            popup.inflate(R.menu.menu_card)
-//            popup.setOnMenuItemClickListener { item ->
-//                when (item.itemId) {
-//                    R.id.action_details -> {
-//                        val bundle = Bundle()
-//                        bundle.putString("name", keys[position])
-//                        bundle.putParcelableArrayList("resources", src as ArrayList<out Parcelable>) // ??
-//                        val dialog = FullscreenDialogFragment()
-//                        dialog.arguments = bundle
-//                        val activity: AppCompatActivity = context as AppCompatActivity // ??
-//                        val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-//                        dialog.show(transaction, "FullScreenDialog")
-//
-//                    }
-//                    R.id.action_log -> {
-//                        val bundle = Bundle()
-//                        bundle.putString("name", keys[position])
-//                        bundle.putParcelableArrayList("resources", src as ArrayList<out Parcelable>) // ??
-//                        val dialog = FullscreenDialogFragment()
-//                        dialog.arguments = bundle
-//                        val activity: AppCompatActivity = context as AppCompatActivity // ??
-//                        val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-//                        dialog.show(transaction, "FullScreenDialog")
-//                    }
-//                }
-//                false
-//            }
-//            popup.show()
+        holder.buttonDetail.setOnClickListener {
+            val bundle = Bundle()
+            var ref ="detail2"
+            bundle.putString("ref", ref)
+            bundle.putString("person", keys[position])
+            bundle.putString("name", keys[position])
+            bundle.putParcelableArrayList("resources", src as ArrayList<out Parcelable>) // ??
+            val dialog = CustomTableDialog()
+            dialog.arguments = bundle
+            val activity: AppCompatActivity = context as AppCompatActivity // ??
+            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+            dialog.show(transaction, "FullScreenDialog")
+        }
+
+//        holder.buttonLog.setOnClickListener {
+//            val bundle = Bundle()
+//            var ref ="child_log2"
+//            bundle.putString("ref", ref)
+//            bundle.putString("person", keys[position])
+//            bundle.putString("name", keys[position])
+//            bundle.putString("name", keys[position])
+//            bundle.putParcelableArrayList("resources", src as ArrayList<out Parcelable>) // ??
+//            val dialog = CustomTableDialog()
+//            dialog.arguments = bundle
+//            val activity: AppCompatActivity = context as AppCompatActivity // ??
+//            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+//            dialog.show(transaction, "FullScreenDialog")
 //        }
-
-
 
     }
 
@@ -100,7 +97,9 @@ class TableTwoAdapter(
         val nameTV: TextView = itemView.findViewById(R.id.main_title)
         val numberRendzTV: TextView = itemView.findViewById(R.id.main_rating)
         val durationTV: TextView = itemView.findViewById(R.id.main_duration)
-        val optionsIB: ImageButton = itemView.findViewById(R.id.main_options)
+        val buttonDetail: MaterialButton = itemView.findViewById(R.id.btn_detail)
+//        val buttonLog: MaterialButton = itemView.findViewById(R.id.btn_log)
+
     }
 
 

@@ -31,6 +31,7 @@ import com.example.KLSDinfo.Volley.VolleySingleton
 import com.google.android.material.button.MaterialButton
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
+import java.text.SimpleDateFormat
 import java.util.*
 
 class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, DialogInterface.OnCancelListener{
@@ -42,6 +43,7 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
     lateinit var pilha: Stack<List<PhysicalSpace>>
     lateinit var back: MaterialButton
     lateinit var get: MaterialButton
+
 
 
 
@@ -67,13 +69,17 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
     lateinit var monthTv: TextView
     lateinit var yearTv: TextView
     lateinit var timeTv: TextView
-
+    lateinit var calendar: Calendar
+    private lateinit var dateStr: String
 
     lateinit var cardDate2: CardView
     lateinit var dayTv2: TextView
     lateinit var monthTv2: TextView
     lateinit var yearTv2: TextView
     lateinit var timeTv2: TextView
+    lateinit var calendar2: Calendar
+    private lateinit var dateStr2: String
+
 
     companion object {
         fun newInstance(): HSelectionLocationFragment {
@@ -96,8 +102,9 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
     }
 
     private fun setDefaultTime(){
-        val calendar = Calendar.getInstance()
-        val timeZone: TimeZone = calendar!!.timeZone
+        var m: String = ""
+        val calendar2 = Calendar.getInstance()
+        val timeZone: TimeZone = calendar2!!.timeZone
         val cals: Date = Calendar.getInstance(TimeZone.getDefault()).time
         var milis: Long = cals.time
         milis += timeZone.getOffset(milis)
@@ -105,21 +112,25 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
         unixTime = milis/1000
         unixTimePast = (milis/1000)-604800
 
-        dayTv.text = calendar.get(Calendar.DAY_OF_MONTH).toString()
-        monthTv.text = getMonth(calendar.get(Calendar.MONTH))//calendar.getDisplayName(Calendar.MONTH, Calendar.LONG,Locale.getDefault()).substring(0,3)//(calendar.get(Calendar.MONTH)+1).toString()
-        yearTv.text = calendar.get(Calendar.YEAR).toString()
-        // Todo: arrumar a string dos minutos
-        val time = "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
-        timeTv.text = time
-
-        val calendar2 = Calendar.getInstance()
-        calendar2.timeInMillis = unixTimePast!! * 1000
-
         dayTv2.text = calendar2.get(Calendar.DAY_OF_MONTH).toString()
-        monthTv2.text = getMonth(calendar2.get(Calendar.MONTH))//calendar2.getDisplayName(Calendar.MONTH, Calendar.LONG,Locale.getDefault()).substring(0,3)//(calendar2.get(Calendar.MONTH)+1).toString()
+        monthTv2.text = getMonth(calendar2.get(Calendar.MONTH))//calendar.getDisplayName(Calendar.MONTH, Calendar.LONG,Locale.getDefault()).substring(0,3)//(calendar.get(Calendar.MONTH)+1).toString()
         yearTv2.text = calendar2.get(Calendar.YEAR).toString()
-        val time2 = "${calendar2.get(Calendar.HOUR_OF_DAY)}:${calendar2.get(Calendar.MINUTE)}"
+        // Todo: arrumar a string dos minutos
+
+        m = if (calendar2.get(Calendar.MINUTE) < 10) "0${calendar2.get(Calendar.MINUTE)}" else "${calendar2.get(Calendar.MINUTE)}"
+        val time2 = "${calendar2.get(Calendar.HOUR_OF_DAY)}:$m"
         timeTv2.text = time2
+
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = unixTimePast!! * 1000
+
+        dayTv.text = calendar.get(Calendar.DAY_OF_MONTH).toString()
+        monthTv.text = getMonth(calendar.get(Calendar.MONTH))//calendar2.getDisplayName(Calendar.MONTH, Calendar.LONG,Locale.getDefault()).substring(0,3)//(calendar2.get(Calendar.MONTH)+1).toString()
+        yearTv.text = calendar.get(Calendar.YEAR).toString()
+
+        m = if (calendar.get(Calendar.MINUTE) < 10) "0${calendar.get(Calendar.MINUTE)}" else "${calendar.get(Calendar.MINUTE)}"
+        val time = "${calendar.get(Calendar.HOUR_OF_DAY)}:$m"
+        timeTv.text = time
 
 
     }
@@ -497,23 +508,11 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
                 (if (hour < 10) "0$hour" else hour) + ":" +
                 if (minute < 10) "0$minute" else minute
 
-        if (TAG == 0) {
 
-            dayTv.text = (if (day < 10) "0$day" else "$day")
-            monthTv.text = getMonth(month)//(if (month + 1 < 10) "0" + (month + 1) else "${month + 1}")
-            yearTv.text = year.toString()
+        if (TAG == 1) {
 
-            val h = (if (hour < 10) "0$hour" else "$hour")
-            val m =   if (minute < 10) "0$minute" else "$minute"
-            val time = "$h:$m"
-            timeTv.text = time
-
-
-
-
-        } else {
             dayTv2.text = (if (day < 10) "0$day" else "$day")
-            monthTv2.text = getMonth(month)// (if (month + 1 < 10) "0" + (month + 1) else "${month + 1}")
+            monthTv2.text = getMonth(month)//(if (month + 1 < 10) "0" + (month + 1) else "${month + 1}")
             yearTv2.text = year.toString()
 
             val h = (if (hour < 10) "0$hour" else "$hour")
@@ -521,10 +520,31 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
             val time = "$h:$m"
             timeTv2.text = time
 
+            unixTime = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(dateString).time/1000
+
+
+
+
+        } else {
+            dayTv.text = (if (day < 10) "0$day" else "$day")
+            monthTv.text = getMonth(month)// (if (month + 1 < 10) "0" + (month + 1) else "${month + 1}")
+            yearTv.text = year.toString()
+
+            val h = (if (hour < 10) "0$hour" else "$hour")
+            val m =   if (minute < 10) "0$minute" else "$minute"
+            val time = "$h:$m"
+            timeTv.text = time
+
+            unixTimePast = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(dateString).time/1000
+
+
+
         }
-
-
     }
+
+
+
+
 
     override fun onCancel(dialog: DialogInterface?) {
         year = 0

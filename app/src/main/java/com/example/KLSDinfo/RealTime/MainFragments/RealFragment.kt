@@ -36,8 +36,8 @@ class RealFragment : Fragment(){
     private fun addItems(){
 
         items.clear()
-        items.add(Method("Check Physical Space","Given a physical space this section displays all persons in encounters with the location or the locations within it.",R.drawable.ic_location_on_black_24dp))
-        items.add(Method("Find People","Given a group this section displays the location of each person",R.drawable.ic_location_on_black_24dp))
+        items.add(Method("Check Physical Space","Given a physical space this section displays all persons in encounters with the location or the locations within it.",R.drawable.ic_notification))
+        items.add(Method("Find People","Given a group this section displays the location of each person",R.drawable.ic_recruitment))
 
     }
 

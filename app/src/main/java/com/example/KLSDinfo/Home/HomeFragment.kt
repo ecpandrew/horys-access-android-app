@@ -14,11 +14,8 @@ import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Tarefa
 import com.example.KLSDinfo.TarefaInterface
 
-class HomeFragment : Fragment(), TarefaInterface{
+class HomeFragment : Fragment(){
 
-    override fun depoisDownload(bitmap: Bitmap?) {
-        img.setImageBitmap(bitmap)
-    }
 
 
     companion object {
@@ -32,20 +29,8 @@ class HomeFragment : Fragment(), TarefaInterface{
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         print("onCreateView")
         val view: View = inflater.inflate(R.layout.main_home_layout, container, false)
-        img = view.findViewById(R.id.imagemTeste)
-        val btn: Button = view.findViewById(R.id.buttonRequest)
-
-        btn.setOnClickListener {
-            baixarImagem()
-        }
 
         return view
-    }
-
-
-    fun baixarImagem(){
-        val tarefa = Tarefa(context!!, this)
-        tarefa.execute("http://www.thiengo.com.br/img/system/logo/thiengo-80-80.png")
     }
 
 

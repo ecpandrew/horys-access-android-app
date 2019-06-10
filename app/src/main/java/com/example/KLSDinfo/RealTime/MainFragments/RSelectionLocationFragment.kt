@@ -85,8 +85,8 @@ class RSelectionLocationFragment: Fragment() {
         mAdapter = PhysicalSpaceAdapter(context!!, listPhysicalSpaces)
         recyclerView.adapter = mAdapter
 
-        back = view.findViewById(R.id.backToParent)
-        get = view.findViewById(R.id.getInfo)
+        back = view.findViewById(R.id.buttonClear)
+        get = view.findViewById(R.id.buttonGet)
 
 
         get.setOnClickListener {

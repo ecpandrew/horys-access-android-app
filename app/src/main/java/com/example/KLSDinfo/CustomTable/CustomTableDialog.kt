@@ -71,12 +71,19 @@ class CustomTableDialog : DialogFragment() {
             else -> {
 
                 when (ref) {
+
+                    "detail2" ->  generateDetailTable2(lista, view, "$title's Detail")
+
+
+
+
+
                     "log3" -> generateLogTable3(lista, view, "$title's Log")
                     "detail3" -> Toast.makeText(context,"Not Implemented Yet", Toast.LENGTH_SHORT).show()
 
 
                     "log4","child_log4" -> generateLogTable4(lista, view,"$title's Log")
-                    "detail4" -> generateDetailTable4(lista, view, title)
+                    "detail4" -> generateDetailTable4(lista, view, "$title's Detail")
                     "child_detail4" -> generateChildDetailTable4(lista, view, "$title's Detail")
 
 
@@ -91,6 +98,45 @@ class CustomTableDialog : DialogFragment() {
 
 
         return view
+    }
+
+    private fun generateDetailTable2(lista: ArrayList<Parcelable>, view: View, title: String) {
+
+        val mRowHeaderList: MutableList<RowHeader> = mutableListOf()
+        val mColumnHeaderList: MutableList<ColumnHeader> = mutableListOf()
+        mColumnHeaderList.add(ColumnHeader("0", "Name"))
+        mColumnHeaderList.add(ColumnHeader("1", "Physical Space"))
+        mColumnHeaderList.add(ColumnHeader("2", "Total Duration (h)"))
+        mColumnHeaderList.add(ColumnHeader("3", "Total Duration (min)"))
+        mColumnHeaderList.add(ColumnHeader("4", "Total Duration (s)"))
+
+        val mCellList: MutableList<List<Cell>> = mutableListOf()
+        var id = 0
+
+        //Todo: protect the aplication against the !! operator
+        for(element in lista){
+            val resource : TableTwoResource? = element as? TableTwoResource
+            if(resource != null){
+                mRowHeaderList.add(RowHeader(id.toString(),id.toString()))
+                val cell: MutableList<Cell> = mutableListOf()
+                cell.add(Cell(id.toString(),element.shortName))
+                cell.add(Cell(id.toString(),element.physical_space))
+                cell.add(Cell(id.toString(),element.duration/3600))
+                cell.add(Cell(id.toString(),element.duration/60))
+                cell.add(Cell(id.toString(),element.duration))
+                mCellList.add(cell)
+            }
+            id+=1
+        }
+        tableView = view.findViewById(R.id.content_container)
+        tool.title = title
+        adapter = MyTableViewAdapter(context)
+        tableView.adapter = adapter
+        adapter.setAllItems(mColumnHeaderList,mRowHeaderList, mCellList)
+
+
+
+
     }
 
 
@@ -149,7 +195,7 @@ class CustomTableDialog : DialogFragment() {
         }
         tableView = view.findViewById(R.id.content_container)
 
-        if(title != null) tool.title = title else tool.title = "Complete Details"
+        if(title != null) tool.title = title else tool.title = "Undefined Title"
         adapter = MyTableViewAdapter(context)
         tableView.adapter = adapter
         adapter.setAllItems(mColumnHeaderList,mRowHeaderList, mCellList)

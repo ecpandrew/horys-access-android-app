@@ -56,14 +56,14 @@ open class RSelectionPersonFragment : Fragment() {
 
 
 
-        val btnClear : Button = view.findViewById(R.id.clear_button)
+        val btnClear : Button = view.findViewById(R.id.buttonClear)
         btnClear.setOnClickListener {
             mAdapter.clearChoices()
         }
 
 
 
-        val btnSend : Button = view.findViewById(R.id.btn_request)
+        val btnSend : Button = view.findViewById(R.id.buttonGet)
 
         btnSend.setOnClickListener {
 
@@ -133,8 +133,6 @@ open class RSelectionPersonFragment : Fragment() {
             })
 
         // Add the request to the RequestQueue.
-
-
 
 
         val roleRequest = StringRequest(

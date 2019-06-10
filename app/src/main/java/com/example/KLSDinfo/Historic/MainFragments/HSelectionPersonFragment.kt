@@ -29,6 +29,7 @@ import com.google.android.material.button.MaterialButton
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -65,6 +66,8 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
     lateinit var monthTv: TextView
     lateinit var yearTv: TextView
     lateinit var timeTv: TextView
+    lateinit var dateStr: String
+    lateinit var dateStr2: String
 
 
     lateinit var cardDate2: CardView
@@ -252,8 +255,9 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
 
 
     private fun setDefaultTime(){
-        val calendar = Calendar.getInstance()
-        val timeZone: TimeZone = calendar!!.timeZone
+        var m: String = ""
+        val calendar2 = Calendar.getInstance()
+        val timeZone: TimeZone = calendar2!!.timeZone
         val cals: Date = Calendar.getInstance(TimeZone.getDefault()).time
         var milis: Long = cals.time
         milis += timeZone.getOffset(milis)
@@ -261,21 +265,26 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         unixTime = milis/1000
         unixTimePast = (milis/1000)-604800
 
-        dayTv.text = calendar.get(Calendar.DAY_OF_MONTH).toString()
-        monthTv.text = getMonth(calendar.get(Calendar.MONTH))//calendar.getDisplayName(Calendar.MONTH, Calendar.LONG,Locale.getDefault()).substring(0,3)//(calendar.get(Calendar.MONTH)+1).toString()
-        yearTv.text = calendar.get(Calendar.YEAR).toString()
+        dayTv2.text = calendar2.get(Calendar.DAY_OF_MONTH).toString()
+        monthTv2.text = getMonth(calendar2.get(Calendar.MONTH))//calendar.getDisplayName(Calendar.MONTH, Calendar.LONG,Locale.getDefault()).substring(0,3)//(calendar.get(Calendar.MONTH)+1).toString()
+        yearTv2.text = calendar2.get(Calendar.YEAR).toString()
         // Todo: arrumar a string dos minutos
-        val time = "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
+
+        m = if (calendar2.get(Calendar.MINUTE) < 10) "0${calendar2.get(Calendar.MINUTE)}" else "${calendar2.get(Calendar.MINUTE)}"
+        val time2 = "${calendar2.get(Calendar.HOUR_OF_DAY)}:$m"
+        timeTv2.text = time2
+
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = unixTimePast!! * 1000
+
+        dayTv.text = calendar.get(Calendar.DAY_OF_MONTH).toString()
+        monthTv.text = getMonth(calendar.get(Calendar.MONTH))//calendar2.getDisplayName(Calendar.MONTH, Calendar.LONG,Locale.getDefault()).substring(0,3)//(calendar2.get(Calendar.MONTH)+1).toString()
+        yearTv.text = calendar.get(Calendar.YEAR).toString()
+
+        m = if (calendar.get(Calendar.MINUTE) < 10) "0${calendar.get(Calendar.MINUTE)}" else "${calendar.get(Calendar.MINUTE)}"
+        val time = "${calendar.get(Calendar.HOUR_OF_DAY)}:$m"
         timeTv.text = time
 
-        val calendar2 = Calendar.getInstance()
-        calendar2.timeInMillis = unixTimePast!! * 1000
-
-        dayTv2.text = calendar2.get(Calendar.DAY_OF_MONTH).toString()
-        monthTv2.text = getMonth(calendar2.get(Calendar.MONTH))//calendar2.getDisplayName(Calendar.MONTH, Calendar.LONG,Locale.getDefault()).substring(0,3)//(calendar2.get(Calendar.MONTH)+1).toString()
-        yearTv2.text = calendar2.get(Calendar.YEAR).toString()
-        val time2 = "${calendar2.get(Calendar.HOUR_OF_DAY)}:${calendar2.get(Calendar.MINUTE)}"
-        timeTv2.text = time2
 
 
     }
@@ -449,10 +458,25 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
                 (if (hour < 10) "0$hour" else hour) + ":" +
                 if (minute < 10) "0$minute" else minute
 
-        if (TAG == 0) {
+        if (TAG == 1) {
 
+            dayTv2.text = (if (day < 10) "0$day" else "$day")
+            monthTv2.text = getMonth(month)//(if (month + 1 < 10) "0" + (month + 1) else "${month + 1}")
+            yearTv2.text = year.toString()
+
+            val h = (if (hour < 10) "0$hour" else "$hour")
+            val m =   if (minute < 10) "0$minute" else "$minute"
+            val time = "$h:$m"
+            timeTv2.text = time
+
+            unixTime = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(dateString).time/1000
+
+
+
+
+        } else {
             dayTv.text = (if (day < 10) "0$day" else "$day")
-            monthTv.text = getMonth(month)//(if (month + 1 < 10) "0" + (month + 1) else "${month + 1}")
+            monthTv.text = getMonth(month)// (if (month + 1 < 10) "0" + (month + 1) else "${month + 1}")
             yearTv.text = year.toString()
 
             val h = (if (hour < 10) "0$hour" else "$hour")
@@ -460,15 +484,10 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
             val time = "$h:$m"
             timeTv.text = time
 
-        } else {
-            dayTv2.text = (if (day < 10) "0$day" else "$day")
-            monthTv2.text = getMonth(month)// (if (month + 1 < 10) "0" + (month + 1) else "${month + 1}")
-            yearTv2.text = year.toString()
+            unixTimePast = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(dateString).time/1000
 
-            val h = (if (hour < 10) "0$hour" else "$hour")
-            val m =   if (minute < 10) "0$minute" else "$minute"
-            val time = "$h:$m"
-            timeTv2.text = time
+
+
         }
     }
     override fun onCancel(dialog: DialogInterface?) {

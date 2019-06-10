@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
+import com.android.volley.toolbox.HttpHeaderParser
 import com.android.volley.toolbox.StringRequest
 import com.example.KLSDinfo.Models.Person2
 import com.example.KLSDinfo.Models.TableTwoResource
@@ -20,6 +21,7 @@ import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Models.FakeRequest
 import com.example.KLSDinfo.Historic.adapters.TableTwoAdapter
 import com.example.KLSDinfo.Volley.VolleySingleton
+import java.io.UnsupportedEncodingException
 
 
 class TableTwoDialog : Fragment() {
@@ -46,26 +48,14 @@ class TableTwoDialog : Fragment() {
             return TableTwoDialog()
         }
     }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view: View = inflater.inflate(R.layout.table_two_layout, container, false)
         val linearLayoutManager = LinearLayoutManager(context)
-
-
         recyclerView = view.findViewById(R.id.rv_resource_2)
         recyclerView.layoutManager = linearLayoutManager
         recyclerView.setHasFixedSize(true)
-        dividerItemDecoration = DividerItemDecoration(recyclerView.context, linearLayoutManager.orientation)
-        recyclerView.addItemDecoration(dividerItemDecoration)
-
-
-
-
-
-
-
-
-
         linear = view.findViewById(R.id.parent_linear_layout)
         parentMap = mutableMapOf()
         mapResults = mutableMapOf()
@@ -110,56 +100,8 @@ class TableTwoDialog : Fragment() {
                     url = "http://smartlab.lsdi.ufma.br/service/persons/${id}physical_spaces/"
 
                     makeRequest(url, entry.key)
-
                 }
-
-
                 Log.i("Response", "map $mapResults")
-
-
-
-
-
-
-//                map = mutableMapOf()
-//                var ids : String = "/"
-//                for(element in persons){
-//                    ids += "${element.holder.id}/"
-//                    for (role in element.roles!!){
-//                        map[role.name] = mutableListOf()
-//                    }
-//                }
-//                url = "http://smartlab.lsdi.ufma.br/service/persons/${ids}physical_spaces/"
-//
-//                makeRequest(url)
-//
-//
-////
-//                for(element in persons){
-//                    for (role in element.roles!!){
-//                        val list: MutableList<Person2>? = map[role.name]
-//                        list!!.add(element)
-//                        map[role.name] = list
-//                    }
-//                }
-
-
-                //Todo: Esta funcionando, porem não é eficiente
-//                progress = AlertDialog.Builder(context)
-//                progress.setCancelable(false)
-//                progress.setView(R.layout.loading_dialog_layout)
-//                alertDialog = progress.create()
-//                alertDialog.show()
-//                var id: String? = null
-//                for(entry in map){
-//                    id = "/"
-//                    for(person in entry.value){
-//                        id += "${person.holder.id}/"
-//                    }
-//                    url = "http://smartlab.lsdi.ufma.br/service/persons/${id}physical_spaces/"
-////                    makeRequest(url, entry.key)
-//
-//                }
             }
         }
 
@@ -168,59 +110,58 @@ class TableTwoDialog : Fragment() {
         return view
     }
 
-
+    // Todo: eliminar a necessidade de varios requests
     private fun makeRequest(url: String, role: String) {
-        val stringRequest = StringRequest(
+        val stringRequest = VolleyUTF8EncodingStringRequest(
             Request.Method.GET,
             url,
             Response.Listener<String> { response ->
-                // Display the first 500 characters of the response string.
-//                Log.i("Response", response)
                 val r: List<TableTwoResource> = FakeRequest().getTableTwoData(response)
-
                 if(r.isNotEmpty()){
-                    //generateTable(lista, role)
-//                    Log.i("Response", "lista $lista")
                     mapResults[role] = r
-
                     mAdapter = TableTwoAdapter(context!!, mapResults)
                     recyclerView.adapter = mAdapter
                     mAdapter.notifyDataSetChanged()
-
-
-
-                    Log.i("Response", "map $mapResults")
-
-                    // setar o adapter
-
-
                 }
-//
-
-
             },
             Response.ErrorListener {
                 VolleyLog.e("Error: ", it.message)
             })
-
-
-
-        // Add the request to the RequestQueue.
-
         stringRequest.retryPolicy = DefaultRetryPolicy(20 * 1000, 3, 1.0f)
         stringRequest.tag = this
         queue.add(stringRequest)
-
     }
-
-
-
-
     override fun onStop() {
         super.onStop()
         queue.cancelAll(this)
         VolleyLog.e("Error: ", "Request Cancelado")
-
     }
+    class VolleyUTF8EncodingStringRequest(
+        method: Int, url: String, private val mListener: Response.Listener<String>,
+        errorListener: Response.ErrorListener
+    ) : Request<String>(method, url, errorListener) {
+
+        override fun deliverResponse(response: String) {
+            mListener.onResponse(response)
+        }
+
+        override fun parseNetworkResponse(response: NetworkResponse): Response<String> {
+            var parsed: String
+
+            val encoding = charset(HttpHeaderParser.parseCharset(response.headers))
+
+            // TODO: colcar o return dentro do try
+            return try {
+                parsed = String(response.data, encoding)
+                val bytes = parsed.toByteArray(encoding)
+                parsed = String(bytes, charset("UTF-8"))
+
+                Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response))
+            } catch (e: UnsupportedEncodingException) {
+                Response.error(ParseError(e))
+            }
+        }
+    }
+
 
 }

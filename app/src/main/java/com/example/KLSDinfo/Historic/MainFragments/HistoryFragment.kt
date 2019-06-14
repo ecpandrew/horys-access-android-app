@@ -41,15 +41,11 @@ class HistoryFragment : Fragment(){
     }
 
     private fun initComponents(view: View) {
-
         recyclerView = view.findViewById(R.id.historyRecyclerView)
         recyclerView.layoutManager = GridLayoutManager(context,1)
         recyclerView.setHasFixedSize(true)
         addItems()
         methodsAdapter = HistoryMethodsAdapter(context!!, items)
-
-
-
         recyclerView.adapter = methodsAdapter
 
     }

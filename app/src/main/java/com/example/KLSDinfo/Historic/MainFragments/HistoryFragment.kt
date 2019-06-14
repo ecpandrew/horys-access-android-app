@@ -47,7 +47,6 @@ class HistoryFragment : Fragment(){
         addItems()
         methodsAdapter = HistoryMethodsAdapter(context!!, items)
         recyclerView.adapter = methodsAdapter
-
     }
 
 

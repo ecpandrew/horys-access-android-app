@@ -62,11 +62,12 @@ class TableOnefrag : Fragment() {
                 // Todo: tratar isso dai
             }else{
 
+                var id = ""
+                for(place in listOfPhysicalSpace){
+                    id += "${place.holder.id}/"
+                }
 
-                val id = "${listOfPhysicalSpace[0].holder.id}"
-                Log.i("recebido", id)
-
-                url = "http://smartlab.lsdi.ufma.br/service/physical_spaces/$id/persons"
+                url = "http://smartlab.lsdi.ufma.br/service/physical_spaces/${id}persons"
                 progress = AlertDialog.Builder(context)
                 progress.setCancelable(false)
                 progress.setView(R.layout.loading_dialog_layout)

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "316127410181",
+    "firebase_url": "https://lsdinfo-c91dc.firebaseio.com",
+    "project_id": "lsdinfo-c91dc",
+    "storage_bucket": "lsdinfo-c91dc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:316127410181:android:8b2ee02ca9b22007",
+        "android_client_info": {
+          "package_name": "com.example.KLSDinfo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "316127410181-5pd4rrr4evs2pncfrv3tq5rgheqo2sab.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.KLSDinfo",
+            "certificate_hash": "edd3755f109caa0eee6d02b25e9aef83724983d8"
+          }
+        },
+        {
+          "client_id": "316127410181-a78qqmd60v2nok9bo8ec2j54gl4ib624.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA488-mzQpOayXr1sgVneb7TJdr-Yur-X8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "316127410181-a78qqmd60v2nok9bo8ec2j54gl4ib624.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

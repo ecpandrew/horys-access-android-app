@@ -88,15 +88,16 @@ class TableFiveFrag : Fragment() {
                 id = ""
                 map = mutableMapOf()
 
-//                for (place in places){
-                id += "${places[0].holder.id}"
-//                    map[place.name] = 0
-//                }
+
+                for(place in places){
+                    id += "${place.holder.id}/"
+                }
+
+//
                 Log.i("recebido", id)
 
 
-
-                url = "http://smartlab.lsdi.ufma.br/service/physical_spaces/$id/persons/${unixPast+10800}/${unix+10800}"
+                url = "http://smartlab.lsdi.ufma.br/service/physical_spaces/${id}persons/${unixPast+10800}/${unix+10800}"
                 progress = AlertDialog.Builder(context)
                 progress.setCancelable(false)
                 progress.setView(R.layout.loading_dialog_layout)

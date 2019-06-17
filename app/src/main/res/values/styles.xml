@@ -22,6 +22,10 @@
     </style>
 
 
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/background_splash</item>
+    </style>
+
 
 
 
@@ -58,6 +62,14 @@
         <item name="cardViewStyle">@style/CardView.Light</item>
 
     </style>
+
+    <style name="MyTheme" parent="AppTheme">
+
+        <item name="android:windowBackground">@color/colorWhite</item>
+
+
+    </style>
+
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 

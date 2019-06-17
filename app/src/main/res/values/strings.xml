@@ -15,6 +15,7 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Reportar Bugs</string>
     <string name="report_bug">Reportar Bugs</string>
+    <string name="nav_logout">Logout</string>
     <string name="refresh_string">
         <u>Refresh</u>
     </string>
@@ -40,4 +41,5 @@
     <string name="pick_a_date">Pick a Date</string>
     <string name="clear_data">Clear</string>
     <string name="title_activity_main2">Main2Activity</string>
+    <string name="request_client_id">request client id</string>
 </resources>

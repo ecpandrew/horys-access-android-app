@@ -1,4 +1,6 @@
 package com.example.KLSDinfo
+import android.content.res.Resources
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -41,9 +43,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun setupAll(){
         setContentView(R.layout.activity_main)
         toolbar = findViewById(R.id.toolbar)
+//        toolbar.setLogo(R.mipmap.logo_round_round)
+
         setSupportActionBar(toolbar)
+
         drawerLayout = findViewById(R.id.drawer_layout)
         navView = findViewById(R.id.nav_view)
+
         toggle = object : ActionBarDrawerToggle(
             this,
             drawerLayout,
@@ -62,8 +68,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
         drawerLayout.addDrawerListener(toggle)
-        toggle.isDrawerIndicatorEnabled = true
-        toggle.syncState()
+
+//        toggle.isDrawerIndicatorEnabled = true
+//        toggle.setHomeAsUpIndicator(R.mipmap.logo_round_round)
+
+//        toggle.syncState()
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.mipmap.logo_round_round)
+
         navView.setNavigationItemSelectedListener(this)
     }
 
@@ -112,9 +125,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 navigateToFragment(HistoryFragment.newInstance())
                 title = "Acessando Histórico"
             }
-            R.id.nav_share -> {
-                Toast.makeText(baseContext, "Config Not Implemented Yet!", Toast.LENGTH_LONG).show()
-            }
+
             R.id.nav_send -> {
                 Toast.makeText(baseContext, "Report Bugs Not Implemented Yet!", Toast.LENGTH_LONG).show()
             }

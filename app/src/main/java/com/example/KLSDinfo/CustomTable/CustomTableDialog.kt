@@ -72,6 +72,9 @@ class CustomTableDialog : DialogFragment() {
 
                 when (ref) {
 
+
+                    "detail1" -> generateDetailTable1(lista, view, "$title's Detail")
+
                     "detail2" ->  generateDetailTable2(lista, view, "$title's Detail")
 
 
@@ -79,7 +82,8 @@ class CustomTableDialog : DialogFragment() {
 
 
                     "log3" -> generateLogTable3(lista, view, "$title's Log")
-                    "detail3" -> Toast.makeText(context,"Not Implemented Yet", Toast.LENGTH_SHORT).show()
+                    "detail3" -> generateDetailTable3(lista, view, "$title's Log")
+                    "child_detail3" -> generateChildDetailTable3(lista, view, "$title's Log")
 
 
                     "log4","child_log4" -> generateLogTable4(lista, view,"$title's Log")
@@ -98,6 +102,38 @@ class CustomTableDialog : DialogFragment() {
 
 
         return view
+    }
+
+    private fun generateDetailTable1(lista: ArrayList<Parcelable>, view: View, title: String) {
+        val mRowHeaderList: MutableList<RowHeader> = mutableListOf()
+        val mColumnHeaderList: MutableList<ColumnHeader> = mutableListOf()
+        mColumnHeaderList.add(ColumnHeader("0", "Name"))
+        mColumnHeaderList.add(ColumnHeader("2", "Total Duration (h)"))
+        mColumnHeaderList.add(ColumnHeader("3", "Total Duration (min)"))
+        mColumnHeaderList.add(ColumnHeader("4", "Total Duration (s)"))
+
+        val mCellList: MutableList<List<Cell>> = mutableListOf()
+        var id = 0
+
+        //Todo: protect the aplication against the !! operator
+        for(element in lista){
+            val resource : TableOneResource? = element as? TableOneResource
+            if(resource != null){
+                mRowHeaderList.add(RowHeader(id.toString(),id.toString()))
+                val cell: MutableList<Cell> = mutableListOf()
+                cell.add(Cell(id.toString(),element.shortName))
+                cell.add(Cell(id.toString(),element.duration/3600))
+                cell.add(Cell(id.toString(),element.duration/60))
+                cell.add(Cell(id.toString(),element.duration))
+                mCellList.add(cell)
+            }
+            id+=1
+        }
+        tableView = view.findViewById(R.id.content_container)
+        tool.title = title
+        adapter = MyTableViewAdapter(context)
+        tableView.adapter = adapter
+        adapter.setAllItems(mColumnHeaderList,mRowHeaderList, mCellList)
     }
 
     private fun generateDetailTable2(lista: ArrayList<Parcelable>, view: View, title: String) {
@@ -140,6 +176,61 @@ class CustomTableDialog : DialogFragment() {
     }
 
 
+    private fun generateChildDetailTable3(lista: ArrayList<Parcelable>, view: View, title: String?){
+
+
+        val mRowHeaderList: MutableList<RowHeader> = mutableListOf()
+        val mColumnHeaderList: MutableList<ColumnHeader> = mutableListOf()
+        mColumnHeaderList.add(ColumnHeader("0", "Persons"))
+        mColumnHeaderList.add(ColumnHeader("1", "Nº of Rendezvous"))
+        mColumnHeaderList.add(ColumnHeader("2", "Total Duration (h)"))
+        mColumnHeaderList.add(ColumnHeader("3", "Total Duration (min)"))
+        mColumnHeaderList.add(ColumnHeader("4", "Total Duration (s)"))
+
+        val mCellList: MutableList<List<Cell>> = mutableListOf()
+        var id = 0
+
+
+        val groupSet = mutableSetOf<List<String>>()
+        for (element in lista){
+            val resource : TableThreeResource? = element as TableThreeResource
+            if(resource != null) groupSet.add(resource.getPersonsList())
+        }
+        for(element in groupSet){
+            var duration: Long = 0
+            var count: Long = 0
+            for (resource3 in lista){
+                val resource3 : TableThreeResource? = resource3 as TableThreeResource
+                if(resource3 != null){
+                    if(resource3.getPersonsList().containsAll(element)){
+                        duration += resource3.getDuration()
+                        count += 1
+                    }
+                }
+            }
+            mRowHeaderList.add(RowHeader(id.toString(),id.toString()))
+            val cell: MutableList<Cell> = mutableListOf()
+            cell.add(Cell(id.toString(),element.toString().substring(1,element.toString().length-1)))
+            cell.add(Cell(id.toString(), count))
+            cell.add(Cell(id.toString(),duration/3600))
+            cell.add(Cell(id.toString(),duration/60))
+            cell.add(Cell(id.toString(),duration))
+            mCellList.add(cell)
+            id+=1
+        }
+        tableView = view.findViewById(R.id.content_container)
+        if(title != null) tool.title = title else tool.title = "Undefined Title"
+        adapter = MyTableViewAdapter(context)
+        tableView.adapter = adapter
+        adapter.setAllItems(mColumnHeaderList,mRowHeaderList, mCellList)
+
+
+    }
+
+
+
+
+
     private fun generateDetailTable3(lista: ArrayList<Parcelable>, view: View, title: String?){
 
 
@@ -155,46 +246,35 @@ class CustomTableDialog : DialogFragment() {
         var id = 0
 
 
-
-
-
-        val countMap: MutableMap<String,Long> = mutableMapOf()
-        val durationMap: MutableMap<String,Long> = mutableMapOf()
-
+        val groupSet = mutableSetOf<List<String>>()
         for (element in lista){
-            val resource : TableThreeResource? = element as? TableThreeResource
-            if(resource != null){
-
-                if(!countMap.containsKey(resource.getPersons())){
-                    countMap[resource.getPersons()] = 1
-                    durationMap[resource.getPersons()] = resource.getDuration()
-                }else{
-                    countMap[resource.getPersons()]!!.plus(1)
-                    durationMap[resource.getPersons()]!!.plus(resource.getDuration())
-                }
-            }
+            val resource : TableThreeResource? = element as TableThreeResource
+            if(resource != null) groupSet.add(resource.getPersonsList())
         }
 
-        //Todo: protect the aplication against the !! operator
-        for(element in lista){
-            val resource : TableThreeResource? = element as? TableThreeResource
-            if(resource != null){
-                mRowHeaderList.add(RowHeader(id.toString(),id.toString()))
-                val cell: MutableList<Cell> = mutableListOf()
-                cell.add(Cell(id.toString(),element.getPersons()))
-                cell.add(Cell(id.toString(),countMap[element.getPersons()]))
-                cell.add(Cell(id.toString(),durationMap[element.getPersons()]!!/3600))
-                cell.add(Cell(id.toString(),durationMap[element.getPersons()]!!/60))
-                cell.add(Cell(id.toString(),durationMap[element.getPersons()]))
-
-                mCellList.add(cell)
-
-
+        for(element in groupSet){
+            var duration: Long = 0
+            var count: Long = 0
+            for (resource3 in lista){
+                val resource3 : TableThreeResource? = resource3 as TableThreeResource
+                if(resource3 != null){
+                    if(resource3.getPersonsList().containsAll(element)){
+                        duration += resource3.getDuration()
+                        count += 1
+                    }
+                }
             }
+            mRowHeaderList.add(RowHeader(id.toString(),id.toString()))
+            val cell: MutableList<Cell> = mutableListOf()
+            cell.add(Cell(id.toString(),element.toString().substring(1,element.toString().length-1)))
+            cell.add(Cell(id.toString(), count))
+            cell.add(Cell(id.toString(),duration/3600))
+            cell.add(Cell(id.toString(),duration/60))
+            cell.add(Cell(id.toString(),duration))
+            mCellList.add(cell)
             id+=1
         }
         tableView = view.findViewById(R.id.content_container)
-
         if(title != null) tool.title = title else tool.title = "Undefined Title"
         adapter = MyTableViewAdapter(context)
         tableView.adapter = adapter

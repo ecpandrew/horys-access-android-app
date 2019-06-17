@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
-import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +19,7 @@ import com.example.KLSDinfo.UtilClasses.MultiCheckRoleAdapter
 import com.example.KLSDinfo.Models.*
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Models.FakeRequest
-import com.example.KLSDinfo.RealTime.TableFragments.TableTwoDialog
+import com.example.KLSDinfo.RealTime.TableFragments.TableTwoFrag
 import com.example.KLSDinfo.Volley.VolleySingleton
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 
@@ -75,7 +74,7 @@ open class RSelectionPersonFragment : Fragment() {
             bundle.putParcelableArrayList("resources", seletedElements)
 
 
-            val dialog = TableTwoDialog()
+            val dialog = TableTwoFrag()
             dialog.arguments = bundle
             navigateToFragment(dialog, true)
 

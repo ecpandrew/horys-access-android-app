@@ -53,7 +53,6 @@ class TableFiveFrag : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view: View = inflater.inflate(R.layout.table_five_layout, container, false)
-        val linearLayoutManager = LinearLayoutManager(context)
 
         recyclerView = view.findViewById(R.id.tableFourRV)
         recyclerView.layoutManager = GridLayoutManager(context,2)
@@ -95,8 +94,9 @@ class TableFiveFrag : Fragment() {
 //                }
                 Log.i("recebido", id)
 
-                url = "http://smartlab.lsdi.ufma.br/service/physical_spaces/$id/persons/${unixPast+10800}/${unix+10800}"
 
+
+                url = "http://smartlab.lsdi.ufma.br/service/physical_spaces/$id/persons/${unixPast+10800}/${unix+10800}"
                 progress = AlertDialog.Builder(context)
                 progress.setCancelable(false)
                 progress.setView(R.layout.loading_dialog_layout)

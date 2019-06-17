@@ -57,10 +57,17 @@ class TableThreeAdapter(
 
 
         holder.btnDetail.setOnClickListener {
-            Toast.makeText(context,"Not Implemented Yet",Toast.LENGTH_SHORT).show()
+            val bundle = Bundle()
+            var ref ="child_detail3"
+            bundle.putString("ref", ref)
+            bundle.putString("person", src.nome)
+            bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
+            val dialog = CustomTableDialog()
+            dialog.arguments = bundle
+            val activity: AppCompatActivity = context as AppCompatActivity // ??
+            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+            dialog.show(transaction, "FullScreenDialog")
         }
-
-
 
         holder.btnLog.setOnClickListener {
             val bundle = Bundle()

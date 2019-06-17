@@ -14,17 +14,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.HttpHeaderParser
-import com.android.volley.toolbox.StringRequest
 import com.example.KLSDinfo.Models.Person2
 import com.example.KLSDinfo.Models.TableTwoResource
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Models.FakeRequest
-import com.example.KLSDinfo.Historic.adapters.TableTwoAdapter
+import com.example.KLSDinfo.RealTime.adapters.TableTwoAdapter
 import com.example.KLSDinfo.Volley.VolleySingleton
 import java.io.UnsupportedEncodingException
 
 
-class TableTwoDialog : Fragment() {
+
+
+class TableTwoFrag : Fragment() {
 
     lateinit var cardview: CardView
     lateinit var textview: TextView
@@ -44,19 +45,21 @@ class TableTwoDialog : Fragment() {
 
 
     companion object {
-        fun newInstance(): TableTwoDialog {
-            return TableTwoDialog()
+        fun newInstance(): TableTwoFrag {
+            return TableTwoFrag()
         }
     }
+
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view: View = inflater.inflate(R.layout.table_two_layout, container, false)
-        val linearLayoutManager = LinearLayoutManager(context)
+
         recyclerView = view.findViewById(R.id.rv_resource_2)
-        recyclerView.layoutManager = linearLayoutManager
+        recyclerView.layoutManager = LinearLayoutManager(context)
+
         recyclerView.setHasFixedSize(true)
-        linear = view.findViewById(R.id.parent_linear_layout)
         parentMap = mutableMapOf()
         mapResults = mutableMapOf()
         val bundle: Bundle? = arguments

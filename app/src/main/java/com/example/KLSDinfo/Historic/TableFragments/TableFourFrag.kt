@@ -318,6 +318,7 @@ class TableFourFrag : Fragment() {
         (card.findViewById(R.id.descriptionTV4) as TextView).text = ("People Found: ${map.size}")
         (card.findViewById(R.id.nplacesTV4) as TextView).text = ("Physical Spaces Found: ${childAux.size}")
         (card.findViewById(R.id.durationTV4) as TextView).text = ("Total Time Elapsed: ${count/60} min")
+        card.visibility = View.VISIBLE
 
     }
 

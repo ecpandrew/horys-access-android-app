@@ -174,15 +174,15 @@ class TableThreeFrag : Fragment() {
         (card.findViewById(R.id.btn_detail) as MaterialButton).setOnClickListener{
             Toast.makeText(context,"Not Implemented Yet",Toast.LENGTH_SHORT).show()
 
-//            val bundle = Bundle()
-//            var ref ="detail3"
-//            bundle.putString("ref", ref)
-//            bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
-//            val dialog = CustomTableDialog()
-//            dialog.arguments = bundle
-//            val activity: AppCompatActivity = context as AppCompatActivity // ??
-//            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-//            dialog.show(transaction, "FullScreenDialog")
+            val bundle = Bundle()
+            var ref ="detail3"
+            bundle.putString("ref", ref)
+            bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
+            val dialog = CustomTableDialog()
+            dialog.arguments = bundle
+            val activity: AppCompatActivity = context as AppCompatActivity // ??
+            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+            dialog.show(transaction, "FullScreenDialog")
         }
 
         (card.findViewById(R.id.btn_log) as MaterialButton).setOnClickListener {
@@ -216,6 +216,7 @@ class TableThreeFrag : Fragment() {
         (card.findViewById(R.id.descriptionTV4) as TextView).text = ("Encounters: ${lista.size}")
         (card.findViewById(R.id.nplacesTV4) as TextView).text = ("Physical Spaces Found: ${mean/60}")
         (card.findViewById(R.id.durationTV4) as TextView).text = ("Total Time Elapsed: ${totalDuration/60} min")
+        card.visibility = View.VISIBLE
 
 
 

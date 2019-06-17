@@ -223,9 +223,22 @@ data class AuxResource5 (val name: String, val resources: MutableList<TableFiveR
         return dur
     }
 
+}
+
+data class AuxResource1 (val place: String, val resources: MutableList<TableOneResource>){
+
+    fun getPersonCount(): Int{
+        val map : MutableMap<String, Unit> = mutableMapOf()
+        for(i in resources){
+            if(!map.containsKey(i.shortName)) map[i.shortName] = Unit
+
+        }
+        return map.size
+    }
 
 
 }
+
 
 
 data class AuxResource3 (val nome: String, val resources: MutableList<TableThreeResource>)
@@ -324,6 +337,13 @@ data class TableThreeResource(val physical_space: String, val persons: ArrayList
         }
         return p.substring(0, p.length-2)
     }
+    fun getPersonsList(): List<String>{
+        val x: MutableList<String> = mutableListOf()
+        for (person in persons){
+            x.add(person.shortName)
+        }
+        return x
+    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(physical_space)
@@ -347,6 +367,44 @@ data class TableThreeResource(val physical_space: String, val persons: ArrayList
     }
 
 }
+
+
+
+data class TableOneResource(val shortName: String, val email: String, val physical_space: String, val duration: Long): Parcelable{
+    constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readLong()
+    ) {
+    }
+
+
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(shortName)
+        parcel.writeString(email)
+        parcel.writeString(physical_space)
+        parcel.writeLong(duration)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<TableFourResource> {
+        override fun createFromParcel(parcel: Parcel): TableFourResource {
+            return TableFourResource(parcel)
+        }
+
+        override fun newArray(size: Int): Array<TableFourResource?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+
+
 
 data class ShortPerson(val shortName: String): Parcelable{
 

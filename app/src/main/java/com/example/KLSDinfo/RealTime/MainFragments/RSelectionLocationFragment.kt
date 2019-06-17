@@ -19,7 +19,7 @@ import com.example.KLSDinfo.Models.Location
 import com.example.KLSDinfo.Models.PhysicalSpace
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Models.FakeRequest
-import com.example.KLSDinfo.RealTime.TableFragments.TableOneDialog
+import com.example.KLSDinfo.RealTime.TableFragments.TableOnefrag
 import com.example.KLSDinfo.UtilClasses.Tools
 import com.example.KLSDinfo.Volley.VolleySingleton
 import java.util.*
@@ -104,7 +104,7 @@ class RSelectionLocationFragment: Fragment() {
             Log.i("debug", "Enviado: $selectedLocations")
 
             bundle.putParcelableArrayList("resources", selectedLocations)
-            val dialog = TableOneDialog()
+            val dialog = TableOnefrag()
             dialog.arguments = bundle
             navigateToFragment(dialog, true)
 

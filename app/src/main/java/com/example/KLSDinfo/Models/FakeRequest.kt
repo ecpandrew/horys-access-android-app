@@ -96,4 +96,15 @@ class FakeRequest {
         }
     }
 
+    fun getTableOneData(json:String?): List<TableOneResource>{
+
+        val gson = Gson()
+
+        return if(json.isNullOrBlank()){
+            listOf()
+        }else {
+            gson.fromJson(json, object : TypeToken<List<TableOneResource>>() {}.type )
+        }
+    }
+
 }

@@ -21,12 +21,12 @@ import com.example.KLSDinfo.RealTime.MainFragments.RealFragment
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navView: NavigationView
     private lateinit var toolbar: Toolbar
     private lateinit var toggle: ActionBarDrawerToggle
     private val fragManager: FragmentManager = supportFragmentManager
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupAll()

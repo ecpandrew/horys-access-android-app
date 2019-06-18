@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
+import com.example.KLSDinfo.ErrorFragment
 import com.example.KLSDinfo.Historic.TableFragments.TableFourFrag
 import com.example.KLSDinfo.Historic.TableFragments.TableThreeFrag
 import com.example.KLSDinfo.UtilClasses.MultiCheckRoleAdapter
@@ -186,6 +187,8 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
             Response.ErrorListener {
                 VolleyLog.e("Error: ", it.message)
                 alertDialog.dismiss()
+                navigateToFragment(ErrorFragment(), true)
+
             })
         // Add the request to the RequestQueue.
         val roleRequest = StringRequest(
@@ -200,6 +203,8 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
             Response.ErrorListener {
                 VolleyLog.e("Error: ", it.message)
                 alertDialog.dismiss()
+                navigateToFragment(ErrorFragment(), true)
+
             })
         // Add the request to the RequestQueue.
 
@@ -208,8 +213,11 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         stringRequest.tag = this
         roleRequest.tag = this
         progress = AlertDialog.Builder(context)
-        progress.setCancelable(false)
         progress.setView(R.layout.loading_dialog_layout)
+        alertDialog.setCancelable(true)
+        alertDialog.setOnCancelListener {
+            navigateToFragment(ErrorFragment(), true)
+        }
         alertDialog = progress.create()
         alertDialog.show()
         queue.add(roleRequest)

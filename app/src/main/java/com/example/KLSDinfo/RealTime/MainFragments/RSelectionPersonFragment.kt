@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
+import com.example.KLSDinfo.ErrorFragment
 import com.example.KLSDinfo.UtilClasses.MultiCheckRoleAdapter
 import com.example.KLSDinfo.Models.*
 import com.example.KLSDinfo.R
@@ -129,6 +130,8 @@ open class RSelectionPersonFragment : Fragment() {
             Response.ErrorListener {
                 VolleyLog.e("Error: ", it.message)
                 alertDialog.dismiss()
+                navigateToFragment(ErrorFragment(), true)
+
             })
 
         // Add the request to the RequestQueue.
@@ -148,6 +151,8 @@ open class RSelectionPersonFragment : Fragment() {
             Response.ErrorListener {
                 VolleyLog.e("Error: ", it.message)
                 alertDialog.dismiss()
+                navigateToFragment(ErrorFragment(), true)
+
             })
 
         // Add the request to the RequestQueue.
@@ -161,6 +166,10 @@ open class RSelectionPersonFragment : Fragment() {
         progress.setCancelable(false)
         progress.setView(R.layout.loading_dialog_layout)
         alertDialog = progress.create()
+        alertDialog.setCancelable(true)
+        alertDialog.setOnCancelListener {
+            navigateToFragment(ErrorFragment(), true)
+        }
         alertDialog.show()
         queue.add(roleRequest)
 

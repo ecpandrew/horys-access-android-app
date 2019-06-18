@@ -20,6 +20,7 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
+import com.example.KLSDinfo.ErrorFragment
 import com.example.KLSDinfo.Historic.TableFragments.TableFiveFrag
 import com.example.KLSDinfo.Historic.adapters.PhysicalSpaceAdapter
 import com.example.KLSDinfo.Models.FakeRequest
@@ -283,14 +284,19 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
 
             },
             Response.ErrorListener {
-                Log.i("debug","Response is: reqeust failled}")
+                Log.i("debug","Response is: request failed}")
                 alertDialog.dismiss()
+                navigateToFragment(ErrorFragment(), true)
+
             })
         stringRequest.tag = this
         // Add the request to the RequestQueue.
         progress = AlertDialog.Builder(context)
-        progress.setCancelable(false)
         progress.setView(R.layout.loading_dialog_layout)
+        alertDialog.setCancelable(true)
+        alertDialog.setOnCancelListener {
+            navigateToFragment(ErrorFragment(), true)
+        }
         alertDialog = progress.create()
         alertDialog.show()
         queue.add(stringRequest)

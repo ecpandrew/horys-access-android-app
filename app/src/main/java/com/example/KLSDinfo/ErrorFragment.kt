@@ -1,4 +1,4 @@
-package com.example.KLSDinfo.Home
+package com.example.KLSDinfo
 
 import android.content.Context
 import android.os.Bundle
@@ -6,51 +6,39 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
-import com.example.KLSDinfo.R
+import com.example.KLSDinfo.Home.HomeFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.method_view.*
 
-class HomeFragment : Fragment(){
-
-
+class ErrorFragment: Fragment() {
 
     companion object {
-        fun newInstance(): HomeFragment {
-            return HomeFragment()
+        fun newInstance(): ErrorFragment {
+            return ErrorFragment()
         }
     }
 
-    lateinit var img : ImageView
-    lateinit var nomeTv: TextView
-    lateinit var emailTv: TextView
-    lateinit var group: Group
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         print("onCreateView")
-        val view: View = inflater.inflate(R.layout.main_home_layout, container, false)
+        val view: View = inflater.inflate(R.layout.error_layout, container, false)
 
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user != null) {
-            setupProfile(user, view)
-        } else {
-            group = view.findViewById(R.id.group)
-            group.visibility = View.GONE
+
+        val btn: Button = view.findViewById(R.id.button)
+
+        btn.setOnClickListener {
+            fragmentManager?.popBackStackImmediate()
         }
-
         return view
     }
 
-    private fun setupProfile(user: FirebaseUser, view: View) {
-        (view.findViewById(R.id.username) as TextView).text = user.displayName
-        (view.findViewById(R.id.useremail) as TextView).text = user.email
-        Picasso.get().load(user.photoUrl.toString()).into((view.findViewById(R.id.userimg) as ImageView))
-    }
 
 
     override fun onAttach(context: Context?) {
@@ -106,5 +94,3 @@ class HomeFragment : Fragment(){
 
 
 }
-
-

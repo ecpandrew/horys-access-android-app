@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
+import com.example.KLSDinfo.ErrorFragment
 import com.example.KLSDinfo.Historic.adapters.PhysicalSpaceAdapter
 import com.example.KLSDinfo.Models.Location
 import com.example.KLSDinfo.Models.PhysicalSpace
@@ -167,9 +168,12 @@ class RSelectionLocationFragment: Fragment() {
         val url = "http://smartlab.lsdi.ufma.br/semantic/api/physical_spaces/roots"
 
         progress = AlertDialog.Builder(context)
-        progress.setCancelable(false)
         progress.setView(R.layout.loading_dialog_layout)
         alertDialog = progress.create()
+        alertDialog.setCancelable(true)
+        alertDialog.setOnCancelListener {
+            navigateToFragment(ErrorFragment(), true)
+        }
         alertDialog.show()
 
         //Todo: Organizar esse metodo initComponents
@@ -191,6 +195,8 @@ class RSelectionLocationFragment: Fragment() {
             Response.ErrorListener {
                 VolleyLog.e("Error: ", it.message)
                 alertDialog.dismiss()
+                navigateToFragment(ErrorFragment(), true)
+
             })
 
         // Add the request to the RequestQueue.

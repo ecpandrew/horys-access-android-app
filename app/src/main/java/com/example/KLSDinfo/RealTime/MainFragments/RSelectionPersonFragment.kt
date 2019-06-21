@@ -62,8 +62,6 @@ open class RSelectionPersonFragment : Fragment() {
         return view
     }
 
-
-
     // Todo:  The application may be doing too much work on its main thread. fix it
     private fun setupUi() {
         alertDialog.show()

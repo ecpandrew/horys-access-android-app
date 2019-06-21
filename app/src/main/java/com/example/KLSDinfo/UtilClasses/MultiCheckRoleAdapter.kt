@@ -17,7 +17,7 @@ import com.thoughtbot.expandablecheckrecyclerview.models.CheckedExpandableGroup
 
 
 class MultiCheckRoleAdapter(
-    groups: MutableList <MultiCheckRole>) :
+    groups: List <MultiCheckRole>) :
     CheckableChildRecyclerViewAdapter<RoleViewHolder, MultiCheckPersonViewHolder>(groups) {
 
     private var onClickLister: OnClickListener? = null

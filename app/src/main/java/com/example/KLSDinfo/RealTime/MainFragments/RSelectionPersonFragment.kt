@@ -21,19 +21,31 @@ import com.example.KLSDinfo.Models.*
 import com.example.KLSDinfo.R
 import com.example.KLSDinfo.Models.FakeRequest
 import com.example.KLSDinfo.RealTime.TableFragments.TableTwoFrag
+import com.example.KLSDinfo.Repositories.InjectorUtils
+import com.example.KLSDinfo.Repositories.ListPersonViewModel
+import com.example.KLSDinfo.Repositories.SemanticApiService
+import com.example.KLSDinfo.Repositories.SemanticRepository
 import com.example.KLSDinfo.Volley.VolleySingleton
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 open class RSelectionPersonFragment : Fragment() {
 
     lateinit var mAdapter: MultiCheckRoleAdapter
-    lateinit var items: MutableList<MultiCheckRole>
-    lateinit var listOfRoles: List<Role2>
+    lateinit var items: List<MultiCheckRole>
     lateinit var progress: AlertDialog.Builder
     lateinit var alertDialog: AlertDialog
     lateinit var queue: RequestQueue
-    lateinit var mCheckRoles : MutableList<MultiCheckRole>
+    lateinit var mCheckRoles : List<MultiCheckRole>
+
+    lateinit var rv: RecyclerView
+    lateinit var layoutManager: LinearLayoutManager
+    lateinit var semanticRepository: SemanticRepository
+
+
 
 
     companion object {
@@ -43,124 +55,87 @@ open class RSelectionPersonFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view: View = inflater.inflate(R.layout.select_person_real_layout, container, false)
-
-        val rv : RecyclerView = view.findViewById(R.id.recycler_view)
-        val layoutManager = LinearLayoutManager(context)
-
-
-        mAdapter = MultiCheckRoleAdapter(mutableListOf())
-
-        rv.layoutManager = layoutManager
-        rv.adapter = mAdapter
-
-
-
-        val btnClear : Button = view.findViewById(R.id.buttonClear)
-        btnClear.setOnClickListener {
-            mAdapter.clearChoices()
-        }
-
-
-
-        val btnSend : Button = view.findViewById(R.id.buttonGet)
-
-        btnSend.setOnClickListener {
-
-
-            val seletedElements: ArrayList<Parcelable> = getSelectedElements()
-
-            val bundle = Bundle()
-
-            bundle.putParcelableArrayList("resources", seletedElements)
-
-
-            val dialog = TableTwoFrag()
-            dialog.arguments = bundle
-            navigateToFragment(dialog, true)
-
-
-
-        }
+        val view = inflater.inflate(R.layout.select_person_real_layout, container, false)
+        setup(view)
         print("onCreateView")
+        setupUi()
+        return view
+    }
 
 
-        // Todo; Arrumar o request Aninhado
 
-        queue = VolleySingleton.getInstance(context).requestQueue
-        val url = "http://smartlab.lsdi.ufma.br/semantic/api/persons"
-        val url_roles = "http://smartlab.lsdi.ufma.br/semantic/api/roles"
+    // Todo:  The application may be doing too much work on its main thread. fix it
+    private fun setupUi() {
+        alertDialog.show()
 
-        val stringRequest = StringRequest(
-            Request.Method.GET,
-            url,
-            Response.Listener<String> { response ->
-                // Display the first 500 characters of the response string.
-                VolleyLog.v("Response:%n %s", response)
-                val lista: MutableList<Person2> = FakeRequest().getAllPersons(response)
-                mCheckRoles = getMultiCheckRoles2(listOfRoles, lista)
-                mAdapter = MultiCheckRoleAdapter(mCheckRoles)
-                rv.layoutManager = layoutManager
-                rv.setHasFixedSize(true)
-                rv.adapter = mAdapter
+        semanticRepository.getAvailableRoles().enqueue(object : Callback<List<Role2>> {
 
+            override fun onResponse(call: Call<List<Role2>>, response: Response<List<Role2>>) {
 
-                val obj = object: MultiCheckRoleAdapter.OnClickListener{
-                    override fun onClick(view: View, group: ExpandableGroup<*>, pos: Int) {
-                        mAdapter.toggleSelection(pos)
-                        mAdapter.getSelectedItems()
-                        val status: Boolean = (view as CheckBox).isChecked
-                        for(i in 0 until mCheckRoles.size){
-                            if(mCheckRoles[i].name == group.title){
+                semanticRepository.getAvailablePeople().enqueue(object : Callback<List<Person2>> {
 
-                                run {
-                                    for(j in 0 until group.itemCount){
-                                        mAdapter.checkChild(status, i, j)
+                    override fun onResponse(call: Call<List<Person2>>, response2: Response<List<Person2>>) {
+
+                        mCheckRoles = semanticRepository.getMultiCheckRoles2(response.body()?: listOf(), response2.body()?: listOf())
+                        items = mCheckRoles
+                        mAdapter = MultiCheckRoleAdapter(mCheckRoles)
+                        rv.adapter = mAdapter
+                        rv.layoutManager = layoutManager
+                        rv.setHasFixedSize(true)
+                        rv.adapter = mAdapter
+                        val obj = object: MultiCheckRoleAdapter.OnClickListener{
+                            override fun onClick(view: View, group: ExpandableGroup<*>, pos: Int) {
+                                mAdapter.toggleSelection(pos)
+                                mAdapter.getSelectedItems()
+                                val status: Boolean = (view as CheckBox).isChecked
+                                for(i in 0 until mCheckRoles.size){
+                                    if(mCheckRoles[i].name == group.title){
+
+                                        run {
+                                            for(j in 0 until group.itemCount){
+                                                mAdapter.checkChild(status, i, j)
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
+                        mAdapter.setCheckBoxOnClickListener(obj)
+                        alertDialog.dismiss()
                     }
-                }
-                mAdapter.setCheckBoxOnClickListener(obj)
-                alertDialog.dismiss()
+
+                    override fun onFailure(call: Call<List<Person2>>, t: Throwable) {
+                        TODO()
+                    }
+                })
 
 
-            },
-            Response.ErrorListener {
-                VolleyLog.e("Error: ", it.message)
-                alertDialog.dismiss()
-                navigateToFragment(ErrorFragment(), true)
-
-            })
-
-        // Add the request to the RequestQueue.
 
 
-        val roleRequest = StringRequest(
-            Request.Method.GET,
-            url_roles,
-            Response.Listener<String> { response ->
-                // Display the first 500 characters of the response string.
-                VolleyLog.v("Response:%n %s", response)
-                listOfRoles = FakeRequest().getAllRoles(response)
-                queue.add(stringRequest)
+
+            }
+            override fun onFailure(call: Call<List<Role2>>, t: Throwable) {
+                TODO()
+            }
+        })
 
 
-            },
-            Response.ErrorListener {
-                VolleyLog.e("Error: ", it.message)
-                alertDialog.dismiss()
-                navigateToFragment(ErrorFragment(), true)
 
-            })
 
-        // Add the request to the RequestQueue.
-        // Todo: Eliminar a necessiade de 2 requests
-        stringRequest.retryPolicy = DefaultRetryPolicy(10 * 1000, 3, 1.0f)
-        roleRequest.retryPolicy = DefaultRetryPolicy(5 * 1000, 3, 1.0f)
-        stringRequest.tag = this
-        roleRequest.tag = this
+
+
+
+
+
+
+
+
+    }
+
+    private fun setup(view: View) {
+        rv = view.findViewById(R.id.recycler_view)
+        layoutManager = LinearLayoutManager(context)
+        semanticRepository = SemanticRepository.getInstance(SemanticApiService.create())
 
         progress = AlertDialog.Builder(context)
         progress.setCancelable(false)
@@ -170,12 +145,24 @@ open class RSelectionPersonFragment : Fragment() {
         alertDialog.setOnCancelListener {
             navigateToFragment(ErrorFragment(), true)
         }
-        alertDialog.show()
-        queue.add(roleRequest)
 
 
-        return view
+        val btnClear : Button = view.findViewById(R.id.buttonClear)
+        btnClear.setOnClickListener {
+            mAdapter.clearChoices()
+        }
+        // Todo: esse envio deve ocorrer por meio de armazenamento local
+        val btnSend : Button = view.findViewById(R.id.buttonGet)
+        btnSend.setOnClickListener {
+            val seletedElements: ArrayList<Parcelable> = getSelectedElements()
+            val bundle = Bundle()
+            bundle.putParcelableArrayList("resources", seletedElements)
+            val dialog = TableTwoFrag()
+            dialog.arguments = bundle
+            navigateToFragment(dialog, true)
+        }
     }
+
 
     fun navigateToFragment(fragToGo: Fragment, addToBackStack: Boolean = false){
         val transaction = fragmentManager!!.beginTransaction()
@@ -186,52 +173,6 @@ open class RSelectionPersonFragment : Fragment() {
         }
         transaction.commit()
     }
-    private fun getMultiCheckRoles2(listRoles: List<Role2>,lista: MutableList<Person2>): MutableList<MultiCheckRole> {
-
-        val map : MutableMap<String,MutableList<Person2>> = mutableMapOf()
-
-        listRoles.map {
-            map[it.name] = mutableListOf()
-        }
-
-
-
-        for (person in lista) {
-            for (role in person.roles!!) {
-                val list = map[role.name]
-                list!!.add(person)
-                map[role.name] = list
-            }
-        }
-
-
-        val multiRoles: MutableList<MultiCheckRole> = mutableListOf()
-
-
-
-
-        map.map {
-            multiRoles.add(MultiCheckRole(it.key, it.value, R.mipmap.ic_aluno))
-        }
-
-
-
-
-        items = multiRoles.filterNot {
-            it.persons.isEmpty()
-        } as MutableList<MultiCheckRole>
-
-        return items
-
-
-
-
-
-
-    }
-
-
-
 
 
     private fun getSelectedElements(): ArrayList<Parcelable> {
@@ -255,16 +196,6 @@ open class RSelectionPersonFragment : Fragment() {
     }
 
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        mAdapter.onSaveInstanceState(outState)
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        mAdapter.onRestoreInstanceState(savedInstanceState)
-
-    }
 
 
     override fun onAttach(context: Context?) {
@@ -300,8 +231,8 @@ open class RSelectionPersonFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        queue.cancelAll(this)
-        VolleyLog.e("Error: ", "Request Cancelado")
+//        queue.cancelAll(this)
+//        VolleyLog.e("Error: ", "Request Cancelado")
 
     }
 

@@ -159,7 +159,6 @@ class LoginActivity : AppCompatActivity() {
         val signInIntent: Intent = mGoogleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
         alertDialog.dismiss()
-
     }
 
     override fun onStart() {

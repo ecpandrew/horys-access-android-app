@@ -214,11 +214,11 @@ open class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetList
         roleRequest.tag = this
         progress = AlertDialog.Builder(context)
         progress.setView(R.layout.loading_dialog_layout)
+        alertDialog = progress.create()
         alertDialog.setCancelable(true)
         alertDialog.setOnCancelListener {
             navigateToFragment(ErrorFragment(), true)
         }
-        alertDialog = progress.create()
         alertDialog.show()
         queue.add(roleRequest)
     }

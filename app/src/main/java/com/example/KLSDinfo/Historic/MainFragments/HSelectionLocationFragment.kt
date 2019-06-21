@@ -291,13 +291,14 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
             })
         stringRequest.tag = this
         // Add the request to the RequestQueue.
+
         progress = AlertDialog.Builder(context)
         progress.setView(R.layout.loading_dialog_layout)
+        alertDialog = progress.create()
         alertDialog.setCancelable(true)
         alertDialog.setOnCancelListener {
             navigateToFragment(ErrorFragment(), true)
         }
-        alertDialog = progress.create()
         alertDialog.show()
         queue.add(stringRequest)
     }

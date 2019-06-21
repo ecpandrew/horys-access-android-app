@@ -1,6 +1,8 @@
 package com.example.KLSDinfo
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -25,6 +27,9 @@ import com.example.KLSDinfo.Home.HomeFragment
 import com.example.KLSDinfo.RealTime.MainFragments.RealFragment
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.squareup.picasso.Picasso
@@ -32,29 +37,34 @@ import com.squareup.picasso.Picasso
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+    companion object {
+        fun getLaunchIntent(from: Context) = Intent(from, MainActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        }
+    }
 
-    private lateinit var drawerLayout: DrawerLayout
-    private lateinit var navView: NavigationView
-    private lateinit var toolbar: Toolbar
-    private lateinit var toggle: ActionBarDrawerToggle
-    val MY_REQUEST_CODE = 1
-    lateinit var providers: List<AuthUI.IdpConfig>
+    private lateinit var drawerLayout : DrawerLayout
+    private lateinit var navView      : NavigationView
+    private lateinit var toolbar      : Toolbar
+    private lateinit var toggle       : ActionBarDrawerToggle
+    lateinit var mGoogleSignInClient  : GoogleSignInClient
+    lateinit var mGoogleSignInOptions : GoogleSignInOptions
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme_NoActionBar)
+
         super.onCreate(savedInstanceState)
-        providers = listOf(
-            AuthUI.IdpConfig.GoogleBuilder().build()
-        )
 
+        val user : FirebaseUser? = FirebaseAuth.getInstance().currentUser
 
+        if(user == null){
+            FirebaseAuth.getInstance().signOut()
+            startActivity(LoginActivity.getLaunchIntent(this))
+            finish()
+        }else{
 
-
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user != null) {
-            // User is signed in
             setupAll(user)
-        } else {
-            // User is signed out
-            showSignInOptions()
+            configureGoogleSignIn()
         }
 
 
@@ -70,32 +80,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         Log.i("Lifecycle", "OnCreate: Main Activity")
     }
+//
 
-    private fun showSignInOptions() {
-        startActivityForResult(
-            AuthUI.getInstance().createSignInIntentBuilder()
-                .setAvailableProviders(providers)
-                .setTheme(R.style.MyTheme)
-                .build(),
-            MY_REQUEST_CODE)
+    private fun configureGoogleSignIn() {
+        mGoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        mGoogleSignInClient = GoogleSignIn.getClient(this, mGoogleSignInOptions)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == MY_REQUEST_CODE){
-            val response = IdpResponse.fromResultIntent(data)
-            if(resultCode == Activity.RESULT_OK){
-                val user = FirebaseAuth.getInstance().currentUser
-                setupAll(user)
-            }else{
-            }
-        }
-    }
-
-
-
-
-    private fun setupAll(user: FirebaseUser?){
+    private fun setupAll(user: FirebaseUser){
 
         setContentView(R.layout.activity_main)
         toolbar = findViewById(R.id.toolbar)
@@ -110,9 +105,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
         val header: View = navView.getHeaderView(0)
-        (header.findViewById(R.id.user_name) as TextView).text = user?.displayName
-        (header.findViewById(R.id.user_email) as TextView).text = user?.email
-        Picasso.get().load(user?.photoUrl.toString()).into((header.findViewById(R.id.user_image) as ImageView))
+        (header.findViewById(R.id.user_name) as TextView).text = user.displayName
+        (header.findViewById(R.id.user_email) as TextView).text = user.email
+
+        if(user.photoUrl.toString().isNullOrBlank()){
+            (header.findViewById(R.id.user_image) as ImageView).setImageDrawable(getDrawable(R.mipmap.ic_aluno))
+        }else{
+            Picasso.get().load(user.photoUrl.toString()).into((header.findViewById(R.id.user_image) as ImageView))
+        }
 
         toggle = object : ActionBarDrawerToggle(
             this,
@@ -139,7 +139,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //        toggle.syncState()
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(R.mipmap.logo_round_round)
+        supportActionBar?.setHomeAsUpIndicator(R.mipmap.lsdi_transparent)
 
         navView.setNavigationItemSelectedListener(this)
 
@@ -204,13 +204,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_logout -> {
 
-                AuthUI.getInstance().signOut(this@MainActivity)
-                    .addOnCompleteListener {
-                        showSignInOptions()
-                    }
-                    .addOnFailureListener {
-                        e -> Toast.makeText(this@MainActivity,e.message,Toast.LENGTH_SHORT).show()
-                    }
+                signOut()
             }
         }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
@@ -218,6 +212,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    private fun signOut() {
+        startActivity(LoginActivity.getLaunchIntent(this))
+        FirebaseAuth.getInstance().signOut()
+        mGoogleSignInClient.signOut()
+
+    }
 
     fun navigateToFragment(fragToGo: Fragment, addToBackStack: Boolean = false){
         val transaction = supportFragmentManager.beginTransaction()

@@ -7,7 +7,7 @@
     <item>
         <bitmap
                 android:gravity="center"
-                android:src="@mipmap/logo_round_round"/>
+                android:src="@mipmap/lsdi_transparent"/>
     </item>
 
 </layer-list>

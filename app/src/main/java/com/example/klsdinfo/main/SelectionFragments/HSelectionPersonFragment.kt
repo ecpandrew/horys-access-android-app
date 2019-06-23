@@ -353,6 +353,7 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 
     }
 
+
     private fun getSelectedElements(): ArrayList<Parcelable> {
         val persons: ArrayList<Parcelable> = ArrayList()
         val roles: ArrayList<MultiCheckRole> = mAdapter.groups as ArrayList<MultiCheckRole>
@@ -367,6 +368,22 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         Log.i("debug", "Enviado: $persons")
         return persons
     }
+    private fun getSelectedPersons(): List<Person2> {
+        val persons: MutableList<Person2> = mutableListOf()
+        val roles: ArrayList<MultiCheckRole> = mAdapter.groups as ArrayList<MultiCheckRole>
+
+        for(i in 0 until roles.size){
+            for (j in 0 until roles[i].selectedChildren.size){
+                when(roles[i].selectedChildren[j]){
+                    true -> { persons.add(items[i].persons[j])
+                    }
+                }
+            }
+        }
+
+        return persons
+    }
+
 
 
     override fun onSaveInstanceState(outState: Bundle) {

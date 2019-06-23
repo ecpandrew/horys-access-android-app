@@ -221,10 +221,7 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
 
         }
 
-
-
         validateBackParentButton(false)
-
 
         val obj = object: PhysicalSpaceAdapter.OnClickListener {
             override fun onItemLongClick(view: View, obj: PhysicalSpace, pos: Int) {

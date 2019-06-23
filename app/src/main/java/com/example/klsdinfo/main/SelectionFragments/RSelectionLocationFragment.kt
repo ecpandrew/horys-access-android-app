@@ -2,14 +2,17 @@ package com.example.klsdinfo.main.SelectionFragments
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
 import android.view.*
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
@@ -18,6 +21,10 @@ import com.example.klsdinfo.ErrorFragment
 import com.example.klsdinfo.R
 import com.example.klsdinfo.Tools
 import com.example.klsdinfo.Volley.VolleySingleton
+import com.example.klsdinfo.data.ListLocationViewModel
+import com.example.klsdinfo.data.SemanticApiService
+import com.example.klsdinfo.data.SemanticRepository
+import com.example.klsdinfo.data.SemanticViewModelFactory
 import com.example.klsdinfo.data.models.FakeRequest
 import com.example.klsdinfo.data.models.Location
 import com.example.klsdinfo.data.models.PhysicalSpace
@@ -28,23 +35,21 @@ import java.util.*
 class RSelectionLocationFragment: Fragment() {
 
 
-    lateinit var recyclerView: RecyclerView
+    lateinit var rv: RecyclerView
     lateinit var mAdapter: PhysicalSpaceAdapter
     lateinit var pilha: Stack<List<PhysicalSpace>>
-    private lateinit var actionModeCallback: ActionModeCallback
-    private var actionMode: ActionMode? = null
     lateinit var back: Button
     lateinit var get: Button
-    lateinit var url: String
-
+    lateinit var layoutManager: LinearLayoutManager
+    lateinit var viewModel : ListLocationViewModel
     lateinit var progress: AlertDialog.Builder
     lateinit var alertDialog: AlertDialog
+    lateinit var progressBar: ProgressBar
+
 
     var listPhysicalSpaces: List<PhysicalSpace> = listOf()
-    lateinit var rq: RequestQueue
 
 
-    var params: Map<String, String>? = null
 
     companion object {
         fun newInstance(): RSelectionLocationFragment {
@@ -57,11 +62,10 @@ class RSelectionLocationFragment: Fragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         val view: View = inflater.inflate(R.layout.select_location_real_layout, container, false)
 
+        setupViewAndClickListeners(view)
 
-        url = "http://smartlab.lsdi.ufma.br/semantic/api/physical_spaces/roots"
 
-        initComponents(view)
-
+        setupViewModel()
 
 
 
@@ -70,194 +74,126 @@ class RSelectionLocationFragment: Fragment() {
         return view
     }
 
-
-
-    //Todo: Organizar esse metodo initComponents
-
-    private fun initComponents(view: View) {
-
-        recyclerView = view.findViewById(R.id.selectionRealRecyclerView)
-        recyclerView.visibility = View.GONE
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.setHasFixedSize(true)
+    private fun setupViewAndClickListeners(view: View) {
+        rv = view.findViewById(R.id.selectionRealRecyclerView)
+        progressBar = view.findViewById(R.id.progress_bar)
+        layoutManager = LinearLayoutManager(context)
+        rv.layoutManager = layoutManager
+        rv.setHasFixedSize(true)
         pilha = Stack()
-//        pilha.push(listPhysicalSpaces)
-
-        mAdapter = PhysicalSpaceAdapter(context!!, listPhysicalSpaces)
-        recyclerView.adapter = mAdapter
-
+        mAdapter = PhysicalSpaceAdapter(context!!, listOf())
+        rv.adapter = mAdapter
         back = view.findViewById(R.id.buttonClear)
         get = view.findViewById(R.id.buttonGet)
-
-
         get.setOnClickListener {
-
             val selectedItemPositions = mAdapter.getSelectedItems()
             val selectedLocations = ArrayList<Parcelable>()
-
             for (i in selectedItemPositions){
                 selectedLocations.add(pilha.peek()[i])
             }
-
             val bundle = Bundle()
-
-
             Log.i("debug", "Enviado: $selectedLocations")
-
             bundle.putParcelableArrayList("resources", selectedLocations)
             val dialog = TableOnefrag()
             dialog.arguments = bundle
             navigateToFragment(dialog, true)
-
         }
-
-
-        back.setOnClickListener {
-
-
-            when(pilha.size){
-                1 -> {Toast.makeText(context,"There are no parent nodes", Toast.LENGTH_LONG).show()}
-                else -> {
-                    pilha.pop()
-                    mAdapter.clearSelections()
-                    mAdapter.setItems(pilha.peek())
-                    mAdapter.notifyDataSetChanged()
-
-                }
-            }
-
-        }
-
-
 
         val obj = object: PhysicalSpaceAdapter.OnClickListener {
-            override fun onItemLongClick(view: View, obj: PhysicalSpace, pos: Int) {
-//                enableActionMode(pos)
-
-            }
-            override fun onCheckBoxClick(view: View, obj: PhysicalSpace, pos: Int) {
-                toggleSelection(pos)
-            }
-
+            override fun onItemLongClick(view: View, obj: PhysicalSpace, pos: Int) {}
+            override fun onCheckBoxClick(view: View, obj: PhysicalSpace, pos: Int) { mAdapter.toggleSelection(pos) }
             override fun onItemClick(view: View, obj: PhysicalSpace, pos: Int) {
                 if (mAdapter.getSelectedItemCount() > 0) run {
-//                    enableActionMode(pos)
-//                    Log.i("onclick", "onClick if")
 
                 }else{
                     Toast.makeText(context,"onClick: ${obj.name}", Toast.LENGTH_LONG).show()
                     if(obj.children != null){
-
                         pilha.push(obj.children)
                         mAdapter.setItems(obj.children)
                         mAdapter.notifyDataSetChanged()
-
+                        validateBackParentButton(true)
 
                     }
-
                 }
             }
         }
-
-
         mAdapter.setOnClickListener(obj)
-        actionModeCallback = ActionModeCallback()
+        validateBackParentButton(false)
 
 
-        val queue= VolleySingleton.getInstance(context).requestQueue
-        val url = "http://smartlab.lsdi.ufma.br/semantic/api/physical_spaces/roots"
-
-        progress = AlertDialog.Builder(context)
-        progress.setView(R.layout.loading_dialog_layout)
-        alertDialog = progress.create()
-        alertDialog.setCancelable(true)
-        alertDialog.setOnCancelListener {
-            navigateToFragment(ErrorFragment(), true)
-        }
-        alertDialog.show()
-
-        //Todo: Organizar esse metodo initComponents
-        val stringRequest = StringRequest(
-            Request.Method.GET,
-            url,
-            Response.Listener<String> { response ->
-                // Display the first 500 characters of the response string.
-                VolleyLog.v("Response:%n %s", response)
-                val lista: List<PhysicalSpace> = FakeRequest()
-                    .getAllPhysicalSpaces(response)
-                pilha.push(lista)
-                mAdapter.setItems(lista)
-                mAdapter.notifyDataSetChanged()
-                recyclerView.visibility = View.VISIBLE
-
-                alertDialog.dismiss()
-
-            },
-            Response.ErrorListener {
-                VolleyLog.e("Error: ", it.message)
-                alertDialog.dismiss()
-                navigateToFragment(ErrorFragment(), true)
-
-            })
-
-        // Add the request to the RequestQueue.
-
-
-        stringRequest.retryPolicy = DefaultRetryPolicy(20 * 1000, 3, 1.0f)
-        stringRequest.tag = this
-
-        queue.add(stringRequest)
     }
 
 
+    private fun setupViewModel(){
+        val repo = SemanticRepository.getInstance(SemanticApiService.create())
+        val factory = SemanticViewModelFactory(repo, activity?.application!!)
+        viewModel = ViewModelProviders.of(this, factory).get(ListLocationViewModel::class.java)
 
-    private fun enableActionMode(position: Int) {
-        if (actionMode == null) {
-            actionMode = this@RSelectionLocationFragment.activity!!.startActionMode(actionModeCallback)
-        }
-        toggleSelection(position)
-    }
-
-    private fun toggleSelection(position: Int) {
-        mAdapter.toggleSelection(position)
-//        val count = mAdapter.getSelectedItemCount()
-//
-//        if (count == 0) {
-//            actionMode!!.finish()
-//        } else {
-//            actionMode!!.title = count.toString()
-//            actionMode!!.invalidate()
-//        }
-    }
-
-
-    private inner class ActionModeCallback : ActionMode.Callback {
-        override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-            Tools.setSystemBarColor(activity, R.color.colorDarkBlue2)// comentar isso;
-            mode.menuInflater.inflate(R.menu.menu_search, menu)
-            return true
-        }
-
-        override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-            return false
-        }
-
-        override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-            val id = item.itemId
-            if (id == R.id.action_search) {
-
-
-                mode.finish()
-                return true
+        viewModel.loadingProgress.observe(this, androidx.lifecycle.Observer {
+            when(it){
+                true -> progressBar.visibility = View.VISIBLE
+                false -> progressBar.visibility = View.INVISIBLE
             }
-            return false
+        })
+
+        viewModel.mPhysicalSpaces.observe(this, androidx.lifecycle.Observer {
+            listPhysicalSpaces = it
+            mAdapter.setItems(it)
+            pilha.push(it)
+            mAdapter.notifyDataSetChanged()
+
+        })
+
+
+    }
+
+
+
+    private fun validateBackParentButton(b: Boolean) {
+
+        if(b){
+            back.setTextColor(resources.getColor(R.color.colorPrimary))
+            back.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.colorWhite))
+            back.setOnClickListener {
+
+                when(pilha.size){
+                    1 -> {
+                        Toast.makeText(context,"There are no parent nodes", Toast.LENGTH_LONG).show()
+                        validateBackParentButton(false)
+
+                    }
+                    2 -> {
+                        pilha.pop()
+                        mAdapter.clearSelections()
+                        mAdapter.setItems(pilha.peek())
+                        mAdapter.notifyDataSetChanged()
+                        validateBackParentButton(false)
+                    }
+                    else -> {
+                        pilha.pop()
+                        mAdapter.clearSelections()
+                        mAdapter.setItems(pilha.peek())
+                        mAdapter.notifyDataSetChanged()
+
+                    }
+                }
+
+            }
+            back.isClickable = true
+        }else{
+            back.setTextColor(resources.getColor(R.color.grey2))
+            back.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.grey))
+            back.setOnClickListener(null)
+            back.isClickable = false
         }
 
-        override fun onDestroyActionMode(mode: ActionMode) {
-            mAdapter!!.clearSelections()
-            actionMode = null
-        }
+
+
     }
+
+
+
+
 
     fun navigateToFragment(fragToGo: Fragment, addToBackStack: Boolean = false){
         val transaction = fragmentManager!!.beginTransaction()
@@ -308,6 +244,7 @@ class RSelectionLocationFragment: Fragment() {
 
     override fun onStart() {
         super.onStart()
+        viewModel.fetchPhysicalSpaces()
         print("onStart")
 
     }

@@ -11,7 +11,9 @@ class ListPersonDateViewModel(
 
     val mPeople = MutableLiveData<List<Person2>>().apply { value = emptyList() }
     val loadingProgress = MutableLiveData<Boolean>().apply { value = true }
+
     val date1 = MutableLiveData<String>().apply { value = "" }
+
     val date2 = MutableLiveData<String>().apply { value = "" }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)

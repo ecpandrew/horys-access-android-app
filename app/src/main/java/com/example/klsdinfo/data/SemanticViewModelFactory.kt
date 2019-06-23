@@ -20,6 +20,7 @@ class SemanticViewModelFactory constructor(private val repository: SemanticRepos
 
                 isAssignableFrom(ListPersonDateViewModel::class.java) -> ListPersonDateViewModel(repository, application)
 
+                isAssignableFrom(ListLocationViewModel::class.java) -> ListLocationViewModel(repository, application)
 
                 else ->
                     throw IllegalArgumentException("Unknown Class")

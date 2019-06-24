@@ -2,7 +2,6 @@ package com.example.klsdinfo.data
 
 import com.example.klsdinfo.data.models.Person2
 import com.example.klsdinfo.data.models.PhysicalSpace
-import com.example.klsdinfo.data.models.Role2
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

@@ -319,6 +319,9 @@ data class TableFourResource(val shortName: String, val physical_space: String, 
     }
 }
 
+
+
+
 data class TableThreeResource(val physical_space: String, val persons: ArrayList<ShortPerson>, val arrive: Long, val depart: Long) : Parcelable{
 
     constructor(parcel: Parcel) : this(
@@ -406,8 +409,8 @@ data class TableOneResource(val shortName: String, val email: String, val physic
 
 
 
-data class ShortPerson(val shortName: String): Parcelable{
-
+data class ShortPerson(val shortName: String) : Parcelable{
+//
     constructor(parcel: Parcel) : this(
         parcel.readString()!!
     )

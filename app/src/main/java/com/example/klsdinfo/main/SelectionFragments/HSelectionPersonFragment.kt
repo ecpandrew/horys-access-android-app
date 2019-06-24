@@ -2,6 +2,7 @@ package com.example.klsdinfo.main.SelectionFragments
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
@@ -21,6 +22,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.klsdinfo.R
 import com.example.klsdinfo.data.*
+import com.example.klsdinfo.data.database.AppDatabase
+import com.example.klsdinfo.data.database.GroupQuery
 import com.example.klsdinfo.data.models.MultiCheckRole
 import com.example.klsdinfo.data.models.Person2
 import com.example.klsdinfo.data.models.Role2
@@ -200,6 +203,11 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     private fun initComponents(view: View) {
         progressBar = view.findViewById(R.id.progress_bar)
 
+        progress = AlertDialog.Builder(context)
+        progress.setCancelable(false)
+        progress.setView(R.layout.loading_dialog_layout)
+        alertDialog = progress.create()
+
         rv = view.findViewById(R.id.recycler_view) as RecyclerView
         get = view.findViewById(R.id.buttonGet)
         clear = view.findViewById(R.id.buttonClear)
@@ -237,9 +245,20 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
                     when(methodRef){
                         0 -> {
                             Log.i("debug","go1")
-                            val dialog = TableThreeFrag()
-                            dialog.arguments = bundle
-                            navigateToFragment(dialog,true)
+
+
+                            // add query data in AppDatabase
+                            alertDialog.show()
+                            AsyncTask.execute {
+//                                AppDatabase.getInstance(context!!)?.groupDao()?.nukeTable()
+                                AppDatabase.getInstance(context!!)?.groupDao()?.insert(GroupQuery(0,getSelectedIds(),unixTimePast!!.toString(),unixTime!!.toString()))
+                                AppDatabase.destroyInstance()
+                                val dialog = TableThreeFrag()
+                                dialog.arguments = bundle
+                                navigateToFragment(dialog,true)
+                                alertDialog.dismiss()
+                            }
+
                         }
                         1 -> {
                             Log.i("debug","go2")
@@ -368,7 +387,8 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         Log.i("debug", "Enviado: $persons")
         return persons
     }
-    private fun getSelectedPersons(): List<Person2> {
+
+    private fun getSelectedIds(): String {
         val persons: MutableList<Person2> = mutableListOf()
         val roles: ArrayList<MultiCheckRole> = mAdapter.groups as ArrayList<MultiCheckRole>
 
@@ -380,8 +400,11 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
                 }
             }
         }
-
-        return persons
+        var id = ""
+        for (person in persons){
+            id+= "${person.holder.id}/"
+        }
+        return id
     }
 
 

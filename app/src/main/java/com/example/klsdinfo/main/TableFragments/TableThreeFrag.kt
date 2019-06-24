@@ -13,18 +13,19 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.fragment.app.FragmentTransaction
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.HttpHeaderParser
 import com.example.klsdinfo.R
-import com.example.klsdinfo.Volley.VolleySingleton
+import com.example.klsdinfo.data.*
+import com.example.klsdinfo.data.database.AppDatabase
 import com.example.klsdinfo.data.models.AuxResource3
-import com.example.klsdinfo.data.models.FakeRequest
-import com.example.klsdinfo.data.models.Person2
 import com.example.klsdinfo.data.models.TableThreeResource
 import com.example.klsdinfo.main.MainFragments.CustomTableFragment
 import com.example.klsdinfo.main.adapters.TableThreeAdapter
@@ -34,7 +35,7 @@ import java.text.NumberFormat
 import java.util.*
 
 
-class TableThreeFrag : Fragment() {
+class TableThreeFrag() : Fragment(), LifecycleOwner {
 
     val TAG: String = "FullScreenDialog"
     lateinit var id: String
@@ -49,8 +50,8 @@ class TableThreeFrag : Fragment() {
 
     lateinit var recyclerView: RecyclerView
     lateinit var mAdapter: TableThreeAdapter
-    lateinit var dividerItemDecoration: DividerItemDecoration
-
+    lateinit var data: List<TableThreeResource>
+    lateinit var viewModel : GroupViewModel
 
     companion object {
         fun newInstance(): TableThreeFrag {
@@ -58,114 +59,49 @@ class TableThreeFrag : Fragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.fetchData()
+    }
+
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
         super.onCreateView(inflater, container, savedInstanceState)
         val view: View = inflater.inflate(R.layout.table_three_layout, container, false)
         val linearLayoutManager = LinearLayoutManager(context)
 
+        data = listOf()
         recyclerView = view.findViewById(R.id.rv_resource_3)
         recyclerView.layoutManager = GridLayoutManager(context, 2)
         recyclerView.setHasFixedSize(true)
-//        dividerItemDecoration = DividerItemDecoration(recyclerView.context, linearLayoutManager.orientation)
-//        recyclerView.addItemDecoration(dividerItemDecoration)
 
 
-        queue = VolleySingleton.getInstance(context).requestQueue
+        createViewModel()
 
 
+        viewModel.getResources().observe(viewLifecycleOwner, Observer {
+            Log.i("retrofit", "table three list = $it")
 
+            if (!it.isNullOrEmpty()){
 
-
-
-        val bundle: Bundle? = arguments
-
-        if (bundle == null || bundle.isEmpty){
-            // Todo: Não há resultados
-
-        }else {
-            //todo: tratar os unix para o caso de vir null
-            val persons: List<Person2>? = bundle.getParcelableArrayList("resources")
-            val unix: Long = bundle.getLong("date")
-            val unixPast: Long = bundle.getLong("date2")
-            Log.i("recebido", persons.toString())
-            Log.i("recebido", "${bundle.getLong("date")} and ${bundle.getLong("date2")}")
-
-
-            if (persons == null){
-                // Todo: tratar isso dai
-            }else{
-                Log.i("recebido", persons.toString())
-                Log.i("recebido", "${bundle.getLong("date")} and ${bundle.getLong("date2")}")
-                id = ""
-                val pessoas = mutableListOf<String>()
-                for (person in persons){
-                    id += "${person.holder.id}/"
-                    pessoas.add(person.shortName)
-                }
-                Log.i("recebido", id)
-
-
-                url = "http://smartlab.lsdi.ufma.br/service/persons/${id}rendezvous/${unixPast+10800}/${unix+10800}"
-                // todo: Arrumar o caso do timeout
-
-                progress = AlertDialog.Builder(context)
-
-                progress.setCancelable(false)
-                progress.setView(R.layout.loading_dialog_layout)
-                alertDialog = progress.create()
-                alertDialog.show()
-
-                makeRequest(url)
-
-
+                generateParentTable(it)
+                mAdapter = TableThreeAdapter(context!!, generateData(it))
+                recyclerView.adapter = mAdapter
+                mAdapter.notifyDataSetChanged()
             }
-
-        }
+        })
 
 
         return view
     }
 
+    private fun createViewModel() {
+        val repo = DanielServiceRepository.getInstance(DanielApiService.create(), AppDatabase.getInstance(activity?.applicationContext!!)!!)
+        val factory = DanielServiceViewModelFactory(repo, activity?.application!!)
 
-
-    private fun makeRequest(url: String) {
-        val stringRequest = VolleyUTF8EncodingStringRequest(
-            Request.Method.GET,
-            url,
-            Response.Listener<String> { response ->
-                // Display the first 500 characters of the response string.
-                Log.i("Response", response)
-                val lista: List<TableThreeResource> = FakeRequest()
-                    .getTableThreeData(response)
-                if (lista.isNotEmpty()) {
-
-
-                    //Todo: esse trecho está funcionando, porem não da melhor forma possivel
-                    Log.i("recebido", lista.toString())
-
-                    generateParentTable(lista)
-
-                    mAdapter = TableThreeAdapter(context!!, generateData(lista))
-                    recyclerView.adapter = mAdapter
-                    mAdapter.notifyDataSetChanged()
-                    //generateChildCard(lista, pessoas)
-
-
-                }
-                alertDialog.dismiss()
-            },
-            Response.ErrorListener {
-                VolleyLog.e("Error: tratar o request que falhou ")
-                alertDialog.dismiss()
-            })
-
-        // Add the request to the RequestQueue.
-
-        stringRequest.retryPolicy = DefaultRetryPolicy(20 * 1000, 3, 1.0f)
-        stringRequest.tag = this
-        queue.add(stringRequest)
-
+        viewModel = ViewModelProviders.of(this, factory).get(GroupViewModel::class.java)
     }
 
 
@@ -252,9 +188,10 @@ class TableThreeFrag : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        queue.cancelAll(this)
 
     }
+
+
 
 
     class VolleyUTF8EncodingStringRequest(

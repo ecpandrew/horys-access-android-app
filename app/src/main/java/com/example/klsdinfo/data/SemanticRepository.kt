@@ -20,12 +20,6 @@ class SemanticRepository private constructor(private val semanticService: Semant
     }
 
 
-
-
-
-
-
-
     private var cached: List<Person2> = listOf()
 
 

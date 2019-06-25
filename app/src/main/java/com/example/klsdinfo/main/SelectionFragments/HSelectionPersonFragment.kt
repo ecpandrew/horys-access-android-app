@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -249,15 +250,23 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 
                             // add query data in AppDatabase
                             alertDialog.show()
-                            AsyncTask.execute {
-//                                AppDatabase.getInstance(context!!)?.groupDao()?.nukeTable()
-                                AppDatabase.getInstance(context!!)?.groupDao()?.insert(GroupQuery(0,getSelectedIds(),unixTimePast!!.toString(),unixTime!!.toString()))
-                                AppDatabase.destroyInstance()
-                                val dialog = TableThreeFrag()
-                                dialog.arguments = bundle
-                                navigateToFragment(dialog,true)
+                            val ids = getSelectedIds()
+                            if(ids.isBlank()){
                                 alertDialog.dismiss()
+                                Toast.makeText(context,"You must select something!", Toast.LENGTH_SHORT).show()
+
+                            }else{
+                                AsyncTask.execute {
+                                    //                                AppDatabase.getInstance(context!!)?.groupDao()?.nukeTable()
+                                    AppDatabase.getInstance(context!!)?.groupDao()?.insert(GroupQuery(0,getSelectedIds(),unixTimePast!!.toString(),unixTime!!.toString()))
+                                    AppDatabase.destroyInstance()
+                                    val dialog = TableThreeFrag()
+                                    dialog.arguments = bundle
+                                    navigateToFragment(dialog,true)
+                                    alertDialog.dismiss()
+                                }
                             }
+
 
                         }
                         1 -> {
@@ -539,7 +548,7 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         }
         transaction.commit()
     }
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         print("onAttach")
     }

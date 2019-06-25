@@ -30,7 +30,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.squareup.picasso.Picasso
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
 
     companion object {
         fun getLaunchIntent(from: Context) = Intent(from, MainActivity::class.java).apply {
@@ -53,32 +53,38 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val user : FirebaseUser? = FirebaseAuth.getInstance().currentUser
 
         if(user == null){
+
             FirebaseAuth.getInstance().signOut()
             startActivity(LoginActivity.getLaunchIntent(this))
             finish()
-        }else{
+
+        }else{ // Todo : Tratar esse !! operator
             if(user.isEmailVerified){
-                setupAll(user)
-                configureGoogleSignIn()
+
+                if(true){ //user.email!!.isLsdiEmail()){ descomente essa linha para permitir apenas email LSDI
+                    setupAll(user)
+                    configureGoogleSignIn()
+                    if (savedInstanceState == null) {
+                        navView.setCheckedItem(R.id.nav_home)
+                        navigateToFragment(HomeFragment.newInstance())
+                        title = "Home Page"
+                    }
+                }else{
+
+                    FirebaseAuth.getInstance().signOut()
+                    startActivity(LoginActivity.getLaunchIntent(this))
+                    finish()
+                }
             }else{
                 FirebaseAuth.getInstance().signOut()
                 startActivity(VerifyActivity.getLaunchIntent(this))
                 finish()
-
             }
         }
 
 
 
 
-
-
-
-        if (savedInstanceState == null) {
-            navView.setCheckedItem(R.id.nav_home)
-            navigateToFragment(HomeFragment.newInstance())
-            title = "Home Page"
-        }
         Log.i("Lifecycle", "OnCreate: Main Activity")
     }
 //
@@ -299,6 +305,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
         }
 
+    }
+    fun String.isLsdiEmail(): Boolean{
+
+        if (this.domain == "lsdi.ufma.br"){
+            return true
+        }
+        return false
     }
 
 }

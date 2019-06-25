@@ -33,7 +33,7 @@ class SemanticRepository private constructor(private val semanticService: Semant
             val call = SemanticApiService.create().getAvailablePeople()
             call.enqueue(object : Callback<List<Person2>> {
                 override fun onResponse(call: Call<List<Person2>>, response: Response<List<Person2>>) {
-                    if(response.isSuccessful && !response.body().isNullOrEmpty()){
+                    if(response.isSuccessful){
                         cached = response.body()!!
                         success(response.body()!!)
                     }

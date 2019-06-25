@@ -68,12 +68,10 @@ class HistoryFragment : Fragment(){
     }
 
 
-
-
-
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         print("onAttach")
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

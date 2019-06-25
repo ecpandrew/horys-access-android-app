@@ -56,9 +56,9 @@ class DanielServiceRepository private constructor(private val danielService: Dan
 
 
 
-                    if(response.isSuccessful && !response.body().isNullOrEmpty()){
-                        val teste = response.body()
-                        success(response.body() ?: listOf())
+                    if(response.isSuccessful){
+                        if(response.body().isNullOrEmpty()) success(listOf())
+                        else success(response.body()!!)
 
                         Log.i("retrofit", "repository list ${response.body()}")
                     }
@@ -72,6 +72,7 @@ class DanielServiceRepository private constructor(private val danielService: Dan
                     failure()
                 }
             })
+
 
         }
 

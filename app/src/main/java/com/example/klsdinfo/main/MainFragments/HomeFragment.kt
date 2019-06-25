@@ -1,11 +1,15 @@
 package com.example.klsdinfo.main.MainFragments
 
+import android.app.Notification
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.Group
@@ -35,24 +39,14 @@ class HomeFragment : Fragment(){
         val view: View = inflater.inflate(R.layout.main_home_layout, container, false)
 
         val user = FirebaseAuth.getInstance().currentUser
-        if (user != null) {
-            setupProfile(user, view)
-        } else {
-            group = view.findViewById(R.id.group)
-            group.visibility = View.GONE
-        }
+        val trackBtn: Button = view.findViewById(R.id.track_btn)
 
         return view
     }
 
-    private fun setupProfile(user: FirebaseUser, view: View) {
-        (view.findViewById(R.id.username) as TextView).text = user.displayName
-        (view.findViewById(R.id.useremail) as TextView).text = user.email
-        Picasso.get().load(user.photoUrl.toString()).into((view.findViewById(R.id.userimg) as ImageView))
-    }
 
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         print("onAttach")
     }

@@ -34,15 +34,6 @@ class ErrorFragment: Fragment() {
 
 
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        print("onAttach")
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        print("onCreate")
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

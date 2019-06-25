@@ -17,31 +17,35 @@ class GroupViewModel(
     ) : AndroidViewModel(application), LifecycleObserver{
 
 
-//    val date1 = MutableLiveData<String>().apply { value = dateArr[0] }
-//
-//    val date2 = MutableLiveData<String>().apply { value = dateArr[1] }
-//
-//    val mPeople = MutableLiveData<List<Person2>>().apply { value = listOfPersons }
 
-    val loadingProgress = MutableLiveData<Boolean>().apply { value = true }
+    val loadingProgress = MutableLiveData<Boolean>().apply { value = false }
 
     private val listResource = MutableLiveData<List<TableThreeResource>>().apply { value = mutableListOf() }
 
-    val listResource2 = MutableLiveData<String>().apply { value = "" }
 
 
     fun getResources() : MutableLiveData<List<TableThreeResource>>{
         return listResource
     }
 
+    fun getProgress(): MutableLiveData<Boolean>{
+        return loadingProgress
+    }
+
     fun fetchData(){
         Log.i("retrofit", "fetch init")
+        loadingProgress.postValue(true)
 
-        this.repo.getGroupRendezvous({
+        repo.getGroupRendezvous({
             Log.i("retrofit", " fetch sucess")
             listResource.postValue(it)
+            loadingProgress.postValue(false)
+
         }, {
             Log.i("retrofit", "fetch failure")
+            listResource.postValue(listOf())
+            loadingProgress.postValue(false)
+
 
         })
     }

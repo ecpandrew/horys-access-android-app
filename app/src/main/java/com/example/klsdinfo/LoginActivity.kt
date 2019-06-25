@@ -82,10 +82,10 @@ class LoginActivity : AppCompatActivity() {
         alertDialog = progress.create()
 
         mAuth = FirebaseAuth.getInstance()
-
+        mAuth.signOut()
         mCreateUser.setOnClickListener {
-            val intent = Intent(applicationContext, RegisterActivity::class.java)
-            startActivity(intent)
+//            val intent = Intent(applicationContext, RegisterActivity::class.java
+            startActivity(RegisterActivity.getLaunchIntent(applicationContext))
             finish()
         }
 
@@ -119,7 +119,10 @@ class LoginActivity : AppCompatActivity() {
         }
 
 
+
+
         mLoginGoogleBtn.setOnClickListener {
+
             alertDialog.show()
             googleSignIn()
         }
@@ -156,6 +159,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun googleSignIn() {
+
         val signInIntent: Intent = mGoogleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
         alertDialog.dismiss()

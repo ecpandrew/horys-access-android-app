@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -45,9 +46,10 @@ class TableThreeFrag() : Fragment(), LifecycleOwner {
     lateinit var linear: LinearLayout
     lateinit var parentLinear: LinearLayout
     private lateinit var queue: RequestQueue
+
     lateinit var progress: AlertDialog.Builder
     lateinit var alertDialog: AlertDialog
-
+    lateinit var progressBar: ProgressBar
     lateinit var recyclerView: RecyclerView
     lateinit var mAdapter: TableThreeAdapter
     lateinit var data: List<TableThreeResource>
@@ -76,6 +78,7 @@ class TableThreeFrag() : Fragment(), LifecycleOwner {
         recyclerView = view.findViewById(R.id.rv_resource_3)
         recyclerView.layoutManager = GridLayoutManager(context, 2)
         recyclerView.setHasFixedSize(true)
+        progressBar = view.findViewById(R.id.progress_bar)
 
 
         createViewModel()
@@ -90,6 +93,13 @@ class TableThreeFrag() : Fragment(), LifecycleOwner {
                 mAdapter = TableThreeAdapter(context!!, generateData(it))
                 recyclerView.adapter = mAdapter
                 mAdapter.notifyDataSetChanged()
+            }
+        })
+
+        viewModel.getProgress().observe(viewLifecycleOwner, Observer {
+            when(it){
+                true -> progressBar.visibility = View.VISIBLE
+                false -> progressBar.visibility = View.GONE
             }
         })
 

@@ -204,20 +204,7 @@ class RSelectionLocationFragment: Fragment() {
         }
         transaction.commit()
     }
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.menu_search_setting, menu)
-    }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item!!.itemId == android.R.id.home) {
-            //finish();
-            Log.i("debug", "if")
-        } else {
-            Log.i("debug", "else")
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
     private fun deleteInboxes() {
         val selectedItemPositions = mAdapter.getSelectedItems()
@@ -227,7 +214,7 @@ class RSelectionLocationFragment: Fragment() {
 
 
     }
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         print("onAttach")
     }

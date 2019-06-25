@@ -113,6 +113,7 @@ class RSelectionPersonFragment : Fragment(), LifecycleOwner {
             mAdapter.clearSelections()
         }
         // Todo: esse envio deve ocorrer por meio de armazenamento local
+
         val btnSend : Button = view.findViewById(R.id.buttonGet)
         btnSend.setOnClickListener {
             val seletedElements: ArrayList<Parcelable> = getSelectedElements()
@@ -197,6 +198,7 @@ class RSelectionPersonFragment : Fragment(), LifecycleOwner {
         return items
     }
 
+
     fun navigateToFragment(fragToGo: Fragment, addToBackStack: Boolean = false){
         val transaction = fragmentManager!!.beginTransaction()
         transaction.replace(R.id.fragment_container, fragToGo)
@@ -226,7 +228,7 @@ class RSelectionPersonFragment : Fragment(), LifecycleOwner {
     }
 
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         print("onAttach")
     }

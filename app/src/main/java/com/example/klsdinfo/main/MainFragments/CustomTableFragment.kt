@@ -617,7 +617,7 @@ class CustomTableFragment : DialogFragment() {
 
 
     private fun cancelUpload() {
-        dialog.dismiss()
+        dialog?.dismiss()
     }
 
     override fun onStart() {

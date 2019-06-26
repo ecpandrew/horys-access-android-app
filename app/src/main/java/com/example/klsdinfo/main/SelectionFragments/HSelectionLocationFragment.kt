@@ -101,6 +101,7 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
     }
 
     private fun setDefaultTime(){
+
         var m: String = ""
         val calendar2 = Calendar.getInstance()
         val timeZone: TimeZone = calendar2!!.timeZone

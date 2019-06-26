@@ -44,15 +44,10 @@ class DanielServiceRepository private constructor(private val danielService: Dan
 
                 override fun onResponse(call: Call<List<TableThreeResource>>, response: Response<List<TableThreeResource>>
                 ) {
-                    Log.i("retrofit", "repository on response")
-                    Log.i("retrofit", "response.isSucessful =  ${response.isSuccessful}")
-                    Log.i("retrofit", "response.body().isNullEmpty: ${response.body().isNullOrEmpty()}")
-                    Log.i("retrofit", "response.body().isNull: ${response.body()==null}")
-
-                    Log.i("retrofit", "response.errorBody(): ${response.errorBody()}")
 
 
-                    Log.i("retrofit", "url: ${response.raw().request().url()}")
+
+                    Log.i("timestamp", "url usada: ${response.raw().request().url()}")
 
 
 

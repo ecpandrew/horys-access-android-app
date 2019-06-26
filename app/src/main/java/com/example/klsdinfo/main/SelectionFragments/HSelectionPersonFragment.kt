@@ -95,7 +95,10 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 
 
         initDateComponents(view)
+
         setDefaultTime()
+
+
         return view
     }
 
@@ -228,7 +231,8 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
             var date2 = null
 
             if (unixTime == null || unixTimePast == null){
-                setDefaultUnixTime()
+//                setDefaultUnixTime(
+                setDefaultTime()
             }else{
 //                setCustomUnixTime()
             }
@@ -330,14 +334,24 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 
     private fun setDefaultTime(){
         var m: String = ""
+        //todo: remover esse !!
         val calendar2 = Calendar.getInstance()
+
         val timeZone: TimeZone = calendar2!!.timeZone
-        val cals: Date = Calendar.getInstance(TimeZone.getDefault()).time
+
+        val cals: Date = Calendar.getInstance().time//TimeZone.getDefault()).time
+
         var milis: Long = cals.time
-        milis += timeZone.getOffset(milis)
+
+
+//        milis += timeZone.getOffset(milis)
 
         unixTime = milis/1000
         unixTimePast = (milis/1000)-604800
+
+        Log.i("timestamp", "atual: $unixTime")
+        Log.i("timestamp", "passado: $unixTimePast")
+
 
         dayTv2.text = calendar2.get(Calendar.DAY_OF_MONTH).toString()
         monthTv2.text = getMonth(calendar2.get(Calendar.MONTH))//calendar.getDisplayName(Calendar.MONTH, Calendar.LONG,Locale.getDefault()).substring(0,3)//(calendar.get(Calendar.MONTH)+1).toString()
@@ -487,6 +501,8 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         timePickerDialog.title = "Escolher Horario"
         timePickerDialog.isThemeDark = true
     }
+
+
     override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute_: Int, second: Int) {
         hour = hourOfDay
         minute = minute_
@@ -496,6 +512,7 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
                 " " +
                 (if (hour < 10) "0$hour" else hour) + ":" +
                 if (minute < 10) "0$minute" else minute
+
 
         if (TAG == 1) {
 
@@ -511,6 +528,8 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
             unixTime = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(dateString).time/1000
 
 
+            Log.i("timestamp", "atual escolhido: $unixTime")
+
 
 
         } else {
@@ -524,11 +543,13 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
             timeTv.text = time
 
             unixTimePast = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(dateString).time/1000
+            Log.i("timestamp", "passado escolhido: $unixTimePast")
 
 
 
         }
     }
+
     override fun onCancel(dialog: DialogInterface?) {
         year = 0
         month = 0

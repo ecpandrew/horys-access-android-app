@@ -5,9 +5,10 @@
        android:layout_height="match_parent"
        >
 
-
     <Button
+
             android:text="track"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/track_btn" android:layout_marginBottom="8dp"

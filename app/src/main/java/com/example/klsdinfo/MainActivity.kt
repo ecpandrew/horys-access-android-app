@@ -59,24 +59,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             finish()
 
         }else{ // Todo : Tratar esse !! operator
+            configureGoogleSignIn()
             if(user.isEmailVerified){
-
-                if(true){ //user.email!!.isLsdiEmail()){ descomente essa linha para permitir apenas email LSDI
+                if(true){//)user.email!!.isLsdiEmail()){ //descomente essa linha para permitir apenas email LSDI
                     setupAll(user)
-                    configureGoogleSignIn()
                     if (savedInstanceState == null) {
                         navView.setCheckedItem(R.id.nav_home)
                         navigateToFragment(HomeFragment.newInstance())
                         title = "Home Page"
                     }
                 }else{
-
                     FirebaseAuth.getInstance().signOut()
+                    mGoogleSignInClient.signOut()
                     startActivity(LoginActivity.getLaunchIntent(this))
                     finish()
                 }
             }else{
                 FirebaseAuth.getInstance().signOut()
+                mGoogleSignInClient.signOut()
                 startActivity(VerifyActivity.getLaunchIntent(this))
                 finish()
             }

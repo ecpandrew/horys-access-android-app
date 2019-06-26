@@ -82,7 +82,8 @@ class LoginActivity : AppCompatActivity() {
         alertDialog = progress.create()
 
         mAuth = FirebaseAuth.getInstance()
-        mAuth.signOut()
+
+//        mAuth.signOut()
         mCreateUser.setOnClickListener {
 //            val intent = Intent(applicationContext, RegisterActivity::class.java
             startActivity(RegisterActivity.getLaunchIntent(applicationContext))
@@ -114,15 +115,12 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this, "Success: check your email box", Toast.LENGTH_LONG).show()
                     }
                 }
-
-
         }
 
 
 
 
         mLoginGoogleBtn.setOnClickListener {
-
             alertDialog.show()
             googleSignIn()
         }

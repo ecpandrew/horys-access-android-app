@@ -44,7 +44,7 @@ class TableFourFrag : Fragment() {
     lateinit var recyclerView: RecyclerView
     lateinit var mAdapter: TableFourAdapter
     lateinit var dividerItemDecoration: DividerItemDecoration
-
+    lateinit var noResults: TextView
 
 
     companion object {
@@ -56,7 +56,8 @@ class TableFourFrag : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view: View = inflater.inflate(R.layout.table_four_layout, container, false)
-        val linearLayoutManager = LinearLayoutManager(context)
+        noResults = view.findViewById(R.id.no_result)
+
 
         recyclerView = view.findViewById(R.id.tableFourRV)
         recyclerView.layoutManager = GridLayoutManager(context,2)
@@ -98,7 +99,9 @@ class TableFourFrag : Fragment() {
                 }
                 Log.i("recebido", id)
 
-                url = "http://smartlab.lsdi.ufma.br/service/persons/${id}physical_spaces/${unixPast+10800}/${unix+10800}"
+                //url = "http://smartlab.lsdi.ufma.br/service/persons/${id}physical_spaces/${unixPast+10800}/${unix+10800}"
+
+                url = "http://smartlab.lsdi.ufma.br/service/persons/${id}physical_spaces/${unixPast}/${unix}"
 
                 progress = AlertDialog.Builder(context)
                 progress.setCancelable(false)
@@ -127,7 +130,9 @@ class TableFourFrag : Fragment() {
                 Log.i("Response", response)
                 val lista: List<TableFourResource> = FakeRequest()
                     .getTableFourData(response)
+
                 if (lista.isNotEmpty()) {
+                    noResults.visibility = View.GONE
 
 
                     //Todo: esse trecho está funcionando, porem não da melhor forma possivel
@@ -225,6 +230,9 @@ class TableFourFrag : Fragment() {
 
 
 
+                }else{
+                    noResults.visibility = View.VISIBLE
+
                 }
                 alertDialog.dismiss()
 
@@ -233,6 +241,8 @@ class TableFourFrag : Fragment() {
             Response.ErrorListener {
                 VolleyLog.e("Error: " + it.message)
                 alertDialog.dismiss()
+                noResults.visibility = View.VISIBLE
+                noResults.text = it.message
 
                 //Todo: Tratar o caso do request falhar
             })

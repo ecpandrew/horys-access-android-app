@@ -238,12 +238,13 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
             }
 
             if(arguments == null){
-                // Todo: Do nothing
+
             }else{
                 val methodRef : Int? = arguments?.getInt("ref")
                 if(methodRef == null){
-                    // Todo: do nothing
                 }else{
+
+                    // Todo: remover esse bunder e obter a method ref do banco de dados
                     bundle.putParcelableArrayList("resources", seletedElements)
                     bundle.putLong("date", unixTime!!)
                     bundle.putLong("date2", unixTimePast!!)
@@ -261,7 +262,7 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 
                             }else{
                                 AsyncTask.execute {
-                                    //                                AppDatabase.getInstance(context!!)?.groupDao()?.nukeTable()
+//                                                                    AppDatabase.getInstance(context!!)?.groupDao()?.nukeTable()
                                     AppDatabase.getInstance(context!!)?.groupDao()?.insert(GroupQuery(0,getSelectedIds(),unixTimePast!!.toString(),unixTime!!.toString()))
                                     AppDatabase.destroyInstance()
                                     val dialog = TableThreeFrag()
@@ -323,10 +324,7 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 
 
 
-    private fun clearDate() {
-//        cardDate.text = "yyyy-MM-dd HH:mm"
-//        cardDate2.text = "yyyy-MM-dd HH:mm"
-    }
+
 
 
 
@@ -556,7 +554,6 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         day = 0
         hour = 0
         minute = 0
-        clearDate()
         calendar = null
         calendar2 = null
     }

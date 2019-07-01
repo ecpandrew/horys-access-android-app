@@ -41,7 +41,7 @@ class TableTwoFrag : Fragment() {
     lateinit var recyclerView: RecyclerView
     lateinit var mAdapter: TableTwoAdapter
     lateinit var dividerItemDecoration: DividerItemDecoration
-
+    lateinit var noResults: TextView
 
     companion object {
         fun newInstance(): TableTwoFrag {
@@ -54,6 +54,7 @@ class TableTwoFrag : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view: View = inflater.inflate(R.layout.table_two_layout, container, false)
+        noResults = view.findViewById(R.id.no_result)
 
         recyclerView = view.findViewById(R.id.rv_resource_2)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -121,14 +122,24 @@ class TableTwoFrag : Fragment() {
                 val r: List<TableTwoResource> = FakeRequest()
                     .getTableTwoData(response)
                 if (r.isNotEmpty()) {
+                    noResults.visibility = View.GONE
+
                     mapResults[role] = r
                     mAdapter = TableTwoAdapter(context!!, mapResults)
                     recyclerView.adapter = mAdapter
                     mAdapter.notifyDataSetChanged()
+                }else{
+                    noResults.visibility = View.VISIBLE
+
                 }
+
             },
             Response.ErrorListener {
                 VolleyLog.e("Error: ", it.message)
+                noResults.text = it.message
+                noResults.visibility = View.VISIBLE
+
+
             })
         stringRequest.retryPolicy = DefaultRetryPolicy(20 * 1000, 3, 1.0f)
         stringRequest.tag = this

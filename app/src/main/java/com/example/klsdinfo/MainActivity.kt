@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }else{ // Todo : Tratar esse !! operator
             configureGoogleSignIn()
             if(user.isEmailVerified){
-                if(true){//)user.email!!.isLsdiEmail()){ //descomente essa linha para permitir apenas email LSDI
+                if(user.email!!.isLsdiEmail()){ //descomente essa linha para permitir apenas email LSDI
                     setupAll(user)
                     if (savedInstanceState == null) {
                         navView.setCheckedItem(R.id.nav_home)

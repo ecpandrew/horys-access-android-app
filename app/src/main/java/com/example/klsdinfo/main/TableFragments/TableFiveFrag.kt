@@ -40,6 +40,8 @@ class TableFiveFrag : Fragment() {
     lateinit var recyclerView: RecyclerView
     lateinit var mAdapter: TableFiveAdapter
     lateinit var dividerItemDecoration: DividerItemDecoration
+    lateinit var noResults: TextView
+
 
 
 
@@ -52,7 +54,7 @@ class TableFiveFrag : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view: View = inflater.inflate(R.layout.table_five_layout, container, false)
-
+        noResults = view.findViewById(R.id.no_result)
         recyclerView = view.findViewById(R.id.tableFourRV)
         recyclerView.layoutManager = GridLayoutManager(context,2)
         recyclerView.setHasFixedSize(true)
@@ -125,6 +127,7 @@ class TableFiveFrag : Fragment() {
                 val lista: List<TableFiveResource> = FakeRequest()
                     .getTableFiveData(response)
                 if (lista.isNotEmpty()) {
+                    noResults.visibility = View.GONE
 
 
                     //Todo: esse trecho está funcionando, porem não da melhor forma possivel
@@ -231,6 +234,8 @@ class TableFiveFrag : Fragment() {
                     Log.i("recebido5", lista.toString())
 
 
+                }else{
+                    noResults.visibility = View.VISIBLE
                 }
                 alertDialog.dismiss()
 
@@ -238,6 +243,9 @@ class TableFiveFrag : Fragment() {
             },
             Response.ErrorListener {
                 VolleyLog.e("Error: " + it.message)
+                noResults.visibility = View.VISIBLE
+                noResults.text = it.message
+
                 alertDialog.dismiss()
 
                 //Todo: Tratar o caso do request falhar

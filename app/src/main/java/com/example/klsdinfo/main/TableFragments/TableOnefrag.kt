@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -39,6 +40,8 @@ class TableOnefrag : Fragment() {
     lateinit var recyclerView: RecyclerView
     lateinit var mAdapter: TableOneAdapter
 
+    lateinit var noResults: TextView
+
     companion object {
         fun newInstance(): TableOnefrag {
             return TableOnefrag()
@@ -49,6 +52,7 @@ class TableOnefrag : Fragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         val view: View = inflater.inflate(R.layout.table_one_layout, container, false)
         val linearLayoutManager = LinearLayoutManager(context)
+        noResults = view.findViewById(R.id.no_result)
 
         queue = VolleySingleton.getInstance(context).requestQueue
         recyclerView = view.findViewById(R.id.rv_resource_1)
@@ -62,7 +66,8 @@ class TableOnefrag : Fragment() {
         }else{
             val listOfPhysicalSpace: List<PhysicalSpace>? = bundle.getParcelableArrayList("resources")
             if (listOfPhysicalSpace == null){
-                // Todo: tratar isso dai
+
+
             }else{
 
                 var id = ""
@@ -95,7 +100,7 @@ class TableOnefrag : Fragment() {
                 val lista: List<TableOneResource> = FakeRequest()
                     .getTableOneData(response)
                 if (lista.isNotEmpty()) {
-
+                    noResults.visibility = View.GONE
 
 
                     val childMap: MutableMap<String, MutableList<TableOneResource>> = mutableMapOf()
@@ -127,6 +132,8 @@ class TableOnefrag : Fragment() {
                     Log.i("recebido1", childMap.toString())
 
 
+                }else{
+                    noResults.visibility = View.VISIBLE
                 }
                 alertDialog.dismiss()
 
@@ -135,6 +142,9 @@ class TableOnefrag : Fragment() {
             Response.ErrorListener {
                 VolleyLog.e("Error: " + it.message)
                 alertDialog.dismiss()
+                noResults.text = it.message
+                noResults.visibility = View.VISIBLE
+
 
                 //Todo: Tratar o caso do request falhar
             })

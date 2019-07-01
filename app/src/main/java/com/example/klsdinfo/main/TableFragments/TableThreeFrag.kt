@@ -12,7 +12,9 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.fragment.app.FragmentTransaction
@@ -23,16 +25,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.HttpHeaderParser
+import com.evrencoskun.tableview.TableView
 import com.example.klsdinfo.R
 import com.example.klsdinfo.data.*
 import com.example.klsdinfo.data.database.AppDatabase
-import com.example.klsdinfo.data.models.AuxResource3
-import com.example.klsdinfo.data.models.TableThreeResource
+import com.example.klsdinfo.data.models.*
 import com.example.klsdinfo.main.MainFragments.CustomTableFragment
+import com.example.klsdinfo.main.adapters.MyTableViewAdapter
 import com.example.klsdinfo.main.adapters.TableThreeAdapter
 import com.google.android.material.button.MaterialButton
 import java.io.UnsupportedEncodingException
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -54,7 +58,8 @@ class TableThreeFrag() : Fragment(), LifecycleOwner {
     lateinit var mAdapter: TableThreeAdapter
     lateinit var data: List<TableThreeResource>
     lateinit var viewModel : GroupViewModel
-
+    lateinit var mView: View
+    lateinit var noResults: TextView
     companion object {
         fun newInstance(): TableThreeFrag {
             return TableThreeFrag()
@@ -71,29 +76,44 @@ class TableThreeFrag() : Fragment(), LifecycleOwner {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         super.onCreateView(inflater, container, savedInstanceState)
-        val view: View = inflater.inflate(R.layout.table_three_layout, container, false)
-        val linearLayoutManager = LinearLayoutManager(context)
+        mView = inflater.inflate(R.layout.table_three_layout, container, false)
+        noResults = mView.findViewById(R.id.no_result)
 
-        data = listOf()
-        recyclerView = view.findViewById(R.id.rv_resource_3)
-        recyclerView.layoutManager = GridLayoutManager(context, 2)
-        recyclerView.setHasFixedSize(true)
-        progressBar = view.findViewById(R.id.progress_bar)
-
+        init()
 
         createViewModel()
 
 
+
+        subscribeToModel()
+
+
+
+        return mView
+    }
+
+    private fun init() {
+        data = listOf()
+        recyclerView = mView.findViewById(R.id.rv_resource_3)
+        recyclerView.layoutManager = GridLayoutManager(context, 2)
+        recyclerView.setHasFixedSize(true)
+        progressBar = mView.findViewById(R.id.progress_bar)    }
+
+    private fun subscribeToModel() {
+
         viewModel.getResources().observe(viewLifecycleOwner, Observer {
             Log.i("retrofit", "table three list = $it")
 
-            if (!it.isNullOrEmpty()){
+            generateParentTable(it)
 
-                generateParentTable(it)
-                mAdapter = TableThreeAdapter(context!!, generateData(it))
-                recyclerView.adapter = mAdapter
-                mAdapter.notifyDataSetChanged()
-            }
+
+
+        })
+
+        viewModel.getAdapterData().observe(viewLifecycleOwner, Observer {
+            mAdapter = TableThreeAdapter(context!!, it)
+            recyclerView.adapter = mAdapter
+            mAdapter.notifyDataSetChanged()
         })
 
         viewModel.getProgress().observe(viewLifecycleOwner, Observer {
@@ -102,9 +122,6 @@ class TableThreeFrag() : Fragment(), LifecycleOwner {
                 false -> progressBar.visibility = View.GONE
             }
         })
-
-
-        return view
     }
 
     private fun createViewModel() {
@@ -117,16 +134,29 @@ class TableThreeFrag() : Fragment(), LifecycleOwner {
 
     private fun generateParentTable(lista: List<TableThreeResource>) {
 
-        val card: CardView = view!!.findViewById(R.id.tableThreeCardView)
+        if(lista.isNullOrEmpty()){
+            noResults.visibility = View.VISIBLE
+        }else{
+
+            noResults.visibility = View.GONE
+
+
+
+            val card: CardView = view!!.findViewById(R.id.tableThreeCardView)
 
         (card.findViewById(R.id.btn_detail) as MaterialButton).setOnClickListener{
             Toast.makeText(context,"Not Implemented Yet",Toast.LENGTH_SHORT).show()
+
+            viewModel
+
 
             val bundle = Bundle()
             var ref ="detail3"
             bundle.putString("ref", ref)
             bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
+
             val dialog = CustomTableFragment()
+
             dialog.arguments = bundle
             val activity: AppCompatActivity = context as AppCompatActivity // ??
             val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
@@ -162,72 +192,12 @@ class TableThreeFrag() : Fragment(), LifecycleOwner {
 
         (card.findViewById(R.id.nameTV4) as TextView).text = ("Group History")
         (card.findViewById(R.id.descriptionTV4) as TextView).text = ("Encounters: ${lista.size}")
-        (card.findViewById(R.id.nplacesTV4) as TextView).text = ("Physical Spaces Found: ${mean/60}")
+        (card.findViewById(R.id.nplacesTV4) as TextView).visibility = View.GONE//.text = ("Physical Spaces Found: ${mean/60}")
         (card.findViewById(R.id.durationTV4) as TextView).text = ("Total Time Elapsed: ${totalDuration/60} min")
         card.visibility = View.VISIBLE
-
-
-
     }
-
-
-
-    private fun generateData(lista: List<TableThreeResource>
-                             ): MutableList<AuxResource3>{
-
-        val aux: MutableList<AuxResource3> = mutableListOf()
-        val map: MutableMap<String, MutableList<TableThreeResource>> = mutableMapOf()
-        for (resource in lista){
-            for(person in resource.persons){
-                if(!map.containsKey(person.shortName)){
-                    map[person.shortName] = mutableListOf(resource)
-                }else{
-                    val auxi = map[person.shortName]!!
-                    auxi.add(resource)
-                    map[person.shortName] = auxi
-                }
-            }
-        }
-
-        for (entry in map){
-            aux.add(AuxResource3(entry.key, entry.value))
-        }
-        return aux
-    }
-
-
-    override fun onStop() {
-        super.onStop()
-
-    }
-
-
-
-
-    class VolleyUTF8EncodingStringRequest(
-        method: Int, url: String, private val mListener: Response.Listener<String>,
-        errorListener: Response.ErrorListener
-    ) : Request<String>(method, url, errorListener) {
-
-        override fun deliverResponse(response: String) {
-            mListener.onResponse(response)
-        }
-
-        override fun parseNetworkResponse(response: NetworkResponse): Response<String> {
-            var parsed = ""
-
-            val encoding = charset(HttpHeaderParser.parseCharset(response.headers))
-
-            return try {
-                parsed = String(response.data, encoding)
-                val bytes = parsed.toByteArray(encoding)
-                parsed = String(bytes, charset("UTF-8"))
-
-                Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response))
-            } catch (e: UnsupportedEncodingException) {
-                Response.error(ParseError(e))
-            }
-        }
     }
 
 }
+
+

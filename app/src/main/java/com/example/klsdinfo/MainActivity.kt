@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.example.klsdinfo.main.MainFragments.HistoryFragment
 import com.example.klsdinfo.main.MainFragments.HomeFragment
+import com.example.klsdinfo.main.MainFragments.HomeFragment2
 import com.example.klsdinfo.main.MainFragments.RealFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -57,6 +58,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             FirebaseAuth.getInstance().signOut()
             startActivity(LoginActivity.getLaunchIntent(this))
             finish()
+
 
         }else{ // Todo : Tratar esse !! operator
             configureGoogleSignIn()

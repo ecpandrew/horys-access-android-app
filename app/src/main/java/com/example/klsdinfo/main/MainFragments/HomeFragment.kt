@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.example.klsdinfo.R
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class HomeFragment : Fragment(){
 
@@ -24,6 +26,9 @@ class HomeFragment : Fragment(){
         print("onCreateView")
 //        val view: View = inflater.inflate(R.layout.guide, container, false)
         val view:View = inflater.inflate(R.layout.main_home_layout, container, false)
+        val user : FirebaseUser? = FirebaseAuth.getInstance().currentUser
+
+
 
 
         return view

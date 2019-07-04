@@ -82,9 +82,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
 
-
-
-
         Log.i("Lifecycle", "OnCreate: Main Activity")
     }
 //

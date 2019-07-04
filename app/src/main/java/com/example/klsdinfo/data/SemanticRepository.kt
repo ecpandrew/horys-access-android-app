@@ -7,6 +7,7 @@ import com.example.klsdinfo.data.models.PhysicalSpace
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.NullPointerException
 
 
 class SemanticRepository private constructor(private val semanticService: SemanticApiService) {
@@ -22,7 +23,33 @@ class SemanticRepository private constructor(private val semanticService: Semant
 
     private var cached: List<Person2> = listOf()
 
+    private var userCached: Person2? = null
 
+    fun getUser(success:(Person2) -> Unit, failure: () -> Unit){
+
+        if(userCached == null){
+
+            val call = SemanticApiService.create().getUser("andreluizalmeidacardoso@gmail.com")
+            call.enqueue(object : Callback<Person2> {
+                override fun onResponse(call: Call<Person2>, response: Response<Person2>) {
+                    if(response.isSuccessful){
+                        userCached = response.body()!!
+                        success(response.body()!!)
+                    }
+                }
+                override fun onFailure(call: Call<Person2>, t: Throwable) {
+                    failure()
+                }
+            })
+
+
+        }else{
+            success(userCached!!)
+        }
+
+
+
+    }
 
 
     fun getAvailablePeople(success: (List<Person2>) -> Unit, failure: () -> Unit ) {

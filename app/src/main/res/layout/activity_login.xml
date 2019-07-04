@@ -22,6 +22,7 @@
         <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="invisible"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="4dp">
             <EditText android:id="@+id/input_email"
@@ -37,6 +38,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:visibility="invisible"
+
                 android:layout_marginBottom="4dp">
             <EditText android:id="@+id/input_password"
                       android:layout_width="match_parent"
@@ -52,6 +55,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorWhite"
+                android:visibility="invisible"
+
                 android:textSize="15sp"
                 app:backgroundTint="@color/colorPrimary"
                 app:cornerRadius="3dp"
@@ -88,6 +93,8 @@
                   android:layout_height="wrap_content"
                   android:layout_marginBottom="24dp"
                   android:text="No account yet? Create one"
+                  android:visibility="invisible"
+
                   android:gravity="center"
                   android:textSize="16dip"/>
         <TextView android:id="@+id/link_forgot_pwd"
@@ -95,6 +102,8 @@
                   android:layout_height="wrap_content"
                   android:layout_marginBottom="20dp"
                   android:text="Forgot your password?"
+                  android:visibility="invisible"
+
                   android:gravity="center"
                   android:textSize="16dip"/>
         <TextView android:id="@+id/info"

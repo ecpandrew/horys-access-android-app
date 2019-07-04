@@ -432,12 +432,12 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        mAdapter.onSaveInstanceState(outState)
+//        mAdapter.onSaveInstanceState(outState)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        mAdapter.onRestoreInstanceState(savedInstanceState)
+//        mAdapter.onRestoreInstanceState(savedInstanceState)
 
     }
 

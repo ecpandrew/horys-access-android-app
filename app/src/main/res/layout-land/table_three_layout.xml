@@ -125,6 +125,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="8dp" android:layout_marginTop="8dp"
             app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/no_result"
+            app:layout_constraintBottom_toBottomOf="@+id/rv_resource_3"
+            app:layout_constraintEnd_toEndOf="@+id/rv_resource_3"
+            app:layout_constraintStart_toStartOf="@+id/rv_resource_3" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/rv_resource_3"/>
+
     <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content" android:layout_height="wrap_content"
                                                 android:id="@+id/guideline"
                                                 android:orientation="vertical"

@@ -1,5 +1,6 @@
 package com.example.klsdinfo.data
 
+import com.example.klsdinfo.data.models.TableFourResource
 import com.example.klsdinfo.data.models.TableThreeResource
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -19,6 +20,11 @@ interface DanielApiService {
 
     @GET("persons/{ids}rendezvous/{pastDate}/{currentDate}/")
     fun getGroupRendezvous2(  @Path("ids", encoded = true) ids : String , @Path("pastDate") date1: String, @Path("currentDate") date2: String): Call<List<TableThreeResource>>
+
+
+
+    @GET("persons/{ids}/physical_spaces/{date1}/{date2}/")
+    fun getPhysicalSpacesByPersonAndTime(@Path("ids", encoded = true) ids : String, @Path("date1") date1: String, @Path("date2") date2: String): Call<List<TableFourResource>>
 
 
 

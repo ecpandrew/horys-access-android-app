@@ -103,8 +103,8 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     }
 
     private fun setupViewModel() {
-        val repo = SemanticRepository.getInstance(SemanticApiService.create())
-        val factory = SemanticViewModelFactory(repo, activity?.application!!)
+        val repo = SemanticRepository.getInstance(SemanticApiService.create(), AppDatabase.getInstance(context!!)!!)
+        val factory = SemanticViewModelFactory(repo,null, activity?.application!!)
 
         viewModel = ViewModelProviders.of(this, factory).get(ListPersonDateViewModel::class.java)
 

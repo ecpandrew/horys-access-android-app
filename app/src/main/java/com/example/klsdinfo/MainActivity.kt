@@ -2,6 +2,7 @@ package com.example.klsdinfo
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -18,6 +19,12 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.example.klsdinfo.data.SemanticApiService
+import com.example.klsdinfo.data.SemanticRepository
+import com.example.klsdinfo.data.database.AppDatabase
+import com.example.klsdinfo.data.database.GroupQuery
+import com.example.klsdinfo.data.database.LocalUserQuery
+import com.example.klsdinfo.data.models.Holder
 import com.example.klsdinfo.main.MainFragments.HistoryFragment
 import com.example.klsdinfo.main.MainFragments.HomeFragment
 import com.example.klsdinfo.main.MainFragments.HomeFragment2
@@ -62,9 +69,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         }else{ // Todo : Tratar esse !! operator
             configureGoogleSignIn()
-            if(user.isEmailVerified){
+            if(user.isEmailVerified) {
+
+                AsyncTask.execute {
+                    AppDatabase.getInstance(applicationContext!!)?.localUserDao()?.insert(LocalUserQuery(0, user.email!!))
+                    AppDatabase.destroyInstance()
+                    }
                 if(true){//user.email!!.isLsdiEmail()){ //descomente essa linha para permitir apenas email LSDI
+
+
                     setupAll(user)
+
                     if (savedInstanceState == null) {
                         navView.setCheckedItem(R.id.nav_home)
                         navigateToFragment(HomeFragment.newInstance())
@@ -97,6 +112,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun setupAll(user: FirebaseUser){
+
+//
 
         setContentView(R.layout.activity_main)
         toolbar = findViewById(R.id.toolbar)

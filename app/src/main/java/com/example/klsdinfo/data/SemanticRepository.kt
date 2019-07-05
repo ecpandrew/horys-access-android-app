@@ -1,22 +1,24 @@
 package com.example.klsdinfo.data
 
+import android.os.AsyncTask
 import android.util.Log
-import com.example.klsdinfo.data.models.Location
-import com.example.klsdinfo.data.models.Person2
-import com.example.klsdinfo.data.models.PhysicalSpace
+import com.example.klsdinfo.data.database.AppDatabase
+import com.example.klsdinfo.data.database.GroupQuery
+import com.example.klsdinfo.data.database.LocalUserQuery
+import com.example.klsdinfo.data.models.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.NullPointerException
 
 
-class SemanticRepository private constructor(private val semanticService: SemanticApiService) {
+class SemanticRepository private constructor(private val semanticService: SemanticApiService, private val database: AppDatabase) {
 
 
     companion object{
         @Volatile private var instance: SemanticRepository? = null
-        fun getInstance(semanticService: SemanticApiService) = instance ?: synchronized(this){
-            instance ?: SemanticRepository(semanticService).also { instance = it }
+        fun getInstance(semanticService: SemanticApiService, appDatabase: AppDatabase) = instance ?: synchronized(this){
+            instance ?: SemanticRepository(semanticService, appDatabase).also { instance = it }
         }
     }
 
@@ -25,27 +27,88 @@ class SemanticRepository private constructor(private val semanticService: Semant
 
     private var userCached: Person2? = null
 
-    fun getUser(success:(Person2) -> Unit, failure: () -> Unit){
+    private var storageParams: String = ""
 
-        if(userCached == null){
+    fun setStorageParams(s: String){
+        storageParams = s
+    }
 
-            val call = SemanticApiService.create().getUser("andreluizalmeidacardoso@gmail.com")
-            call.enqueue(object : Callback<Person2> {
+
+
+
+//    fun getUserFromLocalStorage() : Person2 {
+//        val query: List<LocalUserQuery> = database.localUserDao().getAll()
+//
+//        if(query.isEmpty()){
+//            return Person2("none","none","none",null,Holder(0))
+//        }else{
+//
+//            return Person2(query[0].email, query[0].shortName, query[0].fullName, listOf(Role2(query[0].roles.toString())), Holder(query[0].holder))
+//        }
+//    }
+
+
+    fun getUserFromSemanticAndStore(success:(Person2) -> Unit, failure: () -> Unit){
+
+
+
+        AsyncTask.execute {
+
+            val query: LocalUserQuery = database.localUserDao().getAll()[0]
+            Log.i("retrofit", "query: ${query.email}")
+
+//        val call = DanielApiService.create().getGroupRendezvous2(query.ids.toString().trim(),query.pastDate.toString().trim(),query.currentDate.toString().trim())
+
+            val call = SemanticApiService.create().getUser(query.email)
+
+            call.enqueue(object : Callback<Person2>{
+
                 override fun onResponse(call: Call<Person2>, response: Response<Person2>) {
-                    if(response.isSuccessful){
+
+                    Log.i("retrofit", "url usada: ${response.raw().request().url()}")
+
+
+                    if (response.isSuccessful) {
                         userCached = response.body()!!
                         success(response.body()!!)
+                        Log.i("retrofit", "success: ${response.body()!!}")
                     }
                 }
+
                 override fun onFailure(call: Call<Person2>, t: Throwable) {
                     failure()
+                    Log.i("retrofit", "failure: ${t.message}")
+
                 }
             })
 
 
-        }else{
-            success(userCached!!)
+
         }
+
+
+
+
+
+//        if(userCached == null){
+//
+//            val call = SemanticApiService.create().getUser("andreluizalmeidacardoso@gmail.com")
+//            call.enqueue(object : Callback<Person2> {
+//                override fun onResponse(call: Call<Person2>, response: Response<Person2>) {
+//                    if(response.isSuccessful){
+//                        userCached = response.body()!!
+//                        success(response.body()!!)
+//                    }
+//                }
+//                override fun onFailure(call: Call<Person2>, t: Throwable) {
+//                    failure()
+//                }
+//            })
+//
+//
+//        }else{
+//            success(userCached!!)
+//        }
 
 
 

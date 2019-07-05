@@ -25,6 +25,7 @@ import com.example.klsdinfo.data.ListLocationViewModel
 import com.example.klsdinfo.data.SemanticApiService
 import com.example.klsdinfo.data.SemanticRepository
 import com.example.klsdinfo.data.SemanticViewModelFactory
+import com.example.klsdinfo.data.database.AppDatabase
 import com.example.klsdinfo.data.models.FakeRequest
 import com.example.klsdinfo.data.models.Location
 import com.example.klsdinfo.data.models.PhysicalSpace
@@ -125,8 +126,8 @@ class RSelectionLocationFragment: Fragment() {
 
 
     private fun setupViewModel(){
-        val repo = SemanticRepository.getInstance(SemanticApiService.create())
-        val factory = SemanticViewModelFactory(repo, activity?.application!!)
+        val repo = SemanticRepository.getInstance(SemanticApiService.create(), AppDatabase.getInstance(activity?.applicationContext!!)!!)
+        val factory = SemanticViewModelFactory(repo, null,activity?.application!!)
         viewModel = ViewModelProviders.of(this, factory).get(ListLocationViewModel::class.java)
 
         viewModel.loadingProgress.observe(this, androidx.lifecycle.Observer {

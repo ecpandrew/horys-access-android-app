@@ -5,6 +5,7 @@ import android.os.AsyncTask
 import android.util.Log
 import com.example.klsdinfo.data.database.AppDatabase
 import com.example.klsdinfo.data.database.GroupQuery
+import com.example.klsdinfo.data.models.TableFourResource
 import com.example.klsdinfo.data.models.TableThreeResource
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -24,6 +25,36 @@ class DanielServiceRepository private constructor(private val danielService: Dan
 
 
     }
+
+
+
+    fun getPhysicalSpacesByPersonAndTime(id:String, date1: String, date2:String, success: (List<TableFourResource>) -> Unit, failure : () -> Unit ){
+
+
+        val call = danielService.getPhysicalSpacesByPersonAndTime(id,date2,date1)
+        call.enqueue(object : Callback<List<TableFourResource>>{
+
+
+            override fun onResponse(call: Call<List<TableFourResource>>, response: Response<List<TableFourResource>>) {
+
+                Log.i("dataurl", "url usada: ${response.raw().request().url()}")
+
+                if(response.isSuccessful){
+                    if(response.body().isNullOrEmpty()) success(listOf())
+                    else success(response.body()!!)
+
+                    Log.i("retrofit", "repository list ${response.body()}")
+                }            }
+            override fun onFailure(call: Call<List<TableFourResource>>, t: Throwable) {
+                failure()
+            }
+        })
+
+
+    }
+
+
+
 
 
     fun getGroupRendezvous(success: (List<TableThreeResource>) -> Unit, failure: () -> Unit){

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
 class SemanticViewModelFactory constructor(private val repository: SemanticRepository,
+                                           private val repository2: DanielServiceRepository?,
                                            private val application: Application
 
 
@@ -21,6 +22,8 @@ class SemanticViewModelFactory constructor(private val repository: SemanticRepos
                 isAssignableFrom(ListPersonDateViewModel::class.java) -> ListPersonDateViewModel(repository, application)
 
                 isAssignableFrom(ListLocationViewModel::class.java) -> ListLocationViewModel(repository, application)
+
+                isAssignableFrom(HomeViewModel::class.java) -> HomeViewModel(repository, repository2!!, application)
 
                 else ->
                     throw IllegalArgumentException("Unknown Class")

@@ -6,9 +6,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 
-@Database(entities = [GroupQuery::class], version = 1)
+@Database(entities = [GroupQuery::class, LocalUserQuery::class], version = 3)
 abstract class AppDatabase : RoomDatabase() {
+
     abstract fun groupDao(): GroupQueryDao
+    abstract fun localUserDao(): LocalUserQueryDao
 
 
     companion object {
@@ -17,7 +19,7 @@ abstract class AppDatabase : RoomDatabase() {
         fun getInstance(context: Context): AppDatabase? {
             if(INSTANCE == null){
                 synchronized(AppDatabase::class){
-                    INSTANCE = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "appdatabase.db").build()
+                    INSTANCE = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "appdatabase.db").fallbackToDestructiveMigration().build()
 
                 }
             }

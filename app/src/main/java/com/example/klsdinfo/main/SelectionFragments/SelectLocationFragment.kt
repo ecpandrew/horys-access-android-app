@@ -3,6 +3,7 @@ package com.example.klsdinfo.main.SelectionFragments
 import android.app.AlertDialog
 import android.content.Context
 import android.content.res.ColorStateList
+import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
@@ -21,6 +22,7 @@ import com.example.klsdinfo.data.SemanticApiService
 import com.example.klsdinfo.data.SemanticRepository
 import com.example.klsdinfo.data.ViewModelFactory
 import com.example.klsdinfo.data.database.AppDatabase
+import com.example.klsdinfo.data.database.GroupQuery
 import com.example.klsdinfo.data.models.Location
 import com.example.klsdinfo.data.models.PhysicalSpace
 import com.example.klsdinfo.main.TableFragments.TableOnefrag
@@ -63,8 +65,6 @@ class SelectLocationFragment: Fragment() {
         setupViewModel()
 
 
-
-
         print("onCreateView")
         return view
     }
@@ -80,19 +80,20 @@ class SelectLocationFragment: Fragment() {
         rv.adapter = mAdapter
         back = view.findViewById(R.id.buttonClear)
         get = view.findViewById(R.id.buttonGet)
+
+
+
         get.setOnClickListener {
-            val selectedItemPositions = mAdapter.getSelectedItems()
-            val selectedLocations = ArrayList<Parcelable>()
-            for (i in selectedItemPositions){
-                selectedLocations.add(pilha.peek()[i])
+//            alertDialog.show()
+            AsyncTask.execute {
+                AppDatabase.getInstance(context!!)?.groupDao()?.insert(GroupQuery(0,getIds(),null,null))
+                AppDatabase.destroyInstance()
+                navigateToFragment(TableOnefrag(),true)
+//                alertDialog.dismiss()
             }
-            val bundle = Bundle()
-            Log.i("debug", "Enviado: $selectedLocations")
-            bundle.putParcelableArrayList("resources", selectedLocations)
-            val dialog = TableOnefrag()
-            dialog.arguments = bundle
-            navigateToFragment(dialog, true)
         }
+
+
 
         val obj = object: PhysicalSpaceAdapter.OnClickListener {
             override fun onItemLongClick(view: View, obj: PhysicalSpace, pos: Int) {}
@@ -119,6 +120,15 @@ class SelectLocationFragment: Fragment() {
 
     }
 
+
+    private fun getIds() : String{
+        val selectedItemPositions = mAdapter.getSelectedItems()
+        var id = ""
+        for (i in selectedItemPositions){
+            id += "${pilha.peek()[i].holder.id}/"
+        }
+        return id
+    }
 
     private fun setupViewModel(){
         val repo = SemanticRepository.getInstance(SemanticApiService.create(), AppDatabase.getInstance(activity?.applicationContext!!)!!)

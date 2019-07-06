@@ -1,6 +1,7 @@
 package com.example.klsdinfo.data
 
 import com.example.klsdinfo.data.models.TableFourResource
+import com.example.klsdinfo.data.models.TableOneResource
 import com.example.klsdinfo.data.models.TableThreeResource
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -28,6 +29,10 @@ interface DanielApiService {
 
 
 
+
+
+    @GET("physical_spaces/{ids}persons")
+    fun getConnectedPeople(@Path("ids", encoded = true) ids : String): Call<List<TableOneResource>>
 
 
 

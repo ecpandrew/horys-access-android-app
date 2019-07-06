@@ -1,13 +1,12 @@
 package com.example.klsdinfo.data
 
-import android.app.DownloadManager
 import android.os.AsyncTask
 import android.util.Log
 import com.example.klsdinfo.data.database.AppDatabase
 import com.example.klsdinfo.data.database.GroupQuery
 import com.example.klsdinfo.data.models.TableFourResource
+import com.example.klsdinfo.data.models.TableOneResource
 import com.example.klsdinfo.data.models.TableThreeResource
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -25,6 +24,45 @@ class DanielServiceRepository private constructor(private val danielService: Dan
 
 
     }
+
+
+
+    fun getConnectedPeople(success: (List<TableOneResource>) -> Unit, failure: () -> Unit){
+        Log.i("retrofit", "repository init")
+        AsyncTask.execute {
+            Log.i("retrofit", "async init")
+            val query: GroupQuery = database.groupDao().getAll()[0]
+            Log.i("retrofit", "query: ${database.groupDao().getAll().size}")
+            val call = DanielApiService.create().getConnectedPeople(query.ids.toString().trim())
+            call.enqueue(object : Callback<List<TableOneResource>>{
+                override fun onResponse(call: Call<List<TableOneResource>>, response: Response<List<TableOneResource>>
+                ) {
+                    Log.i("timestamp", "url usada: ${response.raw().request().url()}")
+                    if(response.isSuccessful){
+                        if(response.body().isNullOrEmpty()) success(listOf())
+                        else success(response.body()!!)
+                        Log.i("retrofit", "repository list ${response.body()}")
+                    }
+                }
+                override fun onFailure(call: Call<List<TableOneResource>>, t: Throwable) {
+                    Log.i("retrofit", "repository on failure")
+                    failure()
+                }
+            })
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -75,6 +113,10 @@ class DanielServiceRepository private constructor(private val danielService: Dan
             })
         }
     }
+
+
+
+
 
 
     fun getPeopleHistory(success: (List<TableFourResource>) -> Unit, failure: () -> Unit){

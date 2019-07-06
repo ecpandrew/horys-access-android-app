@@ -16,6 +16,9 @@ class ViewModelFactory constructor(private val semanticRepository: SemanticRepos
 
         return with(modelClass){
             when {
+
+                isAssignableFrom(ConnectedPeopleViewModel::class.java) -> ConnectedPeopleViewModel(danielRepository!!, application)
+
                 isAssignableFrom(PeopleHistoryViewModel::class.java) -> PeopleHistoryViewModel(danielRepository!!, application)
 
                 isAssignableFrom(GroupHistoryViewModel::class.java) -> GroupHistoryViewModel(danielRepository!!, application)

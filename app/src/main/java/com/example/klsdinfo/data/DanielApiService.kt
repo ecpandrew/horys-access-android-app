@@ -1,8 +1,6 @@
 package com.example.klsdinfo.data
 
-import com.example.klsdinfo.data.models.TableFourResource
-import com.example.klsdinfo.data.models.TableOneResource
-import com.example.klsdinfo.data.models.TableThreeResource
+import com.example.klsdinfo.data.models.*
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -15,8 +13,17 @@ interface DanielApiService {
 
 
 
-    @GET("persons/{ids}rendezvous/{date1}/{date2}/")
-    fun getGroupRendezvous(@Path("ids") ids : String, @Path("date1") date1: String, @Path("date2") date2: String): Call<List<TableThreeResource>>
+
+
+    @GET("physical_spaces/{ids}persons")
+    fun getConnectedPeople(@Path("ids", encoded = true) ids : String): Call<List<TableOneResource>>
+
+
+    @GET("persons/{ids}/physical_spaces/")
+    fun getPhysicalSpaces(@Path("ids", encoded = true) ids : String): Call<List<TableTwoResource>>
+
+
+
 
 
     @GET("persons/{ids}rendezvous/{pastDate}/{currentDate}/")
@@ -29,10 +36,12 @@ interface DanielApiService {
 
 
 
+    @GET("physical_spaces/{ids}persons/{date1}/{date2}/")
+    fun getPhysicalSpaceHistory(@Path("ids", encoded = true) ids : String, @Path("date1") date1: String, @Path("date2") date2: String): Call<List<TableFiveResource>>
 
 
-    @GET("physical_spaces/{ids}persons")
-    fun getConnectedPeople(@Path("ids", encoded = true) ids : String): Call<List<TableOneResource>>
+
+
 
 
 

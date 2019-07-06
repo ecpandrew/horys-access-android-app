@@ -4,40 +4,41 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.res.ColorStateList
+import android.os.AsyncTask
 import android.os.Bundle
-import android.os.Parcelable
 import android.util.Log
 import android.view.*
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.Request
 import com.android.volley.RequestQueue
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.example.klsdinfo.ErrorFragment
 import com.example.klsdinfo.R
-import com.example.klsdinfo.Tools
 import com.example.klsdinfo.Volley.VolleySingleton
-import com.example.klsdinfo.data.models.FakeRequest
+import com.example.klsdinfo.data.*
+import com.example.klsdinfo.data.database.AppDatabase
 import com.example.klsdinfo.data.models.PhysicalSpace
-import com.example.klsdinfo.main.TableFragments.TableFiveFrag
+import com.example.klsdinfo.main.TableFragments.LocationHistoryResultFragment
 import com.example.klsdinfo.main.adapters.PhysicalSpaceAdapter
 import com.google.android.material.button.MaterialButton
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.lifecycle.Observer
+import com.example.klsdinfo.data.database.GroupQuery
 
-class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, DialogInterface.OnCancelListener{
+
+class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, DialogInterface.OnCancelListener, LifecycleOwner{
 
     lateinit var recyclerView: RecyclerView
     lateinit var mAdapter: PhysicalSpaceAdapter
-    private lateinit var actionModeCallback: ActionModeCallback
     private var actionMode: ActionMode? = null
     lateinit var pilha: Stack<List<PhysicalSpace>>
     lateinit var back: MaterialButton
@@ -60,8 +61,6 @@ class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetList
     lateinit var alertDialog: AlertDialog
     private lateinit var queue: RequestQueue
 
-//    lateinit var dateTxt2: TextView
-//    lateinit var dateTxt: TextView
 
     lateinit var cardDate: CardView
     lateinit var dayTv: TextView
@@ -78,6 +77,9 @@ class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetList
     lateinit var timeTv2: TextView
     lateinit var calendar2: Calendar
     private lateinit var dateStr2: String
+    lateinit var viewModel: SelectLocationAndTimeViewModel
+    lateinit var progressBar: ProgressBar
+
 
 
     companion object {
@@ -92,6 +94,8 @@ class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetList
 
         initComponents(view)
 
+        setupViewModel()
+
 
 
         initDateComponents(view)
@@ -99,6 +103,40 @@ class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetList
 
         return view
     }
+
+
+
+
+
+
+
+    private fun setupViewModel() {
+        val repo = SemanticRepository.getInstance(SemanticApiService.create(), AppDatabase.getInstance(context!!)!!)
+        val factory = ViewModelFactory(repo,null, activity?.application!!)
+
+        viewModel = ViewModelProviders.of(this, factory).get(SelectLocationAndTimeViewModel::class.java)
+
+
+        viewModel.loadingProgress.observe(viewLifecycleOwner, Observer{
+
+            when(it){
+                true -> progressBar.visibility = View.VISIBLE
+                false -> progressBar.visibility = View.INVISIBLE
+            }
+        })
+
+
+        viewModel.mPeople.observe(viewLifecycleOwner, Observer {
+                pilha.push(it)
+                mAdapter.setItems(it)
+                mAdapter.notifyDataSetChanged()
+                recyclerView.visibility = View.VISIBLE
+            Log.i("observe", it.toString())
+        })
+    }
+
+
+
 
     private fun setDefaultTime(){
 
@@ -168,57 +206,32 @@ class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetList
         recyclerView.visibility = View.GONE
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)
+        progressBar = view.findViewById(R.id.progress_bar)
+
         pilha = Stack()
-//        pilha.push(FakeRequest().getAllPhysicalSpaces(null))
         queue = VolleySingleton.getInstance(context).requestQueue
-
-
 
         mAdapter = PhysicalSpaceAdapter(context!!, listPhysicalSpaces)
         recyclerView.adapter = mAdapter
 
-//        cardDate = view.findViewById(R.id.date_card_view)
-//        cardDate2 = view.findViewById(R.id.date_card_view2)
-
-
-
-
-
         get = view.findViewById(R.id.buttonGet)
         back = view.findViewById(R.id.backToParent)
 
-
-
-//
-//        dateTxt = view.findViewById(R.id.dayTV)
-//        dateTxt2 = view.findViewById(R.id.data2)
-
-
-
         get.setOnClickListener {
-            val selectedItemPositions = mAdapter.getSelectedItems()
-            val selectedLocations = ArrayList<Parcelable>()
 
-            for (i in selectedItemPositions){
-                selectedLocations.add(pilha.peek()[i])
-            }
 
             if (unixTime == null || unixTimePast == null){
                 setDefaultTime()
-            }else{
-//                setCustomUnixTime()
             }
 
 
-            val bundle = Bundle()
-            Log.i("debugh", "Enviado: $selectedLocations")
-            bundle.putLong("date", unixTime!!)
-            bundle.putLong("date2", unixTimePast!!)
-            bundle.putParcelableArrayList("resources", selectedLocations)
-            val dialog = TableFiveFrag()
-            Log.i("debugh","go1")
-            dialog.arguments = bundle
-            navigateToFragment(dialog,true)
+            AsyncTask.execute {
+                //                                                                    AppDatabase.getInstance(context!!)?.groupDao()?.nukeTable()
+                AppDatabase.getInstance(context!!)?.groupDao()?.insert(GroupQuery(0,getIds(),unixTimePast!!.toString(),unixTime!!.toString()))
+                AppDatabase.destroyInstance()
+                navigateToFragment(LocationHistoryResultFragment(),true)
+            }
+
 
         }
 
@@ -255,49 +268,20 @@ class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetList
             }
         }
 
-
-
-
-
         mAdapter.setOnClickListener(obj)
-        actionModeCallback = ActionModeCallback()
+//        actionModeCallback = ActionModeCallback()
 
-        val url = "http://smartlab.lsdi.ufma.br/semantic/api/physical_spaces/roots"
 
-        // Request a string response from the provided URL.
-        val stringRequest = StringRequest(
-            Request.Method.GET, url,
-            Response.Listener<String> { response ->
-                // Display the first 500 characters of the response string.
-                Log.i("debug","Response is: $response")
+    }
 
-                val lista: List<PhysicalSpace> = FakeRequest()
-                    .getAllPhysicalSpaces(response)
-                pilha.push(lista)
-                mAdapter.setItems(lista)
-                mAdapter.notifyDataSetChanged()
-                recyclerView.visibility = View.VISIBLE
-                alertDialog.dismiss()
-
-            },
-            Response.ErrorListener {
-                Log.i("debug","Response is: request failed}")
-                alertDialog.dismiss()
-                navigateToFragment(ErrorFragment(), true)
-
-            })
-        stringRequest.tag = this
-        // Add the request to the RequestQueue.
-
-        progress = AlertDialog.Builder(context)
-        progress.setView(R.layout.loading_dialog_layout)
-        alertDialog = progress.create()
-        alertDialog.setCancelable(true)
-        alertDialog.setOnCancelListener {
-            navigateToFragment(ErrorFragment(), true)
+    private fun getIds() : String {
+        val selectedItemPositions = mAdapter.getSelectedItems()
+        val peeked = pilha.peek()
+        var ids = ""
+        for (i in selectedItemPositions){
+            ids += "${peeked[i].holder.id}/"
         }
-        alertDialog.show()
-        queue.add(stringRequest)
+        return ids
     }
 
     private fun validateBackParentButton(b: Boolean) {
@@ -353,12 +337,7 @@ class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetList
         transaction.commit()
     }
 
-    private fun enableActionMode(position: Int) {
-        if (actionMode == null) {
-            actionMode = this@SelectLocationAndTimeFragment.activity!!.startActionMode(actionModeCallback)
-        }
-//        toggleSelection(position)
-    }
+
 
     private fun toggleSelection(position: Int) {
         mAdapter.toggleSelection(position)
@@ -377,36 +356,36 @@ class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetList
 
 
 
-
-
-    // Todo: possivelmente isso não esta sendo relevante
-    private inner class ActionModeCallback : ActionMode.Callback {
-        override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-            Tools.setSystemBarColor(activity, R.color.colorDarkBlue2)// comentar isso;
-            mode.menuInflater.inflate(R.menu.menu_search, menu)
-            return true
-        }
-
-        override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-            return false
-        }
-
-        override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-            val id = item.itemId
-            if (id == R.id.action_search) {
-
-
-                mode.finish()
-                return true
-            }
-            return false
-        }
-
-        override fun onDestroyActionMode(mode: ActionMode) {
-            mAdapter!!.clearSelections()
-            actionMode = null
-        }
-    }
+//
+//
+//    // Todo: possivelmente isso não esta sendo relevante
+//    private inner class ActionModeCallback : ActionMode.Callback {
+//        override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+//            Tools.setSystemBarColor(activity, R.color.colorDarkBlue2)// comentar isso;
+//            mode.menuInflater.inflate(R.menu.menu_search, menu)
+//            return true
+//        }
+//
+//        override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
+//            return false
+//        }
+//
+//        override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+//            val id = item.itemId
+//            if (id == R.id.action_search) {
+//
+//
+//                mode.finish()
+//                return true
+//            }
+//            return false
+//        }
+//
+//        override fun onDestroyActionMode(mode: ActionMode) {
+//            mAdapter!!.clearSelections()
+//            actionMode = null
+//        }
+//    }
 
 
 
@@ -587,6 +566,7 @@ class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetList
 
     override fun onStart() {
         super.onStart()
+        viewModel.fetchData()
         print("onStart")
 
     }

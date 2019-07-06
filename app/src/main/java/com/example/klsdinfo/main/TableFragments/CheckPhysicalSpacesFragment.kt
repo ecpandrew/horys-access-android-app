@@ -2,7 +2,6 @@ package com.example.klsdinfo.main.TableFragments
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,19 +15,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.example.klsdinfo.R
-import com.example.klsdinfo.data.ConnectedPeopleViewModel
+import com.example.klsdinfo.data.CheckPhysicalSpacesViewModel
 import com.example.klsdinfo.data.DanielApiService
 import com.example.klsdinfo.data.DanielServiceRepository
 import com.example.klsdinfo.data.ViewModelFactory
 import com.example.klsdinfo.data.database.AppDatabase
-import com.example.klsdinfo.data.models.AuxResource1
-import com.example.klsdinfo.data.models.FakeRequest
-import com.example.klsdinfo.data.models.PhysicalSpace
-import com.example.klsdinfo.data.models.TableOneResource
 import com.example.klsdinfo.main.adapters.TableOneAdapter
 
 
-class TableOnefrag : Fragment(), LifecycleOwner {
+class CheckPhysicalSpacesFragment : Fragment(), LifecycleOwner {
 
 
 
@@ -41,12 +36,12 @@ class TableOnefrag : Fragment(), LifecycleOwner {
     lateinit var mAdapter: TableOneAdapter
     lateinit var noResults: TextView
     lateinit var mView : View
-    lateinit var viewModel: ConnectedPeopleViewModel
+    lateinit var viewModel: CheckPhysicalSpacesViewModel
     lateinit var progressBar: ProgressBar
 
     companion object {
-        fun newInstance(): TableOnefrag {
-            return TableOnefrag()
+        fun newInstance(): CheckPhysicalSpacesFragment {
+            return CheckPhysicalSpacesFragment()
         }
     }
 
@@ -90,7 +85,7 @@ class TableOnefrag : Fragment(), LifecycleOwner {
         val repo = DanielServiceRepository.getInstance(DanielApiService.create(), AppDatabase.getInstance(activity?.applicationContext!!)!!)
         val factory = ViewModelFactory(null,repo, activity?.application!!)
 
-        viewModel = ViewModelProviders.of(this, factory).get(ConnectedPeopleViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, factory).get(CheckPhysicalSpacesViewModel::class.java)
 
     }
     private fun init(inflater: LayoutInflater, container: ViewGroup?) {

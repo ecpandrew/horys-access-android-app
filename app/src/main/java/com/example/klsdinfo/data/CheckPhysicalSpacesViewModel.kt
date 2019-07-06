@@ -6,7 +6,7 @@ import androidx.lifecycle.*
 import com.example.klsdinfo.data.models.Person2
 import com.example.klsdinfo.data.models.TableOneResource
 
-class ConnectedPeopleViewModel(
+class CheckPhysicalSpacesViewModel(
     private val danielServiceRepository: DanielServiceRepository, application: Application) : AndroidViewModel(application), LifecycleObserver{
 
 

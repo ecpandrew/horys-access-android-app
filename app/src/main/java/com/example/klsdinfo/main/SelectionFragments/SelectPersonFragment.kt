@@ -1,6 +1,7 @@
 package com.example.klsdinfo.main.SelectionFragments
 import android.app.AlertDialog
 import android.content.Context
+import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
@@ -23,9 +24,11 @@ import com.example.klsdinfo.data.SemanticApiService
 import com.example.klsdinfo.data.SemanticRepository
 import com.example.klsdinfo.data.ViewModelFactory
 import com.example.klsdinfo.data.database.AppDatabase
+import com.example.klsdinfo.data.database.GroupQuery
 import com.example.klsdinfo.data.models.MultiCheckRole
 import com.example.klsdinfo.data.models.Person2
 import com.example.klsdinfo.data.models.Role2
+import com.example.klsdinfo.main.TableFragments.FindPeopleFragment
 import com.example.klsdinfo.main.TableFragments.TableTwoFrag
 import com.example.klsdinfo.main.adapters.MultiCheckRoleAdapter
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
@@ -119,19 +122,37 @@ class SelectPersonFragment : Fragment(), LifecycleOwner {
 
         val btnSend : Button = view.findViewById(R.id.buttonGet)
         btnSend.setOnClickListener {
+
+
+
             val seletedElements: ArrayList<Parcelable> = getSelectedElements()
             val bundle = Bundle()
             bundle.putParcelableArrayList("resources", seletedElements)
             val dialog = TableTwoFrag()
             dialog.arguments = bundle
             navigateToFragment(dialog, true)
-        }
-        setClickListeners()
 
+            // Esse é o certo
+//            AsyncTask.execute {
+//                AppDatabase.getInstance(context!!)?.groupDao()?.insert(GroupQuery(0,getIds(),null,null))
+//                AppDatabase.destroyInstance()
+//                navigateToFragment(FindPeopleFragment(),true)
+//            }
+
+
+
+
+        }
+
+        setClickListeners()
 
     }
 
     private fun setClickListeners() {
+
+
+
+
 
         val obj = object: MultiCheckRoleAdapter.OnClickListener{
             override fun onClick(view: View, group: ExpandableGroup<*>, pos: Int) {
@@ -228,6 +249,30 @@ class SelectPersonFragment : Fragment(), LifecycleOwner {
         }
         Log.i("debug", "Enviado: $persons")
         return persons
+    }
+
+
+
+    private fun getIds(): String {
+        val persons: ArrayList<Parcelable> = ArrayList()
+        val roles: ArrayList<MultiCheckRole> = mAdapter.groups as ArrayList<MultiCheckRole>
+        var id = ""
+        for(i in 0 until roles.size){
+            for (j in 0 until roles[i].selectedChildren.size){
+                when(roles[i].selectedChildren[j]){
+                    true -> {
+                        persons.add(items[i].persons[j])
+                        id += "${items[i].persons[j].holder.id}"
+
+                    }
+                }
+            }
+
+        }
+        Log.i("debug", "Enviado: $persons")
+
+
+        return id
     }
 
 

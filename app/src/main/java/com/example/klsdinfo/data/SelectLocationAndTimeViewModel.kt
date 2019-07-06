@@ -4,12 +4,13 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.klsdinfo.data.models.Person2
+import com.example.klsdinfo.data.models.PhysicalSpace
 
-class SelectPersonAndTimeViewModel(
+class SelectLocationAndTimeViewModel(
     private val semanticRepository: SemanticRepository, application: Application) : ViewModel(), LifecycleObserver{
 
 
-    val mPeople = MutableLiveData<List<Person2>>().apply { value = emptyList() }
+    val mPeople = MutableLiveData<List<PhysicalSpace>>().apply { value = emptyList() }
     val loadingProgress = MutableLiveData<Boolean>().apply { value = true }
 
     val date1 = MutableLiveData<String>().apply { value = "" }
@@ -17,9 +18,9 @@ class SelectPersonAndTimeViewModel(
     val date2 = MutableLiveData<String>().apply { value = "" }
 
 
-    fun fetchPeople(){
+    fun fetchData(){
         loadingProgress.postValue(true)
-        semanticRepository.getAvailablePeople({
+        semanticRepository.getPhysicalSpaces({
             mPeople.postValue(it)
             loadingProgress.postValue(false)
 

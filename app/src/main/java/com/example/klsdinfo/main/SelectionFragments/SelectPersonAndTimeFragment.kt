@@ -88,6 +88,7 @@ class SelectPersonAndTimeFragment : Fragment(), DatePickerDialog.OnDateSetListen
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.select_person_history_layout, container, false)
+
         initComponents(view)
 
 
@@ -423,18 +424,20 @@ class SelectPersonAndTimeFragment : Fragment(), DatePickerDialog.OnDateSetListen
         val persons: MutableList<Person2> = mutableListOf()
         val roles: ArrayList<MultiCheckRole> = mAdapter.groups as ArrayList<MultiCheckRole>
 
+        var id = ""
         for(i in 0 until roles.size){
             for (j in 0 until roles[i].selectedChildren.size){
                 when(roles[i].selectedChildren[j]){
-                    true -> { persons.add(items[i].persons[j])
+                    true -> {
+                        persons.add(items[i].persons[j])
+                        id += "${items[i].persons[j].holder.id}/"
                     }
                 }
             }
         }
-        var id = ""
-        for (person in persons){
-            id+= "${person.holder.id}/"
-        }
+//        for (person in persons){
+//            id+= "${person.holder.id}/"
+//        }
         return id
     }
 

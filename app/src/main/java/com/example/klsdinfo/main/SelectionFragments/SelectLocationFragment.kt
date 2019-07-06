@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.os.AsyncTask
 import android.os.Bundle
-import android.os.Parcelable
 import android.util.Log
 import android.view.*
 import android.widget.Button
@@ -25,7 +24,7 @@ import com.example.klsdinfo.data.database.AppDatabase
 import com.example.klsdinfo.data.database.GroupQuery
 import com.example.klsdinfo.data.models.Location
 import com.example.klsdinfo.data.models.PhysicalSpace
-import com.example.klsdinfo.main.TableFragments.TableOnefrag
+import com.example.klsdinfo.main.TableFragments.CheckPhysicalSpacesFragment
 import com.example.klsdinfo.main.adapters.PhysicalSpaceAdapter
 import java.util.*
 
@@ -88,7 +87,7 @@ class SelectLocationFragment: Fragment() {
             AsyncTask.execute {
                 AppDatabase.getInstance(context!!)?.groupDao()?.insert(GroupQuery(0,getIds(),null,null))
                 AppDatabase.destroyInstance()
-                navigateToFragment(TableOnefrag(),true)
+                navigateToFragment(CheckPhysicalSpacesFragment(),true)
 //                alertDialog.dismiss()
             }
         }
@@ -123,9 +122,10 @@ class SelectLocationFragment: Fragment() {
 
     private fun getIds() : String{
         val selectedItemPositions = mAdapter.getSelectedItems()
+        val peeked = pilha.peek()
         var id = ""
         for (i in selectedItemPositions){
-            id += "${pilha.peek()[i].holder.id}/"
+            id += "${peeked[i].holder.id}/"
         }
         return id
     }

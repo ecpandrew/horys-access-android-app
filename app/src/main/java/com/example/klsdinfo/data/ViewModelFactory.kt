@@ -7,8 +7,6 @@ import androidx.lifecycle.ViewModelProvider
 class ViewModelFactory constructor(private val semanticRepository: SemanticRepository?,
                                    private val danielRepository: DanielServiceRepository?,
                                    private val application: Application
-
-
                                            ) : ViewModelProvider.Factory {
 
 
@@ -17,15 +15,21 @@ class ViewModelFactory constructor(private val semanticRepository: SemanticRepos
         return with(modelClass){
             when {
 
-                isAssignableFrom(ConnectedPeopleViewModel::class.java) -> ConnectedPeopleViewModel(danielRepository!!, application)
+                isAssignableFrom(FindPeopleViewModel::class.java) -> FindPeopleViewModel(danielRepository!!, application)
+
+                isAssignableFrom(CheckPhysicalSpacesViewModel::class.java) -> CheckPhysicalSpacesViewModel(danielRepository!!, application)
 
                 isAssignableFrom(PeopleHistoryViewModel::class.java) -> PeopleHistoryViewModel(danielRepository!!, application)
+
+                isAssignableFrom(LocationHistoryViewModel::class.java) -> LocationHistoryViewModel(danielRepository!!, application)
 
                 isAssignableFrom(GroupHistoryViewModel::class.java) -> GroupHistoryViewModel(danielRepository!!, application)
 
                 isAssignableFrom(SelectPersonViewModel::class.java) -> SelectPersonViewModel(semanticRepository!!, application)
 
                 isAssignableFrom(SelectPersonAndTimeViewModel::class.java) -> SelectPersonAndTimeViewModel(semanticRepository!!, application)
+
+                isAssignableFrom(SelectLocationAndTimeViewModel::class.java) -> SelectLocationAndTimeViewModel(semanticRepository!!, application)
 
                 isAssignableFrom(SelectLocationViewModel::class.java) -> SelectLocationViewModel(semanticRepository!!, application)
 

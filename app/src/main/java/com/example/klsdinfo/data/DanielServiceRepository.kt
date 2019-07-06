@@ -4,9 +4,7 @@ import android.os.AsyncTask
 import android.util.Log
 import com.example.klsdinfo.data.database.AppDatabase
 import com.example.klsdinfo.data.database.GroupQuery
-import com.example.klsdinfo.data.models.TableFourResource
-import com.example.klsdinfo.data.models.TableOneResource
-import com.example.klsdinfo.data.models.TableThreeResource
+import com.example.klsdinfo.data.models.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -54,6 +52,30 @@ class DanielServiceRepository private constructor(private val danielService: Dan
 
 
 
+    fun getPhysicalSpaces(success: (List<TableTwoResource>) -> Unit, failure: () -> Unit){
+        Log.i("retrofit", "repository init")
+        AsyncTask.execute {
+            Log.i("retrofit", "async init")
+            val query: GroupQuery = database.groupDao().getAll()[0]
+            Log.i("retrofit", "query: ${database.groupDao().getAll().size}")
+            val call = DanielApiService.create().getPhysicalSpaces(query.ids.toString().trim())
+            call.enqueue(object : Callback<List<TableTwoResource>>{
+                override fun onResponse(call: Call<List<TableTwoResource>>, response: Response<List<TableTwoResource>>
+                ) {
+                    Log.i("timestamp", "url usada: ${response.raw().request().url()}")
+                    if(response.isSuccessful){
+                        if(response.body().isNullOrEmpty()) success(listOf())
+                        else success(response.body()!!)
+                        Log.i("retrofit", "repository list ${response.body()}")
+                    }
+                }
+                override fun onFailure(call: Call<List<TableTwoResource>>, t: Throwable) {
+                    Log.i("retrofit", "repository on failure")
+                    failure()
+                }
+            })
+        }
+    }
 
 
 
@@ -145,13 +167,39 @@ class DanielServiceRepository private constructor(private val danielService: Dan
             })
         }
 
-
-
-
     }
 
 
 
+    fun getPhysicalSpaceHistory(success: (List<TableFiveResource>) -> Unit, failure: () -> Unit){
+        Log.i("retrofit", "repository init")
+        AsyncTask.execute {
+
+            Log.i("retrofit", "async init")
+            val query: GroupQuery = database.groupDao().getAll()[0]
+            Log.i("retrofit", "query: ${database.groupDao().getAll().size}")
+            val call = DanielApiService.create().getPhysicalSpaceHistory(query.ids.toString().trim(),query.pastDate.toString().trim(),query.currentDate.toString().trim())
+
+            call.enqueue(object : Callback<List<TableFiveResource>>{
+                override fun onResponse(
+                    call: Call<List<TableFiveResource>>,
+                    response: Response<List<TableFiveResource>>
+                ) {
+                    Log.i("timestamp", "url usada: ${response.raw().request().url()}")
+                    if(response.isSuccessful){
+                        if(response.body().isNullOrEmpty()) success(listOf())
+                        else success(response.body()!!)
+                        Log.i("retrofit", "repository list ${response.body()}")
+                    }                }
+
+                override fun onFailure(call: Call<List<TableFiveResource>>, t: Throwable) {
+                    Log.i("retrofit", "repository on failure")
+                    failure()
+                }
+            })
+        }
+
+    }
 
 
 

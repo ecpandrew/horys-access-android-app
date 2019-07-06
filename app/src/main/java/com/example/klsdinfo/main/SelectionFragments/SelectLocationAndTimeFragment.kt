@@ -33,7 +33,7 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, DialogInterface.OnCancelListener{
+class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, DialogInterface.OnCancelListener{
 
     lateinit var recyclerView: RecyclerView
     lateinit var mAdapter: PhysicalSpaceAdapter
@@ -81,8 +81,8 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
 
 
     companion object {
-        fun newInstance(): HSelectionLocationFragment {
-            return HSelectionLocationFragment()
+        fun newInstance(): SelectLocationAndTimeFragment {
+            return SelectLocationAndTimeFragment()
         }
     }
 
@@ -355,7 +355,7 @@ class HSelectionLocationFragment: Fragment() , DatePickerDialog.OnDateSetListene
 
     private fun enableActionMode(position: Int) {
         if (actionMode == null) {
-            actionMode = this@HSelectionLocationFragment.activity!!.startActionMode(actionModeCallback)
+            actionMode = this@SelectLocationAndTimeFragment.activity!!.startActionMode(actionModeCallback)
         }
 //        toggleSelection(position)
     }

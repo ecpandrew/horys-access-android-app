@@ -1,7 +1,6 @@
 package com.example.klsdinfo.main.MainFragments
 
 import android.content.Context
-import android.os.AsyncTask
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +10,12 @@ import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.klsdinfo.R
 import com.example.klsdinfo.data.*
 import com.example.klsdinfo.data.database.AppDatabase
-import com.example.klsdinfo.data.models.Person2
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -57,7 +54,6 @@ class HomeFragment : Fragment(){
 
 
 
-        // Todo: Está bugado
         radioGroup.setOnCheckedChangeListener { radioGroup, id ->
             val radio : RadioButton = view.findViewById(id)
             Snackbar.make(container as View,"Time Interval: last ${radio.text}",Snackbar.LENGTH_LONG).show()
@@ -116,7 +112,7 @@ class HomeFragment : Fragment(){
         val repo = SemanticRepository.getInstance(SemanticApiService.create(), AppDatabase.getInstance(context!!)!!)
         val repo2 = DanielServiceRepository.getInstance(DanielApiService.create(), AppDatabase.getInstance(context!!)!!)
 
-        val factory = SemanticViewModelFactory(repo,repo2, activity?.application!!)
+        val factory = ViewModelFactory(repo,repo2, activity?.application!!)
 
         viewModel = ViewModelProviders.of(this, factory).get(HomeViewModel::class.java)
 

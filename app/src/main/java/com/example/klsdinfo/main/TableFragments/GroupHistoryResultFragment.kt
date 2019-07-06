@@ -12,35 +12,27 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
-import com.android.volley.toolbox.HttpHeaderParser
-import com.evrencoskun.tableview.TableView
 import com.example.klsdinfo.R
 import com.example.klsdinfo.data.*
 import com.example.klsdinfo.data.database.AppDatabase
 import com.example.klsdinfo.data.models.*
 import com.example.klsdinfo.main.MainFragments.CustomTableFragment
-import com.example.klsdinfo.main.adapters.MyTableViewAdapter
 import com.example.klsdinfo.main.adapters.TableThreeAdapter
 import com.google.android.material.button.MaterialButton
-import java.io.UnsupportedEncodingException
 import java.text.NumberFormat
-import java.text.SimpleDateFormat
 import java.util.*
 
 
-class TableThreeFrag() : Fragment(), LifecycleOwner {
+class GroupHistoryResultFragment : Fragment(), LifecycleOwner {
 
     val TAG: String = "FullScreenDialog"
     lateinit var id: String
@@ -57,12 +49,12 @@ class TableThreeFrag() : Fragment(), LifecycleOwner {
     lateinit var recyclerView: RecyclerView
     lateinit var mAdapter: TableThreeAdapter
     lateinit var data: List<TableThreeResource>
-    lateinit var viewModel : GroupViewModel
+    lateinit var viewModel : GroupHistoryViewModel
     lateinit var mView: View
     lateinit var noResults: TextView
     companion object {
-        fun newInstance(): TableThreeFrag {
-            return TableThreeFrag()
+        fun newInstance(): GroupHistoryResultFragment {
+            return GroupHistoryResultFragment()
         }
     }
 
@@ -74,30 +66,22 @@ class TableThreeFrag() : Fragment(), LifecycleOwner {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
         super.onCreateView(inflater, container, savedInstanceState)
-        mView = inflater.inflate(R.layout.table_three_layout, container, false)
-        noResults = mView.findViewById(R.id.no_result)
-
-        init()
-
+        init(inflater, container)
         createViewModel()
-
-
-
         subscribeToModel()
-
-
-
         return mView
     }
 
-    private fun init() {
+    private fun init(inflater : LayoutInflater, container: ViewGroup?) {
+        mView = inflater.inflate(R.layout.table_three_layout, container, false)
+        noResults = mView.findViewById(R.id.no_result)
         data = listOf()
         recyclerView = mView.findViewById(R.id.rv_resource_3)
         recyclerView.layoutManager = GridLayoutManager(context, 2)
         recyclerView.setHasFixedSize(true)
-        progressBar = mView.findViewById(R.id.progress_bar)    }
+        progressBar = mView.findViewById(R.id.progress_bar)
+    }
 
     private fun subscribeToModel() {
 
@@ -126,9 +110,9 @@ class TableThreeFrag() : Fragment(), LifecycleOwner {
 
     private fun createViewModel() {
         val repo = DanielServiceRepository.getInstance(DanielApiService.create(), AppDatabase.getInstance(activity?.applicationContext!!)!!)
-        val factory = DanielServiceViewModelFactory(repo, activity?.application!!)
+        val factory = ViewModelFactory(null,repo, activity?.application!!)
 
-        viewModel = ViewModelProviders.of(this, factory).get(GroupViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, factory).get(GroupHistoryViewModel::class.java)
     }
 
 
@@ -144,59 +128,60 @@ class TableThreeFrag() : Fragment(), LifecycleOwner {
 
             val card: CardView = view!!.findViewById(R.id.tableThreeCardView)
 
-        (card.findViewById(R.id.btn_detail) as MaterialButton).setOnClickListener{
-            Toast.makeText(context,"Not Implemented Yet",Toast.LENGTH_SHORT).show()
-
-            viewModel
+            (card.findViewById(R.id.btn_detail) as MaterialButton).setOnClickListener{
+                Toast.makeText(context,"Not Implemented Yet",Toast.LENGTH_SHORT).show()
 
 
-            val bundle = Bundle()
-            var ref ="detail3"
-            bundle.putString("ref", ref)
-            bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
 
-            val dialog = CustomTableFragment()
+                val bundle = Bundle()
+                var ref ="detail3"
+                bundle.putString("ref", ref)
+                bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
 
-            dialog.arguments = bundle
-            val activity: AppCompatActivity = context as AppCompatActivity // ??
-            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-            dialog.show(transaction, "FullScreenDialog")
-        }
+                val dialog = CustomTableFragment()
 
-        (card.findViewById(R.id.btn_log) as MaterialButton).setOnClickListener {
-            val bundle = Bundle()
-            var ref ="log3"
-            bundle.putString("ref", ref)
-            bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
-            val dialog = CustomTableFragment()
-            dialog.arguments = bundle
-            val activity: AppCompatActivity = context as AppCompatActivity // ??
-            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-            dialog.show(transaction, "FullScreenDialog")
-        }
+                dialog.arguments = bundle
+                val activity: AppCompatActivity = context as AppCompatActivity // ??
+                val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+                dialog.show(transaction, "FullScreenDialog")
+            }
 
-
-        val nf = NumberFormat.getInstance() // get instance
-        nf.maximumFractionDigits = 2 // set decimal places
-
-        // Seconds
-        var totalDuration: Long = 0
-        for (resource in lista){
-            totalDuration += resource.getDuration()
-        }
-        val mean = (totalDuration/lista.size)
-
-        val m = nf.format(mean.toFloat()/3600)
-        val tD = nf.format(totalDuration.toFloat()/3600)
+            (card.findViewById(R.id.btn_log) as MaterialButton).setOnClickListener {
+                val bundle = Bundle()
+                var ref ="log3"
+                bundle.putString("ref", ref)
+                bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
+                val dialog = CustomTableFragment()
+                dialog.arguments = bundle
+                val activity: AppCompatActivity = context as AppCompatActivity // ??
+                val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+                dialog.show(transaction, "FullScreenDialog")
+            }
 
 
-        (card.findViewById(R.id.nameTV4) as TextView).text = ("Group History")
-        (card.findViewById(R.id.descriptionTV4) as TextView).text = ("Encounters: ${lista.size}")
-        (card.findViewById(R.id.nplacesTV4) as TextView).visibility = View.GONE//.text = ("Physical Spaces Found: ${mean/60}")
-        (card.findViewById(R.id.durationTV4) as TextView).text = ("Total Time Elapsed: ${totalDuration/60} min")
-        card.visibility = View.VISIBLE
+            val nf = NumberFormat.getInstance() // get instance
+            nf.maximumFractionDigits = 2 // set decimal places
+
+            // Seconds
+            var totalDuration: Long = 0
+            for (resource in lista){
+                totalDuration += resource.getDuration()
+                 }
+            val mean = (totalDuration/lista.size)
+
+            val m = nf.format(mean.toFloat()/3600)
+            val tD = nf.format(totalDuration.toFloat()/3600)
+
+
+            (card.findViewById(R.id.nameTV4) as TextView).text = ("Group History")
+            (card.findViewById(R.id.descriptionTV4) as TextView).text = ("Encounters: ${lista.size}")
+            (card.findViewById(R.id.nplacesTV4) as TextView).visibility = View.GONE//.text = ("Physical Spaces Found: ${mean/60}")
+            (card.findViewById(R.id.durationTV4) as TextView).text = ("Total Time Elapsed: ${totalDuration/60} min")
+            card.visibility = View.VISIBLE
+            }
+
     }
-    }
+
 
 }
 

@@ -15,8 +15,8 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.example.klsdinfo.R
 import com.example.klsdinfo.data.models.Method
-import com.example.klsdinfo.main.SelectionFragments.HSelectionLocationFragment
-import com.example.klsdinfo.main.SelectionFragments.HSelectionPersonFragment
+import com.example.klsdinfo.main.SelectionFragments.SelectLocationAndTimeFragment
+import com.example.klsdinfo.main.SelectionFragments.SelectPersonAndTimeFragment
 
 class HistoryMethodsAdapter(
     private val context: Context,
@@ -51,7 +51,7 @@ class HistoryMethodsAdapter(
                 0 -> { // person
 
                     val frag =
-                        HSelectionPersonFragment.newInstance()
+                        SelectPersonAndTimeFragment.newInstance()
                     val bundle = Bundle()
                     bundle.putInt("ref", 0)
                     frag.arguments = bundle
@@ -59,7 +59,7 @@ class HistoryMethodsAdapter(
                 }
                 1 -> {// person: Here we algo need to choose target person
                     val frag =
-                        HSelectionPersonFragment.newInstance()
+                        SelectPersonAndTimeFragment.newInstance()
                     val bundle = Bundle()
                     bundle.putInt("ref", 1)
                     frag.arguments = bundle
@@ -70,7 +70,7 @@ class HistoryMethodsAdapter(
                 2 -> {
                     val bundle = Bundle()
                     val frag =
-                        HSelectionLocationFragment.newInstance()
+                        SelectLocationAndTimeFragment.newInstance()
                     bundle.putInt("ref", 2)
                     frag.arguments = bundle
                     navigateToFragment(frag, it,true)

@@ -6,7 +6,7 @@ import androidx.lifecycle.*
 import com.example.klsdinfo.data.models.Person2
 import com.example.klsdinfo.data.models.PhysicalSpace
 
-class ListLocationViewModel(
+class SelectLocationViewModel(
     private val semanticRepository: SemanticRepository, application: Application) : AndroidViewModel(application), LifecycleObserver{
 
 

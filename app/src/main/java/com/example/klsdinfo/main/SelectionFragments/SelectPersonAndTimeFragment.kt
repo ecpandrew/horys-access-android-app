@@ -28,8 +28,8 @@ import com.example.klsdinfo.data.database.GroupQuery
 import com.example.klsdinfo.data.models.MultiCheckRole
 import com.example.klsdinfo.data.models.Person2
 import com.example.klsdinfo.data.models.Role2
-import com.example.klsdinfo.main.TableFragments.TableFourFrag
-import com.example.klsdinfo.main.TableFragments.TableThreeFrag
+import com.example.klsdinfo.main.TableFragments.PeopleHistoryResultFragment
+import com.example.klsdinfo.main.TableFragments.GroupHistoryResultFragment
 import com.example.klsdinfo.main.adapters.MultiCheckRoleAdapter
 import com.google.android.material.button.MaterialButton
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
@@ -40,7 +40,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, DialogInterface.OnCancelListener, LifecycleOwner  {
+class SelectPersonAndTimeFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, DialogInterface.OnCancelListener, LifecycleOwner  {
 
 
     lateinit var mAdapter: MultiCheckRoleAdapter
@@ -79,10 +79,10 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     lateinit var rv: RecyclerView
     lateinit var layoutManager: LinearLayoutManager
     lateinit var progressBar: ProgressBar
-    lateinit var viewModel: ListPersonDateViewModel
+    lateinit var viewModel: SelectPersonAndTimeViewModel
     companion object {
-        fun newInstance(): HSelectionPersonFragment {
-            return HSelectionPersonFragment()
+        fun newInstance(): SelectPersonAndTimeFragment {
+            return SelectPersonAndTimeFragment()
         }
     }
 
@@ -104,9 +104,9 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 
     private fun setupViewModel() {
         val repo = SemanticRepository.getInstance(SemanticApiService.create(), AppDatabase.getInstance(context!!)!!)
-        val factory = SemanticViewModelFactory(repo,null, activity?.application!!)
+        val factory = ViewModelFactory(repo,null, activity?.application!!)
 
-        viewModel = ViewModelProviders.of(this, factory).get(ListPersonDateViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, factory).get(SelectPersonAndTimeViewModel::class.java)
 
 
         viewModel.loadingProgress.observe(viewLifecycleOwner, Observer{
@@ -250,36 +250,46 @@ class HSelectionPersonFragment : Fragment(), DatePickerDialog.OnDateSetListener,
                     bundle.putLong("date2", unixTimePast!!)
                     when(methodRef){
                         0 -> {
-                            Log.i("debug","go1")
-
-
                             // add query data in AppDatabase
                             alertDialog.show()
                             val ids = getSelectedIds()
                             if(ids.isBlank()){
                                 alertDialog.dismiss()
                                 Toast.makeText(context,"You must select something!", Toast.LENGTH_SHORT).show()
-
                             }else{
                                 AsyncTask.execute {
 //                                                                    AppDatabase.getInstance(context!!)?.groupDao()?.nukeTable()
                                     AppDatabase.getInstance(context!!)?.groupDao()?.insert(GroupQuery(0,getSelectedIds(),unixTimePast!!.toString(),unixTime!!.toString()))
                                     AppDatabase.destroyInstance()
-                                    val dialog = TableThreeFrag()
+                                    navigateToFragment(GroupHistoryResultFragment(),true)
+                                    alertDialog.dismiss()
+                                }
+                            }
+
+                        }
+
+
+                        1 -> {
+
+                            alertDialog.show()
+                            val ids = getSelectedIds()
+                            if(ids.isBlank()){
+                                alertDialog.dismiss()
+                                Toast.makeText(context,"You must select something!", Toast.LENGTH_SHORT).show()
+                            }else{
+                                AsyncTask.execute {
+                                    //                                                                    AppDatabase.getInstance(context!!)?.groupDao()?.nukeTable()
+                                    AppDatabase.getInstance(context!!)?.groupDao()?.insert(GroupQuery(0,getSelectedIds(),unixTimePast!!.toString(),unixTime!!.toString()))
+                                    AppDatabase.destroyInstance()
+                                    val dialog = PeopleHistoryResultFragment()
                                     dialog.arguments = bundle
                                     navigateToFragment(dialog,true)
                                     alertDialog.dismiss()
                                 }
                             }
+                        }
 
 
-                        }
-                        1 -> {
-                            Log.i("debug","go2")
-                            val dialog = TableFourFrag()
-                            dialog.arguments = bundle
-                            navigateToFragment(dialog,true)
-                        }
                         else -> {
                             Log.i("debug","else")
                         }

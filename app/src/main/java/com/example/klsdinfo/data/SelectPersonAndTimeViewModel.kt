@@ -5,14 +5,16 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.klsdinfo.data.models.Person2
 
-class ListPersonViewModel(
-    private val semanticRepository: SemanticRepository, application: Application) : AndroidViewModel(application), LifecycleObserver{
+class SelectPersonAndTimeViewModel(
+    private val semanticRepository: SemanticRepository, application: Application) : ViewModel(), LifecycleObserver{
 
 
     val mPeople = MutableLiveData<List<Person2>>().apply { value = emptyList() }
     val loadingProgress = MutableLiveData<Boolean>().apply { value = true }
 
+    val date1 = MutableLiveData<String>().apply { value = "" }
 
+    val date2 = MutableLiveData<String>().apply { value = "" }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun load(){

@@ -13,8 +13,8 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.example.klsdinfo.R
 import com.example.klsdinfo.data.models.Method
-import com.example.klsdinfo.main.SelectionFragments.RSelectionLocationFragment
-import com.example.klsdinfo.main.SelectionFragments.RSelectionPersonFragment
+import com.example.klsdinfo.main.SelectionFragments.SelectLocationFragment
+import com.example.klsdinfo.main.SelectionFragments.SelectPersonFragment
 
 class RMethodsAdapter(
     private val context: Context,
@@ -47,12 +47,12 @@ class RMethodsAdapter(
         holder.cardView.setOnClickListener {
             when(position){
                 0 -> {
-                    navigateToFragment(RSelectionLocationFragment.newInstance(),it,true)
+                    navigateToFragment(SelectLocationFragment.newInstance(),it,true)
 
                 }
 
                 1 -> {
-                    navigateToFragment(RSelectionPersonFragment.newInstance(), it, true)
+                    navigateToFragment(SelectPersonFragment.newInstance(), it, true)
                 }
             }
         }

@@ -9,6 +9,7 @@ import com.example.klsdinfo.data.models.TableFourResource
 import com.example.klsdinfo.data.models.TableThreeResource
 
 class HomeViewModel(
+
     private val semanticRepository: SemanticRepository,  private val danielServiceRepository: DanielServiceRepository, application: Application) : AndroidViewModel(application), LifecycleObserver{
 
 

@@ -15,25 +15,19 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.*
-import com.android.volley.toolbox.StringRequest
-import com.example.klsdinfo.ErrorFragment
 import com.example.klsdinfo.R
-import com.example.klsdinfo.Tools
-import com.example.klsdinfo.Volley.VolleySingleton
-import com.example.klsdinfo.data.ListLocationViewModel
+import com.example.klsdinfo.data.SelectLocationViewModel
 import com.example.klsdinfo.data.SemanticApiService
 import com.example.klsdinfo.data.SemanticRepository
-import com.example.klsdinfo.data.SemanticViewModelFactory
+import com.example.klsdinfo.data.ViewModelFactory
 import com.example.klsdinfo.data.database.AppDatabase
-import com.example.klsdinfo.data.models.FakeRequest
 import com.example.klsdinfo.data.models.Location
 import com.example.klsdinfo.data.models.PhysicalSpace
 import com.example.klsdinfo.main.TableFragments.TableOnefrag
 import com.example.klsdinfo.main.adapters.PhysicalSpaceAdapter
 import java.util.*
 
-class RSelectionLocationFragment: Fragment() {
+class SelectLocationFragment: Fragment() {
 
 
     lateinit var rv: RecyclerView
@@ -42,7 +36,7 @@ class RSelectionLocationFragment: Fragment() {
     lateinit var back: Button
     lateinit var get: Button
     lateinit var layoutManager: LinearLayoutManager
-    lateinit var viewModel : ListLocationViewModel
+    lateinit var viewModel : SelectLocationViewModel
     lateinit var progress: AlertDialog.Builder
     lateinit var alertDialog: AlertDialog
     lateinit var progressBar: ProgressBar
@@ -53,8 +47,8 @@ class RSelectionLocationFragment: Fragment() {
 
 
     companion object {
-        fun newInstance(): RSelectionLocationFragment {
-            return RSelectionLocationFragment()
+        fun newInstance(): SelectLocationFragment {
+            return SelectLocationFragment()
         }
     }
 
@@ -122,13 +116,14 @@ class RSelectionLocationFragment: Fragment() {
         validateBackParentButton(false)
 
 
+
     }
 
 
     private fun setupViewModel(){
         val repo = SemanticRepository.getInstance(SemanticApiService.create(), AppDatabase.getInstance(activity?.applicationContext!!)!!)
-        val factory = SemanticViewModelFactory(repo, null,activity?.application!!)
-        viewModel = ViewModelProviders.of(this, factory).get(ListLocationViewModel::class.java)
+        val factory = ViewModelFactory(repo, null,activity?.application!!)
+        viewModel = ViewModelProviders.of(this, factory).get(SelectLocationViewModel::class.java)
 
         viewModel.loadingProgress.observe(this, androidx.lifecycle.Observer {
             when(it){
@@ -191,8 +186,6 @@ class RSelectionLocationFragment: Fragment() {
 
 
     }
-
-
 
 
 
@@ -265,10 +258,6 @@ class RSelectionLocationFragment: Fragment() {
     private fun print(msg: String){
         Log.d("Lifecycle", "Real Time: Location Selection Fragment: $msg")
     }
-
-
-
-
 
 
 }

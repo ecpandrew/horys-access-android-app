@@ -11,7 +11,7 @@ import com.example.klsdinfo.data.models.Person2
 import com.example.klsdinfo.data.models.TableThreeResource
 import java.lang.Exception
 
-class GroupViewModel(
+class GroupHistoryViewModel(
     private val repo: DanielServiceRepository,
     application: Application
 

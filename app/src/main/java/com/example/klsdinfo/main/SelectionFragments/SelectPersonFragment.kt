@@ -18,10 +18,10 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.klsdinfo.R
-import com.example.klsdinfo.data.ListPersonViewModel
+import com.example.klsdinfo.data.SelectPersonViewModel
 import com.example.klsdinfo.data.SemanticApiService
 import com.example.klsdinfo.data.SemanticRepository
-import com.example.klsdinfo.data.SemanticViewModelFactory
+import com.example.klsdinfo.data.ViewModelFactory
 import com.example.klsdinfo.data.database.AppDatabase
 import com.example.klsdinfo.data.models.MultiCheckRole
 import com.example.klsdinfo.data.models.Person2
@@ -31,7 +31,7 @@ import com.example.klsdinfo.main.adapters.MultiCheckRoleAdapter
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 
 
-class RSelectionPersonFragment : Fragment(), LifecycleOwner {
+class SelectPersonFragment : Fragment(), LifecycleOwner {
 
     lateinit var mAdapter: MultiCheckRoleAdapter
     lateinit var items: List<MultiCheckRole>
@@ -41,12 +41,12 @@ class RSelectionPersonFragment : Fragment(), LifecycleOwner {
     lateinit var rv: RecyclerView
     lateinit var layoutManager: LinearLayoutManager
     lateinit var progressBar: ProgressBar
-    lateinit var viewModel: ListPersonViewModel
+    lateinit var viewModel: SelectPersonViewModel
 
 
     companion object {
-        fun newInstance(): RSelectionPersonFragment {
-            return RSelectionPersonFragment()
+        fun newInstance(): SelectPersonFragment {
+            return SelectPersonFragment()
         }
     }
 
@@ -62,11 +62,13 @@ class RSelectionPersonFragment : Fragment(), LifecycleOwner {
         return view
     }
 
+
+
     private fun setupViewModel() {
         val repo = SemanticRepository.getInstance(SemanticApiService.create(), AppDatabase.getInstance(activity?.applicationContext!!)!!)
-        val factory = SemanticViewModelFactory(repo, null,activity?.application!!)
+        val factory = ViewModelFactory(repo, null,activity?.application!!)
 
-        viewModel = ViewModelProviders.of(this, factory).get(ListPersonViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, factory).get(SelectPersonViewModel::class.java)
 
         viewModel.loadingProgress.observe(viewLifecycleOwner, Observer {
 

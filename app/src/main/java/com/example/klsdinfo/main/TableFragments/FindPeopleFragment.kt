@@ -59,75 +59,20 @@ class FindPeopleFragment : Fragment(), LifecycleOwner {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-
-
-
         init(inflater, container)
-
         createViewModel()
-
         subscribeToModel()
-
-        val bundle: Bundle? = arguments
-        queue = VolleySingleton.getInstance(context).requestQueue
-
-        if (bundle == null || bundle.isEmpty){
-            // Todo: Não há resultados
-
-        }else{
-            val persons: List<Person2>? = bundle.getParcelableArrayList("resources")
-            if (persons == null){
-                // Todo: tratar isso dai
-            }else{
-                Log.i("Response", "lista $persons")
-
-                // classificar por role
-                map = mutableMapOf()
-
-                for(person in persons){
-                    if(person.roles != null){
-                        for(role in person.roles){
-                            if(!map.containsKey(role.name)){
-                                map[role.name] = mutableListOf(person)
-                            }else{
-                                val aux = map[role.name]
-                                aux!!.add(person)
-                                map[role.name] = aux
-                            }
-                        }
-                    }
-                }
-
-                Log.i("Response", "map $map")
-
-
-                for (entry in map){
-                    var id = "/"
-                    for(person in entry.value){
-                        id+="${person.holder.id}/"
-                    }
-                    url = "http://smartlab.lsdi.ufma.br/service/persons/${id}physical_spaces/"
-
-                    makeRequest(url, entry.key)
-                }
-                Log.i("Response", "map $mapResults")
-            }
-        }
-
-
         return mView
     }
 
 
     private fun subscribeToModel() {
 
-
         viewModel.adaterData.observe(viewLifecycleOwner, Observer {
-//            mAdapter = TableOneAdapter(context!!, it)
-//            recyclerView.adapter = mAdapter
-//            mAdapter.notifyDataSetChanged()
+            mAdapter = TableTwoAdapter(context!!, it)
+            recyclerView.adapter = mAdapter
+            mAdapter.notifyDataSetChanged()
         })
-
 
         viewModel.loadingProgress.observe(viewLifecycleOwner, Observer {
             when(it){
@@ -139,8 +84,8 @@ class FindPeopleFragment : Fragment(), LifecycleOwner {
                 }
             }
         })
-
     }
+
 
     private fun createViewModel() {
         val repo = DanielServiceRepository.getInstance(DanielApiService.create(), AppDatabase.getInstance(activity?.applicationContext!!)!!)
@@ -167,71 +112,9 @@ class FindPeopleFragment : Fragment(), LifecycleOwner {
 
     }
 
-    // Todo: eliminar a necessidade de varios requests
-    private fun makeRequest(url: String, role: String) {
-        val stringRequest = VolleyUTF8EncodingStringRequest(
-            Request.Method.GET,
-            url,
-            Response.Listener<String> { response ->
-                val r: List<TableTwoResource> = FakeRequest()
-                    .getTableTwoData(response)
-                if (r.isNotEmpty()) {
-                    noResults.visibility = View.GONE
-
-                    mapResults[role] = r
-
-                    mAdapter = TableTwoAdapter(context!!, mapResults)
-                    recyclerView.adapter = mAdapter
-                    mAdapter.notifyDataSetChanged()
-
-
-                }else{
-                    noResults.visibility = View.VISIBLE
-
-                }
-
-            },
-            Response.ErrorListener {
-                VolleyLog.e("Error: ", it.message)
-                noResults.text = it.message
-                noResults.visibility = View.VISIBLE
-
-
-            })
-        stringRequest.retryPolicy = DefaultRetryPolicy(20 * 1000, 3, 1.0f)
-        stringRequest.tag = this
-        queue.add(stringRequest)
-    }
-    override fun onStop() {
-        super.onStop()
-        queue.cancelAll(this)
-        VolleyLog.e("Error: ", "Request Cancelado")
-    }
-    class VolleyUTF8EncodingStringRequest(
-        method: Int, url: String, private val mListener: Response.Listener<String>,
-        errorListener: Response.ErrorListener
-    ) : Request<String>(method, url, errorListener) {
-
-        override fun deliverResponse(response: String) {
-            mListener.onResponse(response)
-        }
-
-        override fun parseNetworkResponse(response: NetworkResponse): Response<String> {
-            var parsed: String
-
-            val encoding = charset(HttpHeaderParser.parseCharset(response.headers))
-
-            // TODO: colcar o return dentro do try
-            return try {
-                parsed = String(response.data, encoding)
-                val bytes = parsed.toByteArray(encoding)
-                parsed = String(bytes, charset("UTF-8"))
-
-                Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response))
-            } catch (e: UnsupportedEncodingException) {
-                Response.error(ParseError(e))
-            }
-        }
+    override fun onStart() {
+        super.onStart()
+        viewModel.fetchData()
     }
 
 

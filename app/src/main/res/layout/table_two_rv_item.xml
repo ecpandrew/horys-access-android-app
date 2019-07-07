@@ -68,6 +68,18 @@
                     app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_marginBottom="8dp" android:layout_marginTop="16dp"
             />
+            <com.google.android.material.button.MaterialButton
+                    android:text="chart"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:backgroundTint="@color/yellow_mustard"
+                    android:textColor="@color/black"
+                    android:textSize="13sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btn_chart"
+                    app:layout_constraintStart_toEndOf="@+id/btn_detail"
+                    android:layout_marginStart="8dp" android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toBottomOf="@+id/main_duration"/>
             <TextView
                     android:text="Happening Now"
                     android:layout_width="wrap_content"

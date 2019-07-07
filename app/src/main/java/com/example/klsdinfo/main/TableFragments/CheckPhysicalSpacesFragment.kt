@@ -102,7 +102,7 @@ class CheckPhysicalSpacesFragment : Fragment(), LifecycleOwner {
 
     override fun onStart() {
         super.onStart()
-        viewModel.fetchPeople()
+        viewModel.fetchData()
     }
 
 

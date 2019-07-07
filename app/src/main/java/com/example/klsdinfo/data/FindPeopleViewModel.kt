@@ -20,12 +20,12 @@ class FindPeopleViewModel(
 
 
 
-    fun fetchPeople(){
+    fun fetchData(){
         loadingProgress.postValue(true)
         danielServiceRepository.getConnectedPeople(
             {
 //                resources.postValue(it)
-//                adaterData.postValue(generateAdapterData(it))
+                adaterData.postValue(generateAdapterData(it))
                 loadingProgress.postValue(false)
             },
             {
@@ -37,34 +37,37 @@ class FindPeopleViewModel(
 
 
 
-//    fun generateAdapterData(lista : List<TableTwoResource>): MutableMap<String, List<TableTwoResource>>{
-//
-//        val map : MutableMap<String, List<TableTwoResource>> = mutableMapOf()
-//
-//        for (element in lista){
-//
-//            if(element.)
-//            if(map.containsKey())
-//
-//        }
-//
-//
-//    }
+    fun generateAdapterData(lista : List<TableTwoResource>): MutableMap<String, MutableList<TableTwoResource>>{
+
+        Log.i("adapter", lista.toString())
+        val map : MutableMap<String, MutableList<TableTwoResource>> = mutableMapOf()
+        map["No Role"] = mutableListOf()
+        for (element in lista){
+
+            if(element.roles.isNullOrEmpty()){
+                val aux = map["No Role"] as MutableList
+                aux.add(element)
+                map["No Role"] = aux
+            }
+            else{
+
+                for (role in element.roles){
+
+                    val aux = map[role.name] ?: mutableListOf()
+
+                    aux.add(element)
+
+                    map[role.name] = aux
 
 
-//    fun generateAdapterData(lista: List<TableOneResource>): MutableMap<String, MutableList<TableOneResource>> {
-//        val childMap: MutableMap<String, MutableList<TableOneResource>> = mutableMapOf()
-//        for (resource in lista) {
-//            if (!childMap.containsKey(resource.physical_space)) {
-//                childMap[resource.physical_space] = mutableListOf(resource)
-//            } else {
-//                val aux: MutableList<TableOneResource>? = childMap[resource.physical_space]
-//                aux?.add(resource)
-//                childMap[resource.physical_space] = aux!!
-//            }
-//        }
-//        return childMap
-//    }
+
+                }
+            }
+        }
+        if (map["No Role"]!!.isEmpty()){map.remove("No Role")}
+        return map
+    }
+
 
 
 }

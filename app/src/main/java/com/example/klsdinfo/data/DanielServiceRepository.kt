@@ -25,7 +25,7 @@ class DanielServiceRepository private constructor(private val danielService: Dan
 
 
 
-    fun getConnectedPeople(success: (List<TableOneResource>) -> Unit, failure: () -> Unit){
+    fun getPhysicalSpaces(success: (List<TableOneResource>) -> Unit, failure: () -> Unit){
         Log.i("retrofit", "repository init")
         AsyncTask.execute {
             Log.i("retrofit", "async init")
@@ -52,7 +52,7 @@ class DanielServiceRepository private constructor(private val danielService: Dan
 
 
 
-    fun getPhysicalSpaces(success: (List<TableTwoResource>) -> Unit, failure: () -> Unit){
+    fun getConnectedPeople(success: (List<TableTwoResource>) -> Unit, failure: () -> Unit){
         Log.i("retrofit", "repository init")
         AsyncTask.execute {
             Log.i("retrofit", "async init")

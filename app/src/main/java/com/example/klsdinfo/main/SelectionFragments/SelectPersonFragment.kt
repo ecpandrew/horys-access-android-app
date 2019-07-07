@@ -29,7 +29,6 @@ import com.example.klsdinfo.data.models.MultiCheckRole
 import com.example.klsdinfo.data.models.Person2
 import com.example.klsdinfo.data.models.Role2
 import com.example.klsdinfo.main.TableFragments.FindPeopleFragment
-import com.example.klsdinfo.main.TableFragments.TableTwoFrag
 import com.example.klsdinfo.main.adapters.MultiCheckRoleAdapter
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 
@@ -124,20 +123,20 @@ class SelectPersonFragment : Fragment(), LifecycleOwner {
         btnSend.setOnClickListener {
 
 
-
-            val seletedElements: ArrayList<Parcelable> = getSelectedElements()
-            val bundle = Bundle()
-            bundle.putParcelableArrayList("resources", seletedElements)
-            val dialog = TableTwoFrag()
-            dialog.arguments = bundle
-            navigateToFragment(dialog, true)
+//
+//            val seletedElements: ArrayList<Parcelable> = getSelectedElements()
+//            val bundle = Bundle()
+//            bundle.putParcelableArrayList("resources", seletedElements)
+//            val dialog = TableTwoFrag()
+//            dialog.arguments = bundle
+//            navigateToFragment(dialog, true)
 
             // Esse é o certo
-//            AsyncTask.execute {
-//                AppDatabase.getInstance(context!!)?.groupDao()?.insert(GroupQuery(0,getIds(),null,null))
-//                AppDatabase.destroyInstance()
-//                navigateToFragment(FindPeopleFragment(),true)
-//            }
+            AsyncTask.execute {
+                AppDatabase.getInstance(context!!)?.groupDao()?.insert(GroupQuery(0,getIds(),null,null))
+                AppDatabase.destroyInstance()
+                navigateToFragment(FindPeopleFragment(),true)
+            }
 
 
 
@@ -262,7 +261,7 @@ class SelectPersonFragment : Fragment(), LifecycleOwner {
                 when(roles[i].selectedChildren[j]){
                     true -> {
                         persons.add(items[i].persons[j])
-                        id += "${items[i].persons[j].holder.id}"
+                        id += "${items[i].persons[j].holder.id}/"
 
                     }
                 }

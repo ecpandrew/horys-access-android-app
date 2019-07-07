@@ -146,15 +146,17 @@ data class Table4Aux(val person: String, val count_places: Int, val duration: Lo
     }
 }
 
-data class TableTwoResource(val shortName: String, val physical_space: String, val thingID: String, val duration: Long): Parcelable{
+data class TableTwoResource(val shortName: String, val roles: List<Role2>?, val physical_space: String, val thingID: String, val duration: Long): Parcelable{
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
+        parcel.createTypedArrayList(Role2),
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readLong()
     )
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(shortName)
+        parcel.writeTypedList(roles)
         parcel.writeString(physical_space)
         parcel.writeString(thingID)
         parcel.writeLong(duration)

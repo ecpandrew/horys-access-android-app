@@ -19,7 +19,7 @@ import java.util.*
 
 class TableTwoAdapter(
     private val context: Context,
-    private val items: MutableMap<String, List<TableTwoResource>>,
+    private val items: MutableMap<String, MutableList<TableTwoResource>>,
     private val keys: MutableList<String> = items.keys.toMutableList()) : RecyclerView.Adapter<TableTwoAdapter.ResourceTwoViewHolder>()
 
 {
@@ -68,21 +68,7 @@ class TableTwoAdapter(
             dialog.show(transaction, "FullScreenDialog")
         }
 
-//        holder.buttonLog.setOnClickListener {
-//            val bundle = Bundle()
-//            var ref ="child_log2"
-//            bundle.putString("ref", ref)
-//            bundle.putString("person", keys[position])
-//            bundle.putString("name", keys[position])
-//            bundle.putString("name", keys[position])
-//            bundle.putParcelableArrayList("resources", src as ArrayList<out Parcelable>) // ??
-//            val dialog = CustomTableFragment()
-//            dialog.arguments = bundle
-//            val activity: AppCompatActivity = context as AppCompatActivity // ??
-//            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-//            dialog.show(transaction, "FullScreenDialog")
-//        }
-
+//
     }
 
 

@@ -18,9 +18,9 @@ class CheckPhysicalSpacesViewModel(
     val adaterData = MutableLiveData<MutableMap<String, MutableList<TableOneResource>>>().apply { value = mutableMapOf() }
 
 
-    fun fetchPeople(){
+    fun fetchData(){
         loadingProgress.postValue(true)
-        danielServiceRepository.getConnectedPeople(
+        danielServiceRepository.getPhysicalSpaces(
             {
 //                resources.postValue(it)
                 adaterData.postValue(generateAdapterData(it))

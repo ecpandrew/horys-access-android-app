@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.evrencoskun.tableview.adapter.AbstractTableAdapter;
+import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractSorterViewHolder;
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder;
+import com.evrencoskun.tableview.sort.SortState;
 import com.example.klsdinfo.R;
 import com.example.klsdinfo.data.models.Cell;
 import com.example.klsdinfo.data.models.ColumnHeader;
@@ -95,7 +97,7 @@ public class MyTableViewAdapter extends AbstractTableAdapter<ColumnHeader, RowHe
      * This is sample CellViewHolder class.
      * This viewHolder must be extended from AbstractViewHolder class instead of RecyclerView.ViewHolder.
      */
-    class MyColumnHeaderViewHolder extends AbstractViewHolder {
+    class MyColumnHeaderViewHolder extends AbstractSorterViewHolder {
 
         public final TextView cell_textview;
         public final LinearLayout column_header_container;
@@ -108,6 +110,16 @@ public class MyTableViewAdapter extends AbstractTableAdapter<ColumnHeader, RowHe
             column_header_textView = itemView.findViewById(R.id.column_header_textView);
 
 
+        }
+
+        @Override
+        public void onSortingStatusChanged(SortState pSortState) {
+            super.onSortingStatusChanged(pSortState);
+        }
+
+        @Override
+        public SortState getSortState() {
+            return super.getSortState();
         }
     }
 

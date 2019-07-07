@@ -7,6 +7,8 @@ import com.example.klsdinfo.data.models.Person2
 import com.example.klsdinfo.data.models.PhysicalSpace
 import com.example.klsdinfo.data.models.TableFourResource
 import com.example.klsdinfo.data.models.TableThreeResource
+import com.github.mikephil.charting.data.BarData
+import kotlin.math.absoluteValue
 
 class HomeViewModel(
 
@@ -27,7 +29,7 @@ class HomeViewModel(
 
     val listResource = MutableLiveData<List<TableFourResource>>().apply { value = mutableListOf() }
 
-
+    val chartData = MutableLiveData<Map<String,Long>>().apply { value = mapOf() }
 
     fun setDates(unixTime:String, unixTimePast: String){
         date1.value = unixTime
@@ -49,8 +51,8 @@ class HomeViewModel(
             fetchData(it.holder.id.toString(), date1.value!!, date2.value!! )
             Log.e("debug", "success() $it")
         }, {
-            loadingProgress.postValue(false)
-            user.postValue(null)
+//            loadingProgress.postValue(false)
+//            user.postValue(null)
             Log.e("debug", "failure()")
 
         })
@@ -61,18 +63,38 @@ class HomeViewModel(
 
         danielServiceRepository.getPhysicalSpacesByPersonAndTime(id, date1,date2,
             {
-                listResource.postValue(it)
+//                listResource.postValue(it)
+                chartData.postValue(generateBarData(it))
             },
             {
                 user.postValue(null)
 
             })
 
-
-
-
-
     }
 
+
+    fun generateBarData(lista: List<TableFourResource>): Map<String,Long>{
+
+        val mapDuration : MutableMap<String, Long> = mutableMapOf()
+        for (element in lista){
+            var aux : Long = mapDuration[element.physical_space] ?: 0
+            aux += element.getDuration()
+            mapDuration[element.physical_space] = aux
+        }
+
+
+
+        val sortedMap = mapDuration.toList().sortedBy { (key,value) -> value }.toMap()
+
+
+
+
+
+
+
+        return sortedMap
+
+    }
 
 }

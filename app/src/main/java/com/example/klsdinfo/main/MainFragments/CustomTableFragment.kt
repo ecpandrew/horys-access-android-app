@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
 import com.evrencoskun.tableview.TableView
+import com.evrencoskun.tableview.sort.SortState
 import com.example.klsdinfo.R
 import com.example.klsdinfo.data.models.*
 import com.example.klsdinfo.main.adapters.MyTableViewAdapter
@@ -324,7 +325,6 @@ class CustomTableFragment : DialogFragment() {
             id+=1
         }
         tableView = view.findViewById(R.id.content_container)
-
         if(title != null) tool.title = title else tool.title = "Undefined Title"
         adapter = MyTableViewAdapter(context)
         tableView.adapter = adapter

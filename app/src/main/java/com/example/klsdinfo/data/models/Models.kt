@@ -124,6 +124,17 @@ data class Table4Aux(val name: String, val count_places: Int, val duration: Long
         parcel.readLong()
     )
 
+
+
+
+
+
+
+
+
+
+
+
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(name)
         dest.writeInt(count_places)

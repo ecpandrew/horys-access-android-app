@@ -204,19 +204,31 @@ class LocationHistoryResultFragment : Fragment(), LifecycleOwner {
 
         }
 
+
+
         (card.findViewById(R.id.btn_chart) as Button).setOnClickListener {
             // Todo: details
+
             val bundle = Bundle()
+
+
             var ref ="main_chart"
+
+
             bundle.putString("ref", ref)
+
             bundle.putParcelableArrayList("resources", x as ArrayList<out Parcelable>) // ??
+
             val dialog = LocationHistoryChartFragment()
+
             dialog.arguments = bundle
             val activity: AppCompatActivity = context as AppCompatActivity // ??
             val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
             dialog.show(transaction, "FullScreenDialog")
 
         }
+
+
 
         (card.findViewById(R.id.btn_log) as Button).setOnClickListener {
 

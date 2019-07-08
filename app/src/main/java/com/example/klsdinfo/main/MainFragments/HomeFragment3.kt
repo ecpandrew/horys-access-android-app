@@ -40,13 +40,13 @@ import kotlinx.android.synthetic.main.nav_header_main.*
 import kotlin.collections.ArrayList
 
 
-class HomeFragment : Fragment(){
+class HomeFragment3 : Fragment(){
 
 
 
     companion object {
-        fun newInstance(): HomeFragment {
-            return HomeFragment()
+        fun newInstance(): HomeFragment3 {
+            return HomeFragment3()
         }
     }
 
@@ -87,6 +87,86 @@ class HomeFragment : Fragment(){
     private fun setupChart(map: Map<String,Long>) {
 
         chart = mView.findViewById(R.id.chart1)
+//        var total : Long = 0
+//        val percentages = arrayListOf<Long>()
+//        for(i in map){
+//            total += i.value
+//        }
+//        for (i in map){
+//            percentages.add(i.value/total)
+//        }
+//
+//
+//
+//
+//
+//        val yvalues: ArrayList<BarEntry> = arrayListOf()
+//
+//        for (i in 0 until percentages.size){
+//            yvalues.add(BarEntry(i.toFloat(), percentages[i].toFloat()))
+//        }
+//
+//
+//        val values = arrayListOf<BarEntry>()
+//
+//
+//
+//        for (i in 0 until map.toList().size){
+//
+//            values.add(
+//                BarEntry(
+//                    i.toFloat() , map.toList()[i].second.toFloat())
+//
+//            )
+//
+//        }
+//
+//
+//
+//        val dataSet : BarDataSet = BarDataSet(values, "tenses")
+//
+//        dataSet.setDrawIcons(true)
+//
+//        val data: BarData = BarData(dataSet)
+//        data.setValueFormatter(PercentFormatter())
+//
+//        chart.data = data
+//
+//
+///////////////////////////////////////////////////////////
+//
+//
+//        val xVals = arrayListOf<String>()
+//        for(i in map.keys){ xVals.add(i)}
+//
+//        chart.xAxis.valueFormatter = IndexAxisValueFormatter(xVals)
+//
+//        chart.axisLeft.axisMaximum = 100f
+//
+//        chart.animateXY(1000,1000)
+//
+//
+//
+//        chart.setDrawValueAboveBar(false)
+//
+//        chart.axisLeft.isEnabled = false
+//        chart.axisRight.isEnabled = false
+//
+//
+//        chart.description.isEnabled = false
+//        chart.legend.isEnabled = false
+//
+//        dataSet.colors = ColorTemplate.VORDIPLOM_COLORS.toList()
+//        data.setValueTextSize(13f)
+//        data.setValueTextColor(Color.DKGRAY)
+//
+//        chart.invalidate()
+    /////////////////////////////////////////
+
+
+//        chart.setOnChartValueSelectedListener(this)
+//         chart.setHighlightEnabled(false)
+
         chart.setDrawBarShadow(false)
 
         chart.setDrawValueAboveBar(true)
@@ -109,21 +189,19 @@ class HomeFragment : Fragment(){
 
         val xl = chart.getXAxis()
 
-
         val array = arrayListOf<String>()
 
 
 
         for(i in map.keys){ array.add(i)}
 
-        Log.i("labels", array.toString())
 
         val obj = object:  IndexAxisValueFormatter() {
 
             override fun getFormattedValue(value: Float): String {
                 val index = Math.round(value)
 
-                if(index < 0 || index >= map.size || index != value.toInt()){
+                if(index < 0 || index >= map.size || index != value as Int){
                     return ""
                 }
 
@@ -133,14 +211,14 @@ class HomeFragment : Fragment(){
 
         }
 
-        chart.xAxis.valueFormatter = IndexAxisValueFormatter(array)//obj//
+        chart.xAxis.valueFormatter = obj//IndexAxisValueFormatter(array)
 
 //        xl.position = XAxisPosition.BOTTOM
 
         xl.typeface = Typeface.SERIF
         xl.setDrawAxisLine(true)
         xl.setDrawGridLines(true)
-        xl.granularity = 1f
+        xl.granularity = 10f
 
         val yl = chart.getAxisLeft()
         yl.typeface = Typeface.SERIF
@@ -182,8 +260,8 @@ class HomeFragment : Fragment(){
 
     private fun setData(map: Map<String,Long>) {
 
-        val barWidth = 2f
-        val spaceForBar = 1f
+        val barWidth = 4f
+        val spaceForBar = 6f
         val values = arrayListOf<BarEntry>()
 
 
@@ -200,11 +278,11 @@ class HomeFragment : Fragment(){
 
         val set1: BarDataSet
 
-        if (chart.data != null && chart.data.dataSetCount > 0) {
-            set1 = chart.data.getDataSetByIndex(0) as BarDataSet
-            set1.values = values
-            chart.data.notifyDataChanged()
-            chart.notifyDataSetChanged()
+        if (false){//chart.data != null && chart.data.dataSetCount > 0) {
+//            set1 = chart.data.getDataSetByIndex(0) as BarDataSet
+//            set1.values = values
+//            chart.data.notifyDataChanged()
+//            chart.notifyDataSetChanged()
         } else {
 
             set1 = BarDataSet(values, "")
@@ -218,8 +296,6 @@ class HomeFragment : Fragment(){
             data.setValueTextSize(10f)
             data.setValueTypeface(Typeface.SERIF)
             data.setBarWidth(barWidth)
-//            chart.xAxis.valueFormatter = LabelValueFormatter(data)//IndexAxisValueFormatter(array)//obj//
-
 
             chart.data = data
 

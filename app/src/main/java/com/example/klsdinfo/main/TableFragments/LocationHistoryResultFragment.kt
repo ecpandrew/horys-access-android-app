@@ -24,6 +24,7 @@ import com.example.klsdinfo.R
 import com.example.klsdinfo.data.*
 import com.example.klsdinfo.data.database.AppDatabase
 import com.example.klsdinfo.data.models.*
+import com.example.klsdinfo.main.ChartFragments.LocationHistoryChartFragment
 import com.example.klsdinfo.main.MainFragments.CustomTableFragment
 import com.example.klsdinfo.main.adapters.TableFiveAdapter
 
@@ -178,27 +179,6 @@ class LocationHistoryResultFragment : Fragment(), LifecycleOwner {
             }
         }
 
-        Log.i("recebido4", "map $map")
-        Log.i("recebido4", "child map$childMap")
-        Log.i("recebido4", "aux map$childAux")
-        Log.i("recebido4", "count map$countMap")
-
-
-//                    val lista: MutableList<Map<String, Long>> = mutableListOf()
-
-//                    for (element in childAux){
-//                        lista.add(element.value)
-//
-//                    }
-
-
-
-
-
-
-
-
-
 
         val x: MutableList<Table4Aux> = mutableListOf()
 
@@ -217,6 +197,20 @@ class LocationHistoryResultFragment : Fragment(), LifecycleOwner {
             bundle.putString("ref", ref)
             bundle.putParcelableArrayList("resources", x as ArrayList<out Parcelable>) // ??
             val dialog = CustomTableFragment()
+            dialog.arguments = bundle
+            val activity: AppCompatActivity = context as AppCompatActivity // ??
+            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+            dialog.show(transaction, "FullScreenDialog")
+
+        }
+
+        (card.findViewById(R.id.btn_chart) as Button).setOnClickListener {
+            // Todo: details
+            val bundle = Bundle()
+            var ref ="main_chart"
+            bundle.putString("ref", ref)
+            bundle.putParcelableArrayList("resources", x as ArrayList<out Parcelable>) // ??
+            val dialog = LocationHistoryChartFragment()
             dialog.arguments = bundle
             val activity: AppCompatActivity = context as AppCompatActivity // ??
             val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()

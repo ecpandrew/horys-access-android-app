@@ -117,7 +117,7 @@ data class Person2(val email:String, val shortName:String, val fullName:String?,
 }
 
 
-data class Table4Aux(val person: String, val count_places: Int, val duration: Long): Parcelable {
+data class Table4Aux(val name: String, val count_places: Int, val duration: Long): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
         parcel.readInt(),
@@ -125,7 +125,7 @@ data class Table4Aux(val person: String, val count_places: Int, val duration: Lo
     )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(person)
+        dest.writeString(name)
         dest.writeInt(count_places)
         dest.writeLong(duration)
 

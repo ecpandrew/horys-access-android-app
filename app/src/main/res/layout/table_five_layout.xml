@@ -23,7 +23,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:cardElevation="2dp"
-            android:visibility="invisible"
             card_view:cardCornerRadius="8dp"
             app:strokeColor="@color/colorPrimary"
             app:strokeWidth="1dp"
@@ -79,6 +78,20 @@
                     app:layout_constraintTop_toBottomOf="@+id/nplacesTV4"
             />
             <com.google.android.material.button.MaterialButton
+                    android:text="chart"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:backgroundTint="@color/yellow_mustard"
+                    android:textColor="@color/black"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btn_chart"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toBottomOf="@+id/nplacesTV4"
+                    app:layout_constraintVertical_bias="1.0" app:layout_constraintStart_toEndOf="@+id/btn_detail"
+                    android:layout_marginStart="8dp"/>
+            <com.google.android.material.button.MaterialButton
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:text="log"
                     android:textColor="@color/colorPrimary"
@@ -95,9 +108,9 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_marginTop="16dp"
                     app:layout_constraintTop_toBottomOf="@+id/nplacesTV4"
-                    app:layout_constraintStart_toEndOf="@+id/btn_detail" android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"/>
+                    app:layout_constraintVertical_bias="1.0" app:layout_constraintStart_toEndOf="@+id/btn_chart"
+                    android:layout_marginStart="8dp" android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="0.0"/>
             <TextView
                     android:text="General Info"
                     android:layout_width="wrap_content"

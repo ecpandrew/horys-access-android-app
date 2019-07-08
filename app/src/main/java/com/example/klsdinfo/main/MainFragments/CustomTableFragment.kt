@@ -399,7 +399,7 @@ class CustomTableFragment : DialogFragment() {
             if(resource != null){
                 mRowHeaderList.add(RowHeader(id.toString(), id.toString()))
                 val cell: MutableList<Cell> = mutableListOf()
-                cell.add(Cell(id.toString(), element.person))
+                cell.add(Cell(id.toString(), element.name))
                 cell.add(Cell(id.toString(), element.count_places))
                 cell.add(Cell(id.toString(), element.duration / 3600))
                 cell.add(Cell(id.toString(), element.duration / 60))
@@ -538,7 +538,7 @@ class CustomTableFragment : DialogFragment() {
             if(resource != null){
                 mRowHeaderList.add(RowHeader(id.toString(), id.toString()))
                 val cell: MutableList<Cell> = mutableListOf()
-                cell.add(Cell(id.toString(), element.person))
+                cell.add(Cell(id.toString(), element.name))
                 cell.add(Cell(id.toString(), element.count_places))
                 cell.add(Cell(id.toString(), element.duration / 3600))
                 cell.add(Cell(id.toString(), element.duration / 60))

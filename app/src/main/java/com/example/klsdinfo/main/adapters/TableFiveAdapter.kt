@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.example.klsdinfo.R
 import com.example.klsdinfo.data.models.AuxResource5
+import com.example.klsdinfo.main.ChartFragments.LocationHistoryChartFragment
 import com.example.klsdinfo.main.MainFragments.CustomTableFragment
 import com.google.android.material.button.MaterialButton
 import java.util.*
@@ -57,6 +58,20 @@ class TableFiveAdapter(
             dialog.show(transaction, "FullScreenDialog")
         }
 
+        holder.btnChart.setOnClickListener {
+            val bundle = Bundle()
+            var ref ="child_chart"
+            bundle.putString("ref", ref)
+            bundle.putString("person", src.name)
+            bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
+            val dialog = LocationHistoryChartFragment()
+            dialog.arguments = bundle
+            val activity: AppCompatActivity = context as AppCompatActivity // ??
+            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+            dialog.show(transaction, "FullScreenDialog")
+        }
+
+
         holder.btnLog.setOnClickListener {
             val bundle = Bundle()
             var ref ="child_log5"
@@ -81,6 +96,7 @@ class TableFiveAdapter(
         val numberRendzTV: TextView = itemView.findViewById(R.id.main_rating)
         val durationTV: TextView = itemView.findViewById(R.id.main_duration)
         val btnDetail: MaterialButton = itemView.findViewById(R.id.btn_detail)
+        val btnChart : MaterialButton = itemView.findViewById(R.id.btn_chart)
         val btnLog: MaterialButton = itemView.findViewById(R.id.btn_log)
     }
 

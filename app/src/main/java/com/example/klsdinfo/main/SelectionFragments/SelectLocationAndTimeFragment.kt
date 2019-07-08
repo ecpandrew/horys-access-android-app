@@ -507,8 +507,6 @@ class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetList
 
             unixTimePast = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(dateString).time/1000
 
-
-
         }
     }
 

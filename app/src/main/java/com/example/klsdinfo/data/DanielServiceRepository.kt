@@ -78,6 +78,28 @@ class DanielServiceRepository private constructor(private val danielService: Dan
     }
 
 
+    fun getCurrentPosition(id: String ,success: (List<TableTwoResource>) -> Unit, failure: () -> Unit){
+        Log.i("retrofit", "repository init")
+        AsyncTask.execute {
+
+            val call = DanielApiService.create().getPhysicalSpaces(id)
+            call.enqueue(object : Callback<List<TableTwoResource>>{
+                override fun onResponse(call: Call<List<TableTwoResource>>, response: Response<List<TableTwoResource>>
+                ) {
+                    Log.i("timestamp", "url usada: ${response.raw().request().url()}")
+                    if(response.isSuccessful){
+                        if(response.body().isNullOrEmpty()) success(listOf())
+                        else success(response.body()!!)
+                        Log.i("retrofit", "repository list ${response.body()}")
+                    }
+                }
+                override fun onFailure(call: Call<List<TableTwoResource>>, t: Throwable) {
+                    Log.i("retrofit", "repository on failure")
+                    failure()
+                }
+            })
+        }
+    }
 
 
 

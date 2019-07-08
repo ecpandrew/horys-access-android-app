@@ -19,15 +19,10 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import com.example.klsdinfo.data.SemanticApiService
-import com.example.klsdinfo.data.SemanticRepository
 import com.example.klsdinfo.data.database.AppDatabase
-import com.example.klsdinfo.data.database.GroupQuery
 import com.example.klsdinfo.data.database.LocalUserQuery
-import com.example.klsdinfo.data.models.Holder
 import com.example.klsdinfo.main.MainFragments.HistoryFragment
 import com.example.klsdinfo.main.MainFragments.HomeFragment
-import com.example.klsdinfo.main.MainFragments.HomeFragment2
 import com.example.klsdinfo.main.MainFragments.RealFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient

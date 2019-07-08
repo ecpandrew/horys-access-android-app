@@ -1,17 +1,15 @@
 package com.example.klsdinfo.main.MainFragments
 
 import android.content.Context
-import android.graphics.Color
+
 import android.graphics.Typeface
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.os.Bundle
-import android.widget.LinearLayout
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.TextView
+import android.widget.*
+import androidx.core.content.ContextCompat.getDrawable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -22,22 +20,15 @@ import com.example.klsdinfo.data.models.Person2
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import java.util.*
 import com.github.mikephil.charting.charts.HorizontalBarChart
-import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.Legend
-import com.github.mikephil.charting.components.XAxis.XAxisPosition
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.formatter.PercentFormatter
-import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
-import com.github.mikephil.charting.utils.ColorTemplate
-import com.github.mikephil.charting.utils.EntryXComparator
-import kotlinx.android.synthetic.main.nav_header_main.*
-import kotlin.collections.ArrayList
+import com.squareup.picasso.Picasso
+import java.io.BufferedReader
 
 
 class HomeFragment : Fragment(){
@@ -52,6 +43,10 @@ class HomeFragment : Fragment(){
 
     lateinit var viewModel: HomeViewModel
     lateinit var  welcome : TextView
+    lateinit var email: TextView
+    lateinit var duration: TextView
+    lateinit var beacons: TextView
+    lateinit var refresh : Button
     private var unixTime: Long? = null
     private var unixTimePast: Long? = null
     lateinit var radioGroup: RadioGroup
@@ -67,12 +62,26 @@ class HomeFragment : Fragment(){
 
         mView = inflater.inflate(R.layout.main_home_layout, container, false)
         welcome = mView.findViewById(R.id.welcome_textView)
+        email = mView.findViewById(R.id.email_textView)
+
+        duration = mView.findViewById(R.id.duration_textView)
+        beacons = mView.findViewById(R.id.beacon_textView)
+
         radioGroup= mView.findViewById(R.id.radioGroup)
+
+
+        refresh = mView.findViewById(R.id.btn_refresh_position)
+
+
+        setupUser()
 
         setupViewModel()
 
         setupRadioCheckChangeListener(container)
 
+        refresh.setOnClickListener {
+            viewModel.fetchUserForCurrentPosition()
+        }
 
 
 
@@ -82,6 +91,20 @@ class HomeFragment : Fragment(){
 
 
         return mView
+    }
+
+    private fun setupUser() {
+        val user : FirebaseUser? = FirebaseAuth.getInstance().currentUser
+        welcome.text = user?.displayName
+        email.text = user?.email
+
+        if(user?.photoUrl.toString().isNullOrBlank()){
+//            (mView.findViewById(R.id.profile_image) as ImageView).setImageDrawable(null)
+        }else{
+            Picasso.get().load(user?.photoUrl.toString()).into((mView.findViewById(R.id.profile_image) as ImageView))
+        }
+
+
     }
 
     private fun setupChart(map: Map<String,Long>) {
@@ -123,7 +146,7 @@ class HomeFragment : Fragment(){
             override fun getFormattedValue(value: Float): String {
                 val index = Math.round(value)
 
-                if(index < 0 || index >= map.size || index != value.toInt()){
+                if(index < 0 || index > map.size || index != value.toInt()){
                     return ""
                 }
 
@@ -133,7 +156,7 @@ class HomeFragment : Fragment(){
 
         }
 
-        chart.xAxis.valueFormatter = IndexAxisValueFormatter(array)//obj//
+        chart.xAxis.valueFormatter = IndexAxisValueFormatter(array)
 
 //        xl.position = XAxisPosition.BOTTOM
 
@@ -157,7 +180,7 @@ class HomeFragment : Fragment(){
 //        yr.setInverted(true);
 
         chart.setFitBars(true)
-        chart.animateY(2000)
+        chart.animateY(1000)
 
         // setting data
 //        seekBarY.setProgress(50)
@@ -182,7 +205,7 @@ class HomeFragment : Fragment(){
 
     private fun setData(map: Map<String,Long>) {
 
-        val barWidth = 2f
+        val barWidth = .9f
         val spaceForBar = 1f
         val values = arrayListOf<BarEntry>()
 
@@ -217,7 +240,7 @@ class HomeFragment : Fragment(){
             val data = BarData(dataSets)
             data.setValueTextSize(10f)
             data.setValueTypeface(Typeface.SERIF)
-            data.setBarWidth(barWidth)
+            data.barWidth = .8f
 //            chart.xAxis.valueFormatter = LabelValueFormatter(data)//IndexAxisValueFormatter(array)//obj//
 
 
@@ -229,8 +252,8 @@ class HomeFragment : Fragment(){
 
     private fun setupRadioCheckChangeListener(container: ViewGroup?) {
         radioGroup.setOnCheckedChangeListener { radioGroup, id ->
-            val radio : RadioButton = mView.findViewById(id)
-            Snackbar.make(container as View,"Time Interval: last ${radio.text}",Snackbar.LENGTH_LONG).show()
+//            val radio : RadioButton = mView.findViewById(id)
+//            Snackbar.make(container as View,"Time Interval: last ${radio.text}",Snackbar.LENGTH_LONG).show()
 
             when(id){
                 R.id.radio0 -> {
@@ -238,14 +261,14 @@ class HomeFragment : Fragment(){
                     viewModel.setDates(unixTime.toString(),unixTimePast.toString())
                     Log.e("debugtime", unixTime.toString())
                     Log.e("debugtime", unixTimePast.toString())
-                    viewModel.fetchUser()
+                    viewModel.fetchUserForChart()
                 }
                 R.id.radio1 -> {
                     setTimeInterval(259200)
                     Log.e("debugtime", unixTime.toString())
                     Log.e("debugtime", unixTimePast.toString())
                     viewModel.setDates(unixTime.toString(),unixTimePast.toString())
-                    viewModel.fetchUser()
+                    viewModel.fetchUserForChart()
 
                 }
                 R.id.radio2 -> {
@@ -253,7 +276,7 @@ class HomeFragment : Fragment(){
                     Log.e("debugtime", unixTime.toString())
                     Log.e("debugtime", unixTimePast.toString())
                     viewModel.setDates(unixTime.toString(),unixTimePast.toString())
-                    viewModel.fetchUser()
+                    viewModel.fetchUserForChart()
 
 
                 }
@@ -262,7 +285,7 @@ class HomeFragment : Fragment(){
                     Log.e("debugtime", unixTime.toString())
                     Log.e("debugtime", unixTimePast.toString())
                     viewModel.setDates(unixTime.toString(),unixTimePast.toString())
-                    viewModel.fetchUser()
+                    viewModel.fetchUserForChart()
 
                 }
             }
@@ -286,14 +309,25 @@ class HomeFragment : Fragment(){
 
 
 
-        viewModel.user.observe(viewLifecycleOwner, Observer {
+        viewModel.currentPosition.observe(viewLifecycleOwner, Observer {
             if(it!=null){
-                welcome.text = (it.shortName)
-                ID = it.holder.id.toString()
-            }else{
-                welcome.text = "No user Found, please relog!"
-                ID = ""
 
+                var d: String = ""
+
+                var b: String = ""
+
+                for (i in it){
+                    b += "${i.physical_space}, "
+                    d += "${i.duration}, "
+                }
+
+                beacons.text = b.removeSuffix(",")
+                duration.text = d.removeSuffix(",")
+
+
+            }else{
+                beacons.text = "No beacons found"
+                duration.text = "--"
             }
         })
 
@@ -313,7 +347,8 @@ class HomeFragment : Fragment(){
         if(user!= null){
 
         }else{
-            viewModel.fetchUser()
+            viewModel.fetchUserForChart()
+            viewModel.fetchUserForCurrentPosition()
         }
 
         print("onStart")
@@ -351,17 +386,19 @@ class HomeFragment : Fragment(){
 
 
     fun setTimeInterval(delta: Long){
-        val calendar2 = Calendar.getInstance()
+//        val calendar2 = Calendar.getInstance()
+//
+//        val timeZone: TimeZone = calendar2!!.timeZone
+//
+//        //val cals: Date = Calendar.getInstance().time//TimeZone.getDefault()).time
+//        val cals: Date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
+//
+//        var milis: Long = cals.time
+//
+//        milis += timeZone.getOffset(milis)
 
-        val timeZone: TimeZone = calendar2!!.timeZone
-
-        val cals: Date = Calendar.getInstance().time//TimeZone.getDefault()).time
-
-        var milis: Long = cals.time
-
-        milis += timeZone.getOffset(milis)
-
-        unixTime = milis/1000
+        unixTime = System.currentTimeMillis()/1000
+            //milis/1000
         unixTimePast = unixTime!! - delta
 
     }

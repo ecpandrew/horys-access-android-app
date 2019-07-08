@@ -170,18 +170,6 @@ class LocationHistoryChartFragment : DialogFragment() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
 

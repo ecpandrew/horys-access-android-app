@@ -4,11 +4,9 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.klsdinfo.data.models.Person2
-import com.example.klsdinfo.data.models.PhysicalSpace
 import com.example.klsdinfo.data.models.TableFourResource
-import com.example.klsdinfo.data.models.TableThreeResource
-import com.github.mikephil.charting.data.BarData
-import kotlin.math.absoluteValue
+import com.example.klsdinfo.data.models.TableTwoResource
+
 
 class HomeViewModel(
 
@@ -31,6 +29,9 @@ class HomeViewModel(
 
     val chartData = MutableLiveData<Map<String,Long>>().apply { value = mapOf() }
 
+    val currentPosition = MutableLiveData<List<TableTwoResource>>().apply { value = mutableListOf() }
+
+
     fun setDates(unixTime:String, unixTimePast: String){
         date1.value = unixTime
         date2.value = unixTimePast
@@ -38,8 +39,41 @@ class HomeViewModel(
 
 
 
+    fun fetchCurrentPosition(id: String){
 
-    fun fetchUser(){
+
+        danielServiceRepository.getCurrentPosition(id,
+            {
+                currentPosition.postValue(it)
+            },
+            {
+                currentPosition.postValue(null)
+            })
+
+
+    }
+
+    fun fetchUserForCurrentPosition(){
+        Log.e("debug", "fechUser()")
+
+        loadingProgress.postValue(true)
+        semanticRepository.getUserFromSemanticAndStore({
+
+            fetchCurrentPosition(it.holder.id.toString())
+        }, {
+            //            loadingProgress.postValue(false)
+//            user.postValue(null)
+            Log.e("debug", "failure()")
+
+        })
+    }
+//            val radio : RadioButton = mView.findViewById(id)
+
+
+
+
+
+    fun fetchUserForChart(){
         Log.e("debug", "fechUser()")
 
         loadingProgress.postValue(true)

@@ -9,28 +9,100 @@
 
 
 
-    <TextView
-            android:id="@+id/welcome_textView"
-            android:layout_marginStart="16dp"
-            android:text="Analytics"
+
+    <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="15dp"
-    />
-    <TextView
-        android:text="Analytics"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textSize="15dp"
-    />
+            android:padding="8dp"
+            android:layout_marginLeft="@dimen/mtrl_card_spacing"
+            android:layout_marginTop="@dimen/mtrl_card_spacing"
+            android:layout_marginRight="@dimen/mtrl_card_spacing"
+
+            app:cardElevation="2dp"
+    >
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent" android:layout_height="wrap_content">
+
+            <LinearLayout  android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="match_parent">
+
+                <ImageView
+                        android:padding="5dp"
+                        android:id="@+id/profile_image"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+
+                />
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView
+                            android:id="@+id/welcome_textView"
+                            android:textColor="@color/black"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="oi"/>
+                    <TextView
+                            android:id="@+id/email_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="email@lsdi.ufma.br"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:paddingLeft="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                <TextView
+                        android:text="Current Beacon: "
+                        android:layout_width="wrap_content"
+                        android:textColor="@color/black"
+                        android:layout_height="wrap_content"/>
+
+                <TextView
+                        android:id="@+id/beacon_textView"
+                        android:text="No beacon found."
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+
+            </LinearLayout>
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp"
+                    android:paddingLeft="5dp"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                <TextView
+                        android:text="Duration: "
+                        android:textColor="@color/black" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView
+                        android:id="@+id/duration_textView"
+                        android:text="100 minutes"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+
 
 
     <com.github.mikephil.charting.charts.HorizontalBarChart
             android:id="@+id/chart1"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="15dp"
             android:layout_width="match_parent"
             android:layout_height="250dp">
@@ -129,21 +201,23 @@
                 android:layout_margin="16dp"
 
                 />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_refresh_position"
+                android:text="Refresh Position"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:visibility="gone"
-
-                android:src="@drawable/ic_refresh_black_24dp"
-                android:backgroundTint="@color/colorAccent2"
-                app:borderWidth="0dp"
-                app:elevation="6dp"
-                app:fabSize="normal"
+                android:textColor="@color/colorWhite"
+                android:textSize="15sp"
+                app:backgroundTint="@color/purple"
+                app:cornerRadius="3dp"
+                android:layout_gravity="center"
                 android:layout_margin="16dp"
+
         />
+
     </LinearLayout>
 
 

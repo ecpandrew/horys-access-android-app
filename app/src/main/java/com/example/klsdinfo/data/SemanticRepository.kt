@@ -30,17 +30,21 @@ class SemanticRepository private constructor(private val semanticService: Semant
 
 
 
-    fun getUserFromSemanticAndStore(success:(Person2) -> Unit, failure: () -> Unit){
+    fun getUserFromRoom(success:(Person2) -> Unit, failure: (Int) -> Unit){
 
 
 
         AsyncTask.execute {
 
-            val query: LocalUserQuery = database.localUserDao().getAll()[0]
-            Log.i("retrofit", "query: ${query.email}")
+            val query: LocalUserQuery? = database.localUserDao().getAll()[0]
 
 
-            val call = SemanticApiService.create().getUser(query.email)
+
+            if(query == null){
+                failure(504)
+            }
+
+            val call = SemanticApiService.create().getUser(query!!.email)
 
             call.enqueue(object : Callback<Person2>{
 
@@ -53,11 +57,14 @@ class SemanticRepository private constructor(private val semanticService: Semant
                         userCached = response.body()!!
                         success(response.body()!!)
                         Log.i("retrofit", "success: ${response.body()!!}")
+                    }else{
+                        failure(503)
+
                     }
                 }
 
                 override fun onFailure(call: Call<Person2>, t: Throwable) {
-                    failure()
+                    failure(503)
                     Log.i("retrofit", "failure: ${t.message}")
 
                 }

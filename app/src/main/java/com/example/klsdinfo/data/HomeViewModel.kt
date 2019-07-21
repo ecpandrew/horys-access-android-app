@@ -2,8 +2,9 @@ package com.example.klsdinfo.data
 
 import android.app.Application
 import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.*
-import com.example.klsdinfo.data.models.Person2
 import com.example.klsdinfo.data.models.TableFourResource
 import com.example.klsdinfo.data.models.TableTwoResource
 
@@ -16,7 +17,12 @@ class HomeViewModel(
 
     val loadingProgress = MutableLiveData<Boolean>().apply { value = true }
 
-    val user = MutableLiveData<Person2?>().apply { value = null }
+
+    var error = MutableLiveData<Pair<Int,String>>().apply { value = Pair(100,"Fetching: user") }
+
+
+
+//    val user = MutableLiveData<Person2?>().apply { value = null }
 
     var email = MutableLiveData<String>().apply{ value = ""}
 
@@ -41,33 +47,37 @@ class HomeViewModel(
 
     fun fetchCurrentPosition(id: String){
 
-
         danielServiceRepository.getCurrentPosition(id,
             {
                 if(it.isEmpty()){
-                    fetchCurrentPosition(id)
+
+                    //Todo()
                 }else{
                     currentPosition.postValue(it)
                 }
 
             },
             {
+
                 currentPosition.postValue(null)
+                TODO() //this might cause a bug
+
             })
 
 
     }
 
     fun fetchUserForCurrentPosition(){
-        Log.e("debug", "fechUser()")
 
-        loadingProgress.postValue(true)
-        semanticRepository.getUserFromSemanticAndStore({
+        semanticRepository.getUserFromRoom({
 
             fetchCurrentPosition(it.holder.id.toString())
+
         }, {
 
             // Todo()
+            currentPosition.postValue(null)
+
 
         })
     }
@@ -77,20 +87,26 @@ class HomeViewModel(
 
 
     fun fetchUserForChart(){
-        Log.e("debug", "fechUser()")
 
-        loadingProgress.postValue(true)
-        semanticRepository.getUserFromSemanticAndStore({
-            loadingProgress.postValue(false)
-            user.postValue(it)
-            Log.e("debug", "dates ${date2.value}, ${date1.value}")
+        semanticRepository.getUserFromRoom({
 
-            fetchData(it.holder.id.toString(), date1.value!!, date2.value!! )
-            Log.e("debug", "success() $it")
+
+            error.postValue(Pair(210, "Success: user found"))
+            fetchData(it.holder.id.toString(), date1.value!!, date2.value!!)
+
+
         }, {
-//            loadingProgress.postValue(false)
-//            user.postValue(null)
-            Log.e("debug", "failure()")
+
+
+            when(it){
+                504 -> error.postValue(Pair(504, "Error: internal room error, please report BUG!"))
+
+                503 -> error.postValue(Pair(504, "Error: semantic server may be down, please report!"))
+            }
+
+
+            chartData.postValue(null)
+
 
         })
     }
@@ -98,13 +114,22 @@ class HomeViewModel(
 
     fun fetchData(id: String, date1:String, date2:String){
 
+        error.postValue(Pair(101, "Fetching: user data"))
+
         danielServiceRepository.getPhysicalSpacesByPersonAndTime(id, date1,date2,
             {
-//                listResource.postValue(it)
+
                 chartData.postValue(generateBarData(it))
+                error.postValue(Pair(200, "Success: data is consistent"))
+
+
             },
             {
-                user.postValue(null)
+
+                chartData.postValue(null)
+                error.postValue(Pair(505, "Error: your connection or AttendanceService is down, please report!"))
+
+                TODO() //this might cause a bug
 
             })
 

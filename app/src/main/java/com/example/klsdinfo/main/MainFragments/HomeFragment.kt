@@ -1,5 +1,6 @@
 package com.example.klsdinfo.main.MainFragments
 
+import android.graphics.Color
 import android.graphics.Typeface
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.klsdinfo.R
+import com.example.klsdinfo.R.color.*
 import com.example.klsdinfo.data.*
 import com.example.klsdinfo.data.database.AppDatabase
 import com.google.firebase.auth.FirebaseAuth
@@ -40,13 +42,13 @@ class HomeFragment : Fragment(){
     lateinit var email: TextView
     lateinit var duration: TextView
     lateinit var beacons: TextView
+    lateinit var errorTv : TextView
     lateinit var refresh : Button
     private var unixTime: Long? = null
     private var unixTimePast: Long? = null
     lateinit var radioGroup: RadioGroup
     lateinit var mView: View
     lateinit var chart : HorizontalBarChart
-
 
 
 
@@ -72,13 +74,10 @@ class HomeFragment : Fragment(){
         mView = inflater.inflate(R.layout.main_home_layout, container, false)
         welcome = mView.findViewById(R.id.welcome_textView)
         email = mView.findViewById(R.id.email_textView)
-
+        errorTv = mView.findViewById(R.id.error)
         duration = mView.findViewById(R.id.duration_textView)
         beacons = mView.findViewById(R.id.beacon_textView)
-
         radioGroup= mView.findViewById(R.id.radioGroup)
-
-
         refresh = mView.findViewById(R.id.btn_refresh_position)
 
 
@@ -86,7 +85,7 @@ class HomeFragment : Fragment(){
 
         setupViewModel()
 
-        setupRadioCheckChangeListener(container)
+        setupRadioCheckChangeListener()
 
         refresh.setOnClickListener {
             viewModel.fetchUserForCurrentPosition()
@@ -265,11 +264,10 @@ class HomeFragment : Fragment(){
 
     }
 
-    private fun setupRadioCheckChangeListener(container: ViewGroup?) {
+    private fun setupRadioCheckChangeListener() {
         radioGroup.setOnCheckedChangeListener { radioGroup, id ->
-//            val radio : RadioButton = mView.findViewById(id)
-//            Snackbar.make(container as View,"Time Interval: last ${radio.text}",Snackbar.LENGTH_LONG).show()
 
+            viewModel.error.postValue(Pair(100,"Fetching: user"))
             when(id){
                 R.id.radio0 -> {
                     setTimeInterval(86400)
@@ -322,10 +320,68 @@ class HomeFragment : Fragment(){
 
 
 
+        viewModel.error.observe(viewLifecycleOwner, Observer {
+            val code = it.first
+
+            when(code){
+
+
+                100 -> {
+                    errorTv.text = it.second
+                    errorTv.setTextColor(resources.getColor(colorPrimary))
+
+                }
+
+                101 -> {
+                    errorTv.text = it.second
+                    errorTv.setTextColor(resources.getColor(colorPrimary))
+
+                }
+
+
+                210 -> {
+                    errorTv.text = it.second
+                    errorTv.setTextColor(resources.getColor(green))
+
+                }
+
+
+                200 ->{
+                    errorTv.text = it.second
+                    errorTv.setTextColor(resources.getColor(green))
+                }
+
+
+
+
+
+                504 ->{
+                    errorTv.text = it.second
+                    errorTv.setTextColor(resources.getColor(red_500))
+                }
+
+
+                503 ->{
+                    errorTv.text = it.second
+                    errorTv.setTextColor(resources.getColor(red_500))
+                }
+
+
+                505 -> {
+                    errorTv.text = it.second
+                    errorTv.setTextColor(resources.getColor(red_500))
+                }
+
+            }
+
+        })
+
+
+
 
 
         viewModel.currentPosition.observe(viewLifecycleOwner, Observer {
-            if(it!=null){
+            if(!it.isNullOrEmpty()){
 
                 var d: String = ""
                 var b: String = ""
@@ -339,7 +395,7 @@ class HomeFragment : Fragment(){
 
 
             }else{
-                beacons.text = "No beacons found"
+                beacons.text = "no beacon"
                 duration.text = "--"
             }
         })
@@ -347,9 +403,21 @@ class HomeFragment : Fragment(){
 
         viewModel.chartData.observe(viewLifecycleOwner, Observer {
 
-          Log.i("data", it.toString())
 
-            setupChart(it)
+            if(it.isNullOrEmpty()){
+                // TODO()
+
+//                setupChart(mapOf())
+
+
+            }else{
+
+                setupChart(it)
+                //Todo()
+            }
+
+
+
         })
     }
 

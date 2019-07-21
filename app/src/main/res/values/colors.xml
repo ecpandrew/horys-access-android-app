@@ -26,6 +26,9 @@
     <color name="colorPrimaryDark">#0B0B61</color>
     <color name="colorPrimary">#313795</color>
 
+
+    <color name="green">#00FF00</color>
+
     <color name="colorSecondary">#03DAC6</color>
     <color name="colorsecondatyDark">#018786</color>
     <color name="colorAccent">#313795</color>

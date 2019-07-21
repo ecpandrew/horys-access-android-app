@@ -110,7 +110,7 @@ class DanielServiceRepository private constructor(private val danielService: Dan
 
 
 
-    fun getPhysicalSpacesByPersonAndTime(id:String, date1: String, date2:String, success: (List<TableFourResource>) -> Unit, failure : () -> Unit ){
+    fun getPhysicalSpacesByPersonAndTime(id:String, date1: String, date2:String, success: (List<TableFourResource>) -> Unit, failure : (Int) -> Unit ){
         val call = danielService.getPhysicalSpacesByPersonAndTime(id,date2,date1)
         call.enqueue(object : Callback<List<TableFourResource>>{
             override fun onResponse(call: Call<List<TableFourResource>>, response: Response<List<TableFourResource>>) {
@@ -122,9 +122,11 @@ class DanielServiceRepository private constructor(private val danielService: Dan
                     else success(response.body()!!)
 
                     Log.i("retrofit", "repository list ${response.body()}")
-                }            }
+                }
+                failure(505)
+            }
             override fun onFailure(call: Call<List<TableFourResource>>, t: Throwable) {
-                failure()
+                failure(505)
             }
         })
     }

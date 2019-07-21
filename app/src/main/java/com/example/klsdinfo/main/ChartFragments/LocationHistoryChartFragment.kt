@@ -198,7 +198,7 @@ class LocationHistoryChartFragment : DialogFragment() {
 
         val data = BarData(set)
 
-        chart1.setData(data)
+        chart1.data = data
 
     }
 
@@ -221,7 +221,7 @@ class LocationHistoryChartFragment : DialogFragment() {
 
         val data = BarData(set)
 
-        chart1.setData(data)
+        chart1.data = data
 
     }
 

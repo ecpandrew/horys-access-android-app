@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.HttpHeaderParser
 import com.example.klsdinfo.R
-import com.example.klsdinfo.Volley.VolleySingleton
 import com.example.klsdinfo.data.*
 import com.example.klsdinfo.data.database.AppDatabase
 import com.example.klsdinfo.data.models.FakeRequest

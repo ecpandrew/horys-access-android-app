@@ -1,7 +1,5 @@
 package com.example.klsdinfo.main.MainFragments
 
-import android.content.Context
-
 import android.graphics.Typeface
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,27 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.os.Bundle
 import android.widget.*
-import androidx.core.content.ContextCompat.getDrawable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.klsdinfo.R
 import com.example.klsdinfo.data.*
 import com.example.klsdinfo.data.database.AppDatabase
-import com.example.klsdinfo.data.models.Person2
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.github.mikephil.charting.charts.HorizontalBarChart
 import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.squareup.picasso.Picasso
-import java.io.BufferedReader
-
 
 class HomeFragment : Fragment(){
 
@@ -51,11 +45,26 @@ class HomeFragment : Fragment(){
     private var unixTimePast: Long? = null
     lateinit var radioGroup: RadioGroup
     lateinit var mView: View
-    var delta: Long = 0
-    lateinit var ID: String
-
     lateinit var chart : HorizontalBarChart
-    val tvY: TextView? = null
+
+
+
+
+
+    override fun onStart() {
+        super.onStart()
+        val user : FirebaseUser? = FirebaseAuth.getInstance().currentUser
+        if(user!= null){
+            // Todo()
+
+        }else{
+            viewModel.fetchUserForChart()
+            viewModel.fetchUserForCurrentPosition()
+        }
+
+        print("onStart")
+
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         print("onCreateView")
@@ -114,7 +123,7 @@ class HomeFragment : Fragment(){
 
         chart.setDrawValueAboveBar(true)
 
-        chart.getDescription().isEnabled = false
+        chart.description.isEnabled = false
 
         // if more than 60 entries are displayed in the chart, no values will be
         // drawn
@@ -130,7 +139,8 @@ class HomeFragment : Fragment(){
 
 
 
-        val xl = chart.getXAxis()
+        val xl = chart.xAxis
+
 
 
         val array = arrayListOf<String>()
@@ -158,21 +168,26 @@ class HomeFragment : Fragment(){
 
         chart.xAxis.valueFormatter = IndexAxisValueFormatter(array)
 
-//        xl.position = XAxisPosition.BOTTOM
+
+
+
+
+
+        xl.position = XAxis.XAxisPosition.BOTH_SIDED // caso fique estranho mudar para .BOTTOM
 
         xl.typeface = Typeface.SERIF
         xl.setDrawAxisLine(true)
         xl.setDrawGridLines(true)
         xl.granularity = 1f
 
-        val yl = chart.getAxisLeft()
+        val yl = chart.axisLeft
         yl.typeface = Typeface.SERIF
         yl.setDrawAxisLine(true)
         yl.setDrawGridLines(true)
         yl.axisMinimum = 0f // this replaces setStartAtZero(true)
 //        yl.setInverted(true);
 
-        val yr = chart.getAxisRight()
+        val yr = chart.axisRight
         yr.typeface = Typeface.SERIF
         yr.setDrawAxisLine(true)
         yr.setDrawGridLines(true)
@@ -186,7 +201,7 @@ class HomeFragment : Fragment(){
 //        seekBarY.setProgress(50)
 //        seekBarX.setProgress(12)
 
-        val l = chart.getLegend()
+        val l = chart.legend
         l.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
         l.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
         l.orientation = Legend.LegendOrientation.HORIZONTAL
@@ -313,9 +328,7 @@ class HomeFragment : Fragment(){
             if(it!=null){
 
                 var d: String = ""
-
                 var b: String = ""
-
                 for (i in it){
                     b += "${i.physical_space}, "
                     d += "${i.duration}, "
@@ -341,19 +354,6 @@ class HomeFragment : Fragment(){
     }
 
 
-    override fun onStart() {
-        super.onStart()
-        val user : FirebaseUser? = FirebaseAuth.getInstance().currentUser
-        if(user!= null){
-
-        }else{
-            viewModel.fetchUserForChart()
-            viewModel.fetchUserForCurrentPosition()
-        }
-
-        print("onStart")
-
-    }
 
     override fun onResume() {
         super.onResume()

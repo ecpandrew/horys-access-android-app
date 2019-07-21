@@ -44,7 +44,12 @@ class HomeViewModel(
 
         danielServiceRepository.getCurrentPosition(id,
             {
-                currentPosition.postValue(it)
+                if(it.isEmpty()){
+                    fetchCurrentPosition(id)
+                }else{
+                    currentPosition.postValue(it)
+                }
+
             },
             {
                 currentPosition.postValue(null)
@@ -61,13 +66,11 @@ class HomeViewModel(
 
             fetchCurrentPosition(it.holder.id.toString())
         }, {
-            //            loadingProgress.postValue(false)
-//            user.postValue(null)
-            Log.e("debug", "failure()")
+
+            // Todo()
 
         })
     }
-//            val radio : RadioButton = mView.findViewById(id)
 
 
 

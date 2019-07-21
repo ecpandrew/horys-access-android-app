@@ -1,5 +1,7 @@
 package com.example.klsdinfo.main.SelectionFragments
 
+
+
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
@@ -18,9 +20,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.RequestQueue
 import com.example.klsdinfo.R
-import com.example.klsdinfo.Volley.VolleySingleton
 import com.example.klsdinfo.data.*
 import com.example.klsdinfo.data.database.AppDatabase
 import com.example.klsdinfo.data.models.PhysicalSpace
@@ -33,19 +33,28 @@ import java.text.SimpleDateFormat
 import java.util.*
 import androidx.lifecycle.Observer
 import com.example.klsdinfo.data.database.GroupQuery
-
-
 class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, DialogInterface.OnCancelListener, LifecycleOwner{
 
     lateinit var recyclerView: RecyclerView
     lateinit var mAdapter: PhysicalSpaceAdapter
-    private var actionMode: ActionMode? = null
+    lateinit var viewModel: SelectLocationAndTimeViewModel
     lateinit var pilha: Stack<List<PhysicalSpace>>
     lateinit var back: MaterialButton
     lateinit var get: MaterialButton
+    lateinit var progress: AlertDialog.Builder
+    lateinit var progressBar: ProgressBar
 
-
-
+    lateinit var alertDialog: AlertDialog
+    lateinit var cardDate: CardView
+    lateinit var cardDate2: CardView
+    lateinit var dayTv: TextView
+    lateinit var monthTv: TextView
+    lateinit var yearTv: TextView
+    lateinit var timeTv: TextView
+    lateinit var dayTv2: TextView
+    lateinit var monthTv2: TextView
+    lateinit var yearTv2: TextView
+    lateinit var timeTv2: TextView
 
     private var unixTime: Long? = null
     private var unixTimePast: Long? = null
@@ -55,31 +64,7 @@ class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetList
     private var day: Int = 0
     private var hour: Int = 0
     private var minute: Int = 0
-
     var listPhysicalSpaces: List<PhysicalSpace> = listOf()
-    lateinit var progress: AlertDialog.Builder
-    lateinit var alertDialog: AlertDialog
-    private lateinit var queue: RequestQueue
-
-
-    lateinit var cardDate: CardView
-    lateinit var dayTv: TextView
-    lateinit var monthTv: TextView
-    lateinit var yearTv: TextView
-    lateinit var timeTv: TextView
-    lateinit var calendar: Calendar
-    private lateinit var dateStr: String
-
-    lateinit var cardDate2: CardView
-    lateinit var dayTv2: TextView
-    lateinit var monthTv2: TextView
-    lateinit var yearTv2: TextView
-    lateinit var timeTv2: TextView
-    lateinit var calendar2: Calendar
-    private lateinit var dateStr2: String
-    lateinit var viewModel: SelectLocationAndTimeViewModel
-    lateinit var progressBar: ProgressBar
-
 
 
     companion object {
@@ -126,12 +111,11 @@ class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetList
         })
 
 
-        viewModel.mPeople.observe(viewLifecycleOwner, Observer {
+        viewModel.mPlaces.observe(viewLifecycleOwner, Observer {
                 pilha.push(it)
                 mAdapter.setItems(it)
                 mAdapter.notifyDataSetChanged()
                 recyclerView.visibility = View.VISIBLE
-            Log.i("observe", it.toString())
         })
     }
 
@@ -209,7 +193,6 @@ class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetList
         progressBar = view.findViewById(R.id.progress_bar)
 
         pilha = Stack()
-        queue = VolleySingleton.getInstance(context).requestQueue
 
         mAdapter = PhysicalSpaceAdapter(context!!, listPhysicalSpaces)
         recyclerView.adapter = mAdapter
@@ -217,22 +200,16 @@ class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetList
         get = view.findViewById(R.id.buttonGet)
         back = view.findViewById(R.id.backToParent)
 
+
         get.setOnClickListener {
-
-
             if (unixTime == null || unixTimePast == null){
                 setDefaultTime()
             }
-
-
             AsyncTask.execute {
-                //                                                                    AppDatabase.getInstance(context!!)?.groupDao()?.nukeTable()
                 AppDatabase.getInstance(context!!)?.groupDao()?.insert(GroupQuery(0,getIds(),unixTimePast!!.toString(),unixTime!!.toString()))
                 AppDatabase.destroyInstance()
                 navigateToFragment(LocationHistoryResultFragment(),true)
             }
-
-
         }
 
         validateBackParentButton(false)
@@ -581,8 +558,6 @@ class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetList
 
     override fun onStop() {
         super.onStop()
-        queue.cancelAll(this)
-
     }
     override fun onDestroyView() {
         super.onDestroyView()

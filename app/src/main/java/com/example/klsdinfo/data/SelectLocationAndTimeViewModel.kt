@@ -10,7 +10,7 @@ class SelectLocationAndTimeViewModel(
     private val semanticRepository: SemanticRepository, application: Application) : ViewModel(), LifecycleObserver{
 
 
-    val mPeople = MutableLiveData<List<PhysicalSpace>>().apply { value = emptyList() }
+    val mPlaces = MutableLiveData<List<PhysicalSpace>>().apply { value = emptyList() }
     val loadingProgress = MutableLiveData<Boolean>().apply { value = true }
 
     val date1 = MutableLiveData<String>().apply { value = "" }
@@ -21,13 +21,13 @@ class SelectLocationAndTimeViewModel(
     fun fetchData(){
         loadingProgress.postValue(true)
         semanticRepository.getPhysicalSpaces({
-            mPeople.postValue(it)
+            mPlaces.postValue(it)
             loadingProgress.postValue(false)
 
             Log.e("debug", it.toString())
 
         }, {
-            mPeople.postValue(listOf())
+            mPlaces.postValue(listOf())
             loadingProgress.postValue(false)
 
         })

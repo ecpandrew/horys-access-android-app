@@ -13,11 +13,9 @@
     <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
             android:layout_marginLeft="@dimen/mtrl_card_spacing"
             android:layout_marginTop="@dimen/mtrl_card_spacing"
             android:layout_marginRight="@dimen/mtrl_card_spacing"
-
             app:cardElevation="2dp"
     >
         <LinearLayout
@@ -27,7 +25,9 @@
             <LinearLayout  android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="match_parent">
 
                 <ImageView
-                        android:padding="5dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginBottom="8dp"
                         android:id="@+id/profile_image"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
@@ -35,16 +35,21 @@
                 />
                 <LinearLayout
                         android:orientation="vertical"
+                        android:layout_marginTop="8dp"
                         android:layout_width="wrap_content" android:layout_height="wrap_content">
                     <TextView
                             android:id="@+id/welcome_textView"
                             android:textColor="@color/black"
+                            android:layout_marginStart="16dp"
+
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="8dp"
                             android:text="oi"/>
                     <TextView
                             android:id="@+id/email_textView"
+                            android:layout_marginStart="16dp"
+
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="8dp"
@@ -56,11 +61,13 @@
 
             <LinearLayout
                     android:orientation="horizontal"
-                    android:paddingLeft="5dp"
+                    android:paddingStart="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                 <TextView
                         android:text="Current Beacon: "
+                        android:layout_marginLeft="16dp"
+
                         android:layout_width="wrap_content"
                         android:textColor="@color/black"
                         android:layout_height="wrap_content"/>
@@ -82,14 +89,34 @@
 
                 <TextView
                         android:text="Duration: "
+                        android:layout_marginLeft="16dp"
                         android:textColor="@color/black" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                 <TextView
                         android:id="@+id/duration_textView"
+                        android:layout_marginLeft="16dp"
+
                         android:text="100 minutes"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
             </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_refresh_position"
+                    android:text="Refresh Position"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="15sp"
+                    app:backgroundTint="@color/purple"
+                    app:cornerRadius="3dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="5dp"
 
+
+            />
 
         </LinearLayout>
 
@@ -98,71 +125,94 @@
 
 
 
-
-
-    <com.github.mikephil.charting.charts.HorizontalBarChart
-            android:id="@+id/chart1"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="15dp"
-            android:layout_width="match_parent"
-            android:layout_height="250dp">
-
-    </com.github.mikephil.charting.charts.HorizontalBarChart>
-
-    <RadioGroup
-            android:id="@+id/radioGroup"
+    <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="10dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent">
+            android:layout_marginLeft="@dimen/mtrl_card_spacing"
+            android:layout_marginTop="@dimen/mtrl_card_spacing"
+            android:layout_marginRight="@dimen/mtrl_card_spacing"
 
-        <RadioButton
-                android:id="@+id/radio0"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:button="@null"
-                android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
-                android:gravity="center_horizontal|bottom"
-                android:text="1 day"
-        />
-        <RadioButton
-                android:id="@+id/radio1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:button="@null"
-                android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
-                android:gravity="center_horizontal|bottom"
-                android:text="3 days"
-        />
+            app:cardElevation="2dp"
+    >
 
-        <RadioButton
-                android:id="@+id/radio2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:button="@null"
-                android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
-                android:gravity="center_horizontal|bottom"
-                android:text="7 days"
-        />
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent" android:layout_height="wrap_content">
 
-        <RadioButton
-                android:id="@+id/radio3"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:button="@null"
-                android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
-                android:gravity="center_horizontal|bottom"
-                android:text="30 days"
-        />
+            <com.github.mikephil.charting.charts.HorizontalBarChart
+                    android:id="@+id/chart1"
 
-    </RadioGroup>
+
+                    android:layout_width="match_parent"
+                    android:layout_height="245dp">
+
+            </com.github.mikephil.charting.charts.HorizontalBarChart>
+
+
+            <RadioGroup
+                    android:id="@+id/radioGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:padding="10dp"
+                    android:orientation="horizontal"
+
+            >
+
+                <RadioButton
+                        android:id="@+id/radio0"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:button="@null"
+                        android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
+                        android:gravity="center_horizontal|bottom"
+                        android:text="1 day"
+                />
+                <RadioButton
+                        android:id="@+id/radio1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:button="@null"
+                        android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
+                        android:gravity="center_horizontal|bottom"
+                        android:text="3 days"
+                />
+
+                <RadioButton
+                        android:id="@+id/radio2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:button="@null"
+                        android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
+                        android:gravity="center_horizontal|bottom"
+                        android:text="7 days"
+                />
+
+                <RadioButton
+                        android:id="@+id/radio3"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:button="@null"
+                        android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
+                        android:gravity="center_horizontal|bottom"
+                        android:text="30 days"
+                />
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+
+
+
+
+
+
+    </com.google.android.material.card.MaterialCardView>
 
 
     <LinearLayout
@@ -201,22 +251,7 @@
                 android:layout_margin="16dp"
 
                 />
-        <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_refresh_position"
-                android:text="Refresh Position"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorWhite"
-                android:textSize="15sp"
-                app:backgroundTint="@color/purple"
-                app:cornerRadius="3dp"
-                android:layout_gravity="center"
-                android:layout_margin="16dp"
 
-        />
 
     </LinearLayout>
 

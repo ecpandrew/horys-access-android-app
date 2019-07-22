@@ -212,7 +212,7 @@ class LocationHistoryResultFragment : Fragment(), LifecycleOwner {
             val bundle = Bundle()
 
 
-            var ref ="main_chart"
+            val ref ="main_chart"
 
 
             bundle.putString("ref", ref)

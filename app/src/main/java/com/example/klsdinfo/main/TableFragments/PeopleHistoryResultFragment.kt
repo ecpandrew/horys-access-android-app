@@ -28,6 +28,7 @@ import com.example.klsdinfo.data.PeopleHistoryViewModel
 import com.example.klsdinfo.data.ViewModelFactory
 import com.example.klsdinfo.data.database.AppDatabase
 import com.example.klsdinfo.data.models.*
+import com.example.klsdinfo.main.ChartFragments.PeopleHistoryChartFragment
 import com.example.klsdinfo.main.MainFragments.CustomTableFragment
 import com.example.klsdinfo.main.adapters.TableFourAdapter
 
@@ -70,9 +71,6 @@ class PeopleHistoryResultFragment : Fragment(), LifecycleOwner {
 
         createViewModel()
         subscribeToModel()
-
-
-
 
         return mView
     }
@@ -227,6 +225,24 @@ class PeopleHistoryResultFragment : Fragment(), LifecycleOwner {
             dialog.show(transaction, "FullScreenDialog")
 
         }
+
+        (card.findViewById(R.id.btn_chart) as Button).setOnClickListener {
+            // Todo: details
+            val bundle = Bundle()
+            var ref ="main_chart"
+            bundle.putString("ref", ref)
+            bundle.putParcelableArrayList("resources", x as ArrayList<out Parcelable>) // ??
+            val dialog = PeopleHistoryChartFragment()
+            dialog.arguments = bundle
+            val activity: AppCompatActivity = context as AppCompatActivity // ??
+            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+            dialog.show(transaction, "FullScreenDialog")
+        }
+
+
+
+
+
         (card.findViewById(R.id.btn_log) as Button).setOnClickListener {
 
             val bundle = Bundle()

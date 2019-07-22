@@ -131,74 +131,44 @@ class HomeFragment : Fragment(){
         // scaling can now only be done on x- and y-axis separately
         chart.setPinchZoom(false)
 
+
         // draw shadows for each bar that show the maximum value
         // chart.setDrawBarShadow(true);
-
         chart.setDrawGridBackground(false)
-
 
 
         val xl = chart.xAxis
 
-
-
         val array = arrayListOf<String>()
-
-
 
         for(i in map.keys){ array.add(i)}
 
-        Log.i("labels", array.toString())
-
-        val obj = object:  IndexAxisValueFormatter() {
-
-            override fun getFormattedValue(value: Float): String {
-                val index = Math.round(value)
-
-                if(index < 0 || index > map.size || index != value.toInt()){
-                    return ""
-                }
-
-                return array[index]
-
-            }
-
-        }
-
         chart.xAxis.valueFormatter = IndexAxisValueFormatter(array)
 
-
-
-
-
-
-        xl.position = XAxis.XAxisPosition.BOTH_SIDED // caso fique estranho mudar para .BOTTOM
-
+        xl.position = XAxis.XAxisPosition.BOTTOM // caso fique estranho mudar para .BOTTOM
         xl.typeface = Typeface.SERIF
         xl.setDrawAxisLine(true)
         xl.setDrawGridLines(true)
         xl.granularity = 1f
+
 
         val yl = chart.axisLeft
         yl.typeface = Typeface.SERIF
         yl.setDrawAxisLine(true)
         yl.setDrawGridLines(true)
         yl.axisMinimum = 0f // this replaces setStartAtZero(true)
-//        yl.setInverted(true);
+
 
         val yr = chart.axisRight
         yr.typeface = Typeface.SERIF
         yr.setDrawAxisLine(true)
         yr.setDrawGridLines(true)
         yr.axisMinimum = 0f // this replaces setStartAtZero(true)
-//        yr.setInverted(true);
+
 
         chart.setFitBars(true)
         chart.animateY(1000)
 
-        // setting data
-//        seekBarY.setProgress(50)
-//        seekBarX.setProgress(12)
 
         val l = chart.legend
         l.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
@@ -212,8 +182,8 @@ class HomeFragment : Fragment(){
         chart.setDrawValueAboveBar(false)
         chart.legend.isEnabled = false
 
+
         setData(map)
-//        setData(5,15.toFloat())
     }
 
 
@@ -222,8 +192,6 @@ class HomeFragment : Fragment(){
         val barWidth = .9f
         val spaceForBar = 1f
         val values = arrayListOf<BarEntry>()
-
-
 
         for (i in 0 until map.toList().size){
 

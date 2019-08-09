@@ -279,6 +279,7 @@ class HomeFragment : Fragment(){
 
 
     private fun setupViewModel() {
+
         val repo = SemanticRepository.getInstance(SemanticApiService.create(), AppDatabase.getInstance(context!!)!!)
         val repo2 = DanielServiceRepository.getInstance(DanielApiService.create(), AppDatabase.getInstance(context!!)!!)
 

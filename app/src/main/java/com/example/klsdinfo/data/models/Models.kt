@@ -117,23 +117,14 @@ data class Person2(val email:String, val shortName:String, val fullName:String?,
 }
 
 
+
+
 data class Table4Aux(val name: String, val count_places: Int, val duration: Long): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
         parcel.readInt(),
         parcel.readLong()
     )
-
-
-
-
-
-
-
-
-
-
-
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(name)
@@ -156,6 +147,7 @@ data class Table4Aux(val name: String, val count_places: Int, val duration: Long
         }
     }
 }
+
 
 data class TableTwoResource(val shortName: String, val roles: List<Role2>?, val physical_space: String, val thingID: String, val duration: Long): Parcelable{
     constructor(parcel: Parcel) : this(

@@ -189,6 +189,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
@@ -230,6 +232,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+
+
     private fun signOut() {
         startActivity(LoginActivity.getLaunchIntent(this))
         FirebaseAuth.getInstance().signOut()
@@ -237,9 +241,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
+
     fun navigateToFragment(fragToGo: Fragment, addToBackStack: Boolean = false){
         val transaction = supportFragmentManager.beginTransaction()
+
         transaction.replace(R.id.fragment_container, fragToGo)
+
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         if(addToBackStack){
             transaction.addToBackStack(null) // Todo: verificar o ciclo de vida dos fragmentos

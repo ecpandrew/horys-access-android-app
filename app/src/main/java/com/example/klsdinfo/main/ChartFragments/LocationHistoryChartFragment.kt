@@ -38,7 +38,11 @@ class LocationHistoryChartFragment : DialogFragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         val view: View = inflater.inflate(R.layout.chart_history_location, container, false)
         tool = view.findViewById(R.id.toolbar)
+
+
         chart1 = view.findViewById(R.id.chart1)
+
+
 
 
         tool.setNavigationIcon(R.drawable.ic_close_white_24dp)
@@ -111,13 +115,6 @@ class LocationHistoryChartFragment : DialogFragment() {
         // Todo()
 
         setData(array)
-
-
-
-
-
-
-
     }
 
 
@@ -142,6 +139,8 @@ class LocationHistoryChartFragment : DialogFragment() {
 
 
         Log.i("debug", durationMap.toString())
+
+
 
 
 
@@ -182,6 +181,17 @@ class LocationHistoryChartFragment : DialogFragment() {
 
     private fun setData(data: MutableList<Table4Aux>) {
 
+
+
+
+
+
+
+
+
+
+
+
         val yVals = arrayListOf<BarEntry>()
 
         val barWidth = 9f
@@ -198,12 +208,30 @@ class LocationHistoryChartFragment : DialogFragment() {
 
         val data = BarData(set)
 
+
+
+
+
+
+
+
+
         chart1.data = data
 
     }
 
 
     private fun setChildData(data: Map<String, Long>) {
+
+
+
+
+
+
+
+
+
+
 
         val yVals = arrayListOf<BarEntry>()
 
@@ -220,6 +248,22 @@ class LocationHistoryChartFragment : DialogFragment() {
         set = BarDataSet(yVals, "Data Set")
 
         val data = BarData(set)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         chart1.data = data
 

@@ -14,16 +14,11 @@ class HomeViewModel(
     private val semanticRepository: SemanticRepository,  private val danielServiceRepository: DanielServiceRepository, application: Application) : AndroidViewModel(application), LifecycleObserver{
 
 
-
     val loadingProgress = MutableLiveData<Boolean>().apply { value = true }
-
 
     var error = MutableLiveData<Pair<Int,String>>().apply { value = Pair(100,"Fetching: user") }
 
-
-
 //    val user = MutableLiveData<Person2?>().apply { value = null }
-
     var email = MutableLiveData<String>().apply{ value = ""}
 
 
@@ -82,10 +77,6 @@ class HomeViewModel(
         })
     }
 
-
-
-
-
     fun fetchUserForChart(){
 
         semanticRepository.getUserFromRoom({
@@ -129,7 +120,7 @@ class HomeViewModel(
                 chartData.postValue(null)
                 error.postValue(Pair(505, "Error: your connection or AttendanceService is down, please report!"))
 
-                TODO() //this might cause a bug
+                //TODO //this might cause a bug
 
             })
 

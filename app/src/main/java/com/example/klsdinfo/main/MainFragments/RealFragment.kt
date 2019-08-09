@@ -34,6 +34,8 @@ class RealFragment : Fragment(){
     }
 
 
+
+
     private fun addItems(){
 
         items.clear()

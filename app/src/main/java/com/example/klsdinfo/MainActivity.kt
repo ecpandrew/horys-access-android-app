@@ -55,6 +55,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val user : FirebaseUser? = FirebaseAuth.getInstance().currentUser
 
+        try {
+            configureGoogleSignIn()
+            mGoogleSignInClient.signOut()
+            FirebaseAuth.getInstance().signOut()
+
+
+        }catch (e : Exception){
+
+        }
+
+
         if(user == null){
 
             FirebaseAuth.getInstance().signOut()
@@ -64,7 +75,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         }else{ // Todo : Tratar esse !! operator
             configureGoogleSignIn()
-            if(user.isEmailVerified) {
+            if(true) {
 
                 AsyncTask.execute {
                     AppDatabase.getInstance(applicationContext!!)?.localUserDao()?.insert(LocalUserQuery(0, user.email!!))

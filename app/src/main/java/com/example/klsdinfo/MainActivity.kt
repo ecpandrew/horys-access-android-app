@@ -55,56 +55,53 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val user : FirebaseUser? = FirebaseAuth.getInstance().currentUser
 
-        try {
-            configureGoogleSignIn()
-            mGoogleSignInClient.signOut()
-            FirebaseAuth.getInstance().signOut()
 
 
-        }catch (e : Exception){
+//        if(user == null){
+//
+//            FirebaseAuth.getInstance().signOut()
+//            startActivity(LoginActivity.getLaunchIntent(this))
+//            finish()
+//
+//
+//        }else{ // Todo : Tratar esse !! operator
+//            configureGoogleSignIn()
+//            if(true) {
+//
+//                AsyncTask.execute {
+//                    AppDatabase.getInstance(applicationContext!!)?.localUserDao()?.insert(LocalUserQuery(0, user.email!!))
+//                    AppDatabase.destroyInstance()
+//                    }
+//                if(true){//user.email!!.isLsdiEmail()){ //descomente essa linha para permitir apenas email LSDI
+//
+//
+//                    setupAll(user)
+//
+//                    if (savedInstanceState == null) {
+//                        navView.setCheckedItem(R.id.nav_home)
+//                        navigateToFragment(HomeFragment.newInstance())
+//                        title = "Home Page"
+//                    }
+//                }else{
+//                    FirebaseAuth.getInstance().signOut()
+//                    mGoogleSignInClient.signOut()
+//                    startActivity(LoginActivity.getLaunchIntent(this))
+//                    finish()
+//                }
+//            }else{
+//                FirebaseAuth.getInstance().signOut()
+//                mGoogleSignInClient.signOut()
+//                startActivity(VerifyActivity.getLaunchIntent(this))
+//                finish()
+//            }
+//        }
+        setupAll(user)
 
+        if (savedInstanceState == null) {
+            navView.setCheckedItem(R.id.nav_home)
+            navigateToFragment(HomeFragment.newInstance())
+            title = "Home Page"
         }
-
-
-        if(user == null){
-
-            FirebaseAuth.getInstance().signOut()
-            startActivity(LoginActivity.getLaunchIntent(this))
-            finish()
-
-
-        }else{ // Todo : Tratar esse !! operator
-            configureGoogleSignIn()
-            if(true) {
-
-                AsyncTask.execute {
-                    AppDatabase.getInstance(applicationContext!!)?.localUserDao()?.insert(LocalUserQuery(0, user.email!!))
-                    AppDatabase.destroyInstance()
-                    }
-                if(true){//user.email!!.isLsdiEmail()){ //descomente essa linha para permitir apenas email LSDI
-
-
-                    setupAll(user)
-
-                    if (savedInstanceState == null) {
-                        navView.setCheckedItem(R.id.nav_home)
-                        navigateToFragment(HomeFragment.newInstance())
-                        title = "Home Page"
-                    }
-                }else{
-                    FirebaseAuth.getInstance().signOut()
-                    mGoogleSignInClient.signOut()
-                    startActivity(LoginActivity.getLaunchIntent(this))
-                    finish()
-                }
-            }else{
-                FirebaseAuth.getInstance().signOut()
-                mGoogleSignInClient.signOut()
-                startActivity(VerifyActivity.getLaunchIntent(this))
-                finish()
-            }
-        }
-
         Log.i("Lifecycle", "OnCreate: Main Activity")
     }
 //
@@ -117,7 +114,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mGoogleSignInClient = GoogleSignIn.getClient(this, mGoogleSignInOptions)
     }
 
-    private fun setupAll(user: FirebaseUser){
+    private fun setupAll(user: FirebaseUser?){
 
 //
 
@@ -133,15 +130,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
 
-        val header: View = navView.getHeaderView(0)
-        (header.findViewById(R.id.user_name) as TextView).text = user.displayName
-        (header.findViewById(R.id.user_email) as TextView).text = user.email
+//        val header: View = navView.getHeaderView(0)
+//        (header.findViewById(R.id.user_name) as TextView).text = user.displayName
+//        (header.findViewById(R.id.user_email) as TextView).text = user.email
+//
+//        if(user.photoUrl.toString().isNullOrBlank()){
+//            (header.findViewById(R.id.user_image) as ImageView).setImageDrawable(getDrawable(R.mipmap.ic_aluno))
+//        }else{
+//            Picasso.get().load(user.photoUrl.toString()).into((header.findViewById(R.id.user_image) as ImageView))
+//        }
 
-        if(user.photoUrl.toString().isNullOrBlank()){
-            (header.findViewById(R.id.user_image) as ImageView).setImageDrawable(getDrawable(R.mipmap.ic_aluno))
-        }else{
-            Picasso.get().load(user.photoUrl.toString()).into((header.findViewById(R.id.user_image) as ImageView))
-        }
 
         toggle = object : ActionBarDrawerToggle(
             this,

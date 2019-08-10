@@ -60,8 +60,8 @@ class HomeFragment : Fragment(){
             // Todo()
 
         }else{
-            viewModel.fetchUserForChart()
-            viewModel.fetchUserForCurrentPosition()
+//            viewModel.fetchUserForChart()
+//            viewModel.fetchUserForCurrentPosition()
         }
 
         print("onStart")
@@ -80,16 +80,17 @@ class HomeFragment : Fragment(){
         radioGroup= mView.findViewById(R.id.radioGroup)
         refresh = mView.findViewById(R.id.btn_refresh_position)
 
+        mView.visibility = View.GONE
 
-        setupUser()
+//        setupUser()
 
-        setupViewModel()
+//        setupViewModel()
 
-        setupRadioCheckChangeListener()
+//        setupRadioCheckChangeListener()
 
-        refresh.setOnClickListener {
-            viewModel.fetchUserForCurrentPosition()
-        }
+//        refresh.setOnClickListener {
+//            viewModel.fetchUserForCurrentPosition()
+//        }
 
 
 
@@ -103,8 +104,8 @@ class HomeFragment : Fragment(){
 
     private fun setupUser() {
         val user : FirebaseUser? = FirebaseAuth.getInstance().currentUser
-        welcome.text = user?.displayName
-        email.text = user?.email
+        welcome.text = user?.displayName ?: "No user found"
+        email.text = user?.email ?: "No user found"
 
         if(user?.photoUrl.toString().isNullOrBlank()){
 //            (mView.findViewById(R.id.profile_image) as ImageView).setImageDrawable(null)

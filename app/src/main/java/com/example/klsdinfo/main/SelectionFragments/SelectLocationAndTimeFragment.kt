@@ -96,7 +96,9 @@ class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetList
 
 
     private fun setupViewModel() {
+
         val repo = SemanticRepository.getInstance(SemanticApiService.create(), AppDatabase.getInstance(context!!)!!)
+
         val factory = ViewModelFactory(repo,null, activity?.application!!)
 
         viewModel = ViewModelProviders.of(this, factory).get(SelectLocationAndTimeViewModel::class.java)

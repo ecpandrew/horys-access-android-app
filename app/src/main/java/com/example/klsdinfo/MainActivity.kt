@@ -1,9 +1,14 @@
 package com.example.klsdinfo
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -14,6 +19,7 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat.START
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -21,6 +27,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.example.klsdinfo.data.database.AppDatabase
 import com.example.klsdinfo.data.database.LocalUserQuery
+import com.example.klsdinfo.endlessservice.*
 import com.example.klsdinfo.main.MainFragments.HistoryFragment
 import com.example.klsdinfo.main.MainFragments.HomeFragment
 import com.example.klsdinfo.main.MainFragments.RealFragment
@@ -47,62 +54,62 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var toggle       : ActionBarDrawerToggle
     lateinit var mGoogleSignInClient  : GoogleSignInClient
     lateinit var mGoogleSignInOptions : GoogleSignInOptions
+    lateinit var MY_EMAIL : String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
-
         super.onCreate(savedInstanceState)
 
         val user : FirebaseUser? = FirebaseAuth.getInstance().currentUser
 
+        if(user == null){
+            FirebaseAuth.getInstance().signOut()
+            startActivity(LoginActivity.getLaunchIntent(this))
+            finish()
 
+        }else{ // Todo : Tratar esse !! operator
+            configureGoogleSignIn()
+            if(user.email != null) {
 
-//        if(user == null){
-//
-//            FirebaseAuth.getInstance().signOut()
-//            startActivity(LoginActivity.getLaunchIntent(this))
-//            finish()
-//
-//
-//        }else{ // Todo : Tratar esse !! operator
-//            configureGoogleSignIn()
-//            if(true) {
-//
-//                AsyncTask.execute {
-//                    AppDatabase.getInstance(applicationContext!!)?.localUserDao()?.insert(LocalUserQuery(0, user.email!!))
-//                    AppDatabase.destroyInstance()
-//                    }
-//                if(true){//user.email!!.isLsdiEmail()){ //descomente essa linha para permitir apenas email LSDI
-//
-//
-//                    setupAll(user)
-//
-//                    if (savedInstanceState == null) {
-//                        navView.setCheckedItem(R.id.nav_home)
-//                        navigateToFragment(HomeFragment.newInstance())
-//                        title = "Home Page"
-//                    }
-//                }else{
-//                    FirebaseAuth.getInstance().signOut()
-//                    mGoogleSignInClient.signOut()
-//                    startActivity(LoginActivity.getLaunchIntent(this))
-//                    finish()
-//                }
-//            }else{
-//                FirebaseAuth.getInstance().signOut()
-//                mGoogleSignInClient.signOut()
-//                startActivity(VerifyActivity.getLaunchIntent(this))
-//                finish()
-//            }
-//        }
-        setupAll(user)
+                AsyncTask.execute {
+                    AppDatabase.getInstance(applicationContext!!)?.localUserDao()?.insert(LocalUserQuery(0, user.email!!))
+                    AppDatabase.destroyInstance()
+                }
 
-        if (savedInstanceState == null) {
-            navView.setCheckedItem(R.id.nav_home)
-            navigateToFragment(HomeFragment.newInstance())
-            title = "Home Page"
+                if(user.email!!.isLsdiEmail()){//user.email!!.isLsdiEmail()){ //descomente essa linha para permitir apenas email LSDI
+
+                    MY_EMAIL = user.email!!
+                    setupAll(user)
+
+                    if (savedInstanceState == null) {
+                        navView.setCheckedItem(R.id.nav_home)
+                        navigateToFragment(HomeFragment.newInstance())
+                        title = "Home Page"
+                    }
+                }else{
+                    FirebaseAuth.getInstance().signOut()
+                    mGoogleSignInClient.signOut()
+                    startActivity(LoginActivity.getLaunchIntent(this))
+                    finish()
+                }
+            }else{
+                FirebaseAuth.getInstance().signOut()
+                mGoogleSignInClient.signOut()
+                startActivity(VerifyActivity.getLaunchIntent(this))
+                finish()
+            }
         }
-        Log.i("Lifecycle", "OnCreate: Main Activity")
+
+
+//        setupAll(user)
+
+//        if (savedInstanceState == null) {
+//            navView.setCheckedItem(R.id.nav_home)
+//            navigateToFragment(HomeFragment.newInstance())
+//            title = "Home Page"
+//        }
+//        Log.i("Lifecycle", "OnCreate: Main Activity")
     }
 //
 
@@ -114,11 +121,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mGoogleSignInClient = GoogleSignIn.getClient(this, mGoogleSignInOptions)
     }
 
-    private fun setupAll(user: FirebaseUser?){
-
-//
+    private fun setupAll(user: FirebaseUser){
 
         setContentView(R.layout.activity_main)
+
+        if (Build.VERSION.SDK_INT > 9) {
+            val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+            StrictMode.setThreadPolicy(policy)
+        }
+        setPermissions()
+
+
         toolbar = findViewById(R.id.toolbar)
 
         setSupportActionBar(toolbar)
@@ -130,15 +143,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
 
-//        val header: View = navView.getHeaderView(0)
-//        (header.findViewById(R.id.user_name) as TextView).text = user.displayName
-//        (header.findViewById(R.id.user_email) as TextView).text = user.email
-//
-//        if(user.photoUrl.toString().isNullOrBlank()){
-//            (header.findViewById(R.id.user_image) as ImageView).setImageDrawable(getDrawable(R.mipmap.ic_aluno))
-//        }else{
-//            Picasso.get().load(user.photoUrl.toString()).into((header.findViewById(R.id.user_image) as ImageView))
-//        }
+        val header: View = navView.getHeaderView(0)
+        (header.findViewById(R.id.user_name) as TextView).text = user.displayName
+        (header.findViewById(R.id.user_email) as TextView).text = user.email
+
+        if(user.photoUrl.toString().isNullOrBlank()){
+            (header.findViewById(R.id.user_image) as ImageView).setImageDrawable(getDrawable(R.mipmap.ic_aluno))
+        }else{
+            Picasso.get().load(user.photoUrl.toString()).into((header.findViewById(R.id.user_image) as ImageView))
+        }
 
 
         toggle = object : ActionBarDrawerToggle(
@@ -194,10 +207,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_start_service ->  {
+                log("START THE FOREGROUND SERVICE ON DEMAND")
+                actionOnService(Actions.START)
+                true
+            }
+
+            R.id.action_stop_service -> {
+                log("STOP THE FOREGROUND SERVICE ON DEMAND")
+                actionOnService(Actions.STOP)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
+
 
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -216,10 +240,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 navigateToFragment(RealFragment.newInstance())
             }
             R.id.nav_slideshow -> {
-                Toast.makeText(baseContext, "Acessando Histórico", Toast.LENGTH_LONG).show()
+                Toast.makeText(baseContext, "Accessing History", Toast.LENGTH_LONG).show()
                 clearBackStack()
                 navigateToFragment(HistoryFragment.newInstance())
-                title = "Acessando Histórico"
+                title = "Accessing History"
             }
 
             R.id.nav_report_bug -> {
@@ -252,6 +276,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
     fun navigateToFragment(fragToGo: Fragment, addToBackStack: Boolean = false){
+
         val transaction = supportFragmentManager.beginTransaction()
 
         transaction.replace(R.id.fragment_container, fragToGo)
@@ -333,6 +358,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
     }
+
     fun String.isLsdiEmail(): Boolean{
 
         if (this.domain == "lsdi.ufma.br"){
@@ -340,5 +366,45 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         return false
     }
+
+
+
+    private fun setPermissions() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                this,
+                WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(ACCESS_FINE_LOCATION, WRITE_EXTERNAL_STORAGE), 1
+            )
+        }
+    }
+
+    private fun actionOnService(action: Actions) {
+
+        val bundle : Bundle = Bundle().also{
+            it.putString("email", MY_EMAIL)
+        }
+
+        if (getServiceState(this) == ServiceState.STOPPED && action == Actions.STOP) return
+        Intent(this, EndlessService::class.java).also {
+            it.putExtras(bundle)
+            it.action = action.name
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                log("Starting the service in >=26 Mode")
+                startForegroundService(it)
+                return
+            }
+            log("Starting the service in < 26 Mode")
+            startService(it)
+        }
+    }
+
+
 
 }

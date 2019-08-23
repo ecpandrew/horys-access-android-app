@@ -28,9 +28,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.31"
-
-    implementation 'androidx.appcompat:appcompat:1.1.0-beta01'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.41"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0-M1'
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
 
     implementation 'androidx.core:core-ktx:1.0.2'
     implementation 'com.evrencoskun.library:tableview:0.8.8'
@@ -40,13 +40,11 @@ dependencies {
     implementation 'com.wdullaer:materialdatetimepicker:4.1.2'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.android.volley:volley:1.1.1'
-    implementation "com.squareup.retrofit2:converter-gson:2.4.0"
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'com.google.firebase:firebase-auth:18.0.0'
+    implementation 'com.google.firebase:firebase-auth:19.0.0'
 
-    implementation 'com.google.firebase:firebase-core:17.0.0'
+    implementation 'com.google.firebase:firebase-core:17.1.0'
     implementation 'com.firebaseui:firebase-ui-auth:4.1.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
     implementation 'androidx.core:core-ktx:1.0.2'
     implementation 'androidx.fragment:fragment-ktx:1.0'
@@ -56,7 +54,6 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:$room_version"
     kapt "android.arch.persistence.room:compiler:$room_version"
     implementation 'com.thoughtbot:expandablecheckrecyclerview:1.4'
-    implementation 'com.mikhaellopez:circularimageview:3.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
@@ -64,6 +61,33 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.fragment:fragment-ktx:1.0.0'
+
+
+    implementation 'org.apache.commons:commons-lang3:3.5'
+    implementation 'org.mapdb:mapdb:1.0.6'
+    implementation 'com.lmax:disruptor:3.3.0'
+    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation 'io.netty:netty-all:4.0.25.Final'
+    implementation 'com.jaredrummler:android-device-names:1.1.8'
+    implementation 'com.github.kittinunf.fuel:fuel:2.1.0'
+    implementation 'com.github.kittinunf.fuel:fuel-android:2.1.0'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.1'
+
+    implementation (group: 'br.ufma.lsdi', name: 'cddl', version: '1.0.0', ext: 'aar')
+    implementation (group: 'br.ufma.lsdi', name: 'cddl-mhub', version: '1.0.0', ext: 'aar')
+    implementation (group: 'br.ufma.lsdi', name: 'cddl-microbroker', version: '1.0.0', ext: 'aar')
+
+
+
+
+
+
+
 }
 
 apply plugin: 'com.google.gms.google-services'

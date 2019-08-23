@@ -109,7 +109,7 @@ class LocationHistoryResultFragment : Fragment(), LifecycleOwner {
         progressBar = mView.findViewById(R.id.progress_bar)
 
         recyclerView = mView.findViewById(R.id.tableFourRV)
-        recyclerView.layoutManager = GridLayoutManager(context,2)
+        recyclerView.layoutManager = GridLayoutManager(context,1)
         recyclerView.setHasFixedSize(true)
     }
 

@@ -8,11 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.example.klsdinfo.R
 import com.example.klsdinfo.data.models.AuxResource4
+import com.example.klsdinfo.main.ChartFragments.PeopleHistoryChartFragment
 import com.example.klsdinfo.main.MainFragments.CustomTableFragment
+import com.example.klsdinfo.main.TableFragments.FinalResultPeopleHistoryFragment
 import com.google.android.material.button.MaterialButton
 import java.util.*
 
@@ -50,51 +54,64 @@ class TableFourAdapter(
         holder.nameTV.text = src.name
         holder.numberRendzTV.text = ("Places Visited: ${src.getplacesCount()}")
         holder.durationTV.text = ("Time Elapsed: ${src.getDuration()/60} min")
-        holder.btnDetail.setOnClickListener {
+
+
+        holder.cardView.setOnClickListener {
             val bundle = Bundle()
-            var ref ="child_detail4"
+            val ref ="people_history_child_data"
             bundle.putString("ref", ref)
             bundle.putString("person", src.name)
             bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
-            val dialog = CustomTableFragment()
+            val dialog = FinalResultPeopleHistoryFragment()
             dialog.arguments = bundle
             val activity: AppCompatActivity = context as AppCompatActivity // ??
             val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-            dialog.show(transaction, "FullScreenDialog")
+            transaction.replace(R.id.fragment_container, dialog)
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            transaction.addToBackStack(null)
+            transaction.commit()
         }
 
-        holder.btnLog.setOnClickListener {
-            val bundle = Bundle()
-            var ref ="child_log4"
-            bundle.putString("ref", ref)
-            bundle.putString("person", src.name)
-            bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
-            val dialog = CustomTableFragment()
-            dialog.arguments = bundle
-            val activity: AppCompatActivity = context as AppCompatActivity // ??
-            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-            dialog.show(transaction, "FullScreenDialog")
-        }
-
-//        holder.optionsIB.setOnClickListener {
-//            val popup = PopupMenu(context, it.main_options)
-//            popup.inflate(R.menu.menu_card)
-//            popup.setOnMenuItemClickListener { item ->
-//                when (item.itemId) {
-//                    R.id.action_details -> {
 //
-//
-//
-//
-//                    }
-//                    R.id.action_log -> {
-//
-//                    }
-//                }
-//                false
-//            }
-//            popup.show()
+//        holder.btnDetail.setOnClickListener {
+//            val bundle = Bundle()
+//            var ref ="child_detail4"
+//            bundle.putString("ref", ref)
+//            bundle.putString("person", src.name)
+//            bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
+//            val dialog = CustomTableFragment()
+//            dialog.arguments = bundle
+//            val activity: AppCompatActivity = context as AppCompatActivity // ??
+//            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+//            dialog.show(transaction, "FullScreenDialog")
 //        }
+//
+//        holder.btnLog.setOnClickListener {
+//            val bundle = Bundle()
+//            var ref ="child_log4"
+//            bundle.putString("ref", ref)
+//            bundle.putString("person", src.name)
+//            bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
+//            val dialog = CustomTableFragment()
+//            dialog.arguments = bundle
+//            val activity: AppCompatActivity = context as AppCompatActivity // ??
+//            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+//            dialog.show(transaction, "FullScreenDialog")
+//        }
+//
+//        holder.btnChart.setOnClickListener {
+//            val bundle = Bundle()
+//            var ref ="child_chart"
+//            bundle.putString("ref", ref)
+//            bundle.putString("person", src.name)
+//            bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
+//            val dialog = PeopleHistoryChartFragment()
+//            dialog.arguments = bundle
+//            val activity: AppCompatActivity = context as AppCompatActivity // ??
+//            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+//            dialog.show(transaction, "FullScreenDialog")
+//        }
+
 
 
 
@@ -105,10 +122,13 @@ class TableFourAdapter(
 
     class ResourceFourViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
+        val cardView : CardView = itemView.findViewById(R.id.cardView)
         val nameTV: TextView = itemView.findViewById(R.id.main_title)
         val numberRendzTV: TextView = itemView.findViewById(R.id.main_rating)
         val durationTV: TextView = itemView.findViewById(R.id.main_duration)
         val btnDetail: MaterialButton = itemView.findViewById(R.id.btn_detail)
+        val btnChart : MaterialButton = itemView.findViewById(R.id.btn_chart)
+
         val btnLog: MaterialButton = itemView.findViewById(R.id.btn_log)
     }
 

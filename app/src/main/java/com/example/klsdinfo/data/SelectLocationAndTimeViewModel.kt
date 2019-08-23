@@ -11,6 +11,7 @@ class SelectLocationAndTimeViewModel(
 
 
     val mPlaces = MutableLiveData<List<PhysicalSpace>>().apply { value = emptyList() }
+
     val loadingProgress = MutableLiveData<Boolean>().apply { value = true }
 
     val date1 = MutableLiveData<String>().apply { value = "" }

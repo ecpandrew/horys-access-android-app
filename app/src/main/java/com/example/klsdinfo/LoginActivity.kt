@@ -217,7 +217,8 @@ class LoginActivity : AppCompatActivity() {
                 //Todo: verificar esse operador !!
                 firebaseAuthWithGoogle(account!!)
             } catch (e: ApiException) {
-                Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG).show()
+                Log.d("google", e.message)
+                Toast.makeText(this, "Google sign in failed:( 1 ", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -227,11 +228,12 @@ class LoginActivity : AppCompatActivity() {
         alertDialog.show()
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
         mAuth.signInWithCredential(credential).addOnCompleteListener {
+
             if (it.isSuccessful) {
                 alertDialog.dismiss()
                 startActivity(MainActivity.getLaunchIntent(this))
             } else {
-                Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Google sign in failed:( 2", Toast.LENGTH_LONG).show()
             }
             alertDialog.dismiss()
 

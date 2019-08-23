@@ -89,12 +89,12 @@ class PeopleHistoryResultFragment : Fragment(), LifecycleOwner {
             mAdapter.notifyDataSetChanged()
         })
 
-        viewModel.getProgress().observe(viewLifecycleOwner, Observer {
-            when(it){
-                true -> progressBar.visibility = View.VISIBLE
-                false -> progressBar.visibility = View.GONE
-            }
-        })
+//        viewModel.getProgress().observe(viewLifecycleOwner, Observer {
+//            when(it){
+//                true -> progressBar.visibility = View.VISIBLE
+//                false -> progressBar.visibility = View.GONE
+//            }
+//        })
     }
 
     private fun createViewModel() {
@@ -111,7 +111,7 @@ class PeopleHistoryResultFragment : Fragment(), LifecycleOwner {
         progressBar = mView.findViewById(R.id.progress_bar)
         noResults = mView.findViewById(R.id.no_result)
         recyclerView = mView.findViewById(R.id.tableFourRV)
-        recyclerView.layoutManager = GridLayoutManager(context,2)
+        recyclerView.layoutManager = GridLayoutManager(context,1)
         recyclerView.setHasFixedSize(true)
 
     }
@@ -135,78 +135,30 @@ class PeopleHistoryResultFragment : Fragment(), LifecycleOwner {
 
     ) {
 
-        val map: MutableMap<String, Long> = mutableMapOf()
-        val childMap: MutableMap<String, MutableList<TableFourResource>> = mutableMapOf()
-        val childAux: MutableMap<String, MutableMap<String, Long>> = mutableMapOf()
-        for (resource in lista) {
-            if (!map.containsKey(resource.shortName)) {
-                map[resource.shortName] = resource.getDuration()
-            } else {
-                map[resource.shortName] = resource.getDuration() + map[resource.shortName]!!
+        val durMap : MutableMap<String,Long> = mutableMapOf()
+        val durList: MutableList<Table4Aux> = mutableListOf()
+        var totalTimeElapsed : Long = 0
+
+        for(element in lista){
+            val dur = element.getDuration()
+            val name = element.shortName
+            totalTimeElapsed+= dur
+
+            if(!durMap.containsKey(name)){
+                durMap[name] = dur
             }
-            if (!childMap.containsKey(resource.physical_space)) {
-                childMap[resource.physical_space] = mutableListOf(resource)
-            } else {
-                val aux: MutableList<TableFourResource> = childMap[resource.physical_space]!!
-                aux.add(resource)
-                childMap[resource.physical_space] = aux
-            }
-        }
-        for (entry in childMap) {
-
-            if (!childAux.containsKey(entry.key)) {
-                childAux[entry.key] = mutableMapOf()
-            } else {
-
-            }
-
-            val childDuration: MutableMap<String, Long> = mutableMapOf()
-            for (resource in entry.value) {
-                if (!childDuration.containsKey(resource.shortName)) {
-                    childDuration[resource.shortName] = resource.getDuration()
-                } else {
-                    childDuration[resource.shortName] =
-                        resource.getDuration() + childDuration[resource.shortName]!!
-
-                }
-            }
-            childAux[entry.key] = childDuration
-        }
-
-        val countMap: MutableMap<String, Int> = mutableMapOf()
-
-        for (entry in childAux) {
-            for (element in entry.value) {
-
-                if (!countMap.containsKey(element.key)) {
-                    countMap[element.key] = 1
-                } else {
-                    countMap[element.key] = countMap[element.key]!! + 1
-                }
-            }
-        }
-        Log.i("recebido4", "map $map")
-        Log.i("recebido4", "child map$childMap")
-        Log.i("recebido4", "aux map$childAux")
-        Log.i("recebido4", "count map$countMap")
-
-        val map2: MutableMap<String, MutableList<TableFourResource>> = mutableMapOf()
-        for (element in lista) {
-            if (!map2.containsKey(element.shortName)) {
-                map2[element.shortName] = mutableListOf(element)
-            } else {
-                val i: MutableList<TableFourResource> = map2[element.shortName]!!
-                i.add(element)
-                map2[element.shortName] = i
+            else{
+                val temp = durMap[name] ?: 0
+                durMap[name] = temp + dur
             }
         }
 
-        val x: MutableList<Table4Aux> = mutableListOf()
 
-        for (element in map){
 
-            x.add(Table4Aux(element.key, countMap[element.key]!!, map[element.key]!!))
+        for(element in durMap){
+            durList.add(Table4Aux(element.key, 0, element.value))
         }
+
 
 
         val card: CardView = view!!.findViewById(R.id.tableFourCardView)
@@ -216,8 +168,9 @@ class PeopleHistoryResultFragment : Fragment(), LifecycleOwner {
             // Todo: details
             val bundle = Bundle()
             var ref ="detail4"
+
             bundle.putString("ref", ref)
-            bundle.putParcelableArrayList("resources", x as ArrayList<out Parcelable>) // ??
+            bundle.putParcelableArrayList("resources", durList as ArrayList<out Parcelable>) // ??
             val dialog = CustomTableFragment()
             dialog.arguments = bundle
             val activity: AppCompatActivity = context as AppCompatActivity // ??
@@ -231,16 +184,13 @@ class PeopleHistoryResultFragment : Fragment(), LifecycleOwner {
             val bundle = Bundle()
             var ref ="main_chart"
             bundle.putString("ref", ref)
-            bundle.putParcelableArrayList("resources", x as ArrayList<out Parcelable>) // ??
+            bundle.putParcelableArrayList("resources", durList as ArrayList<out Parcelable>) // ??
             val dialog = PeopleHistoryChartFragment()
             dialog.arguments = bundle
             val activity: AppCompatActivity = context as AppCompatActivity // ??
             val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
             dialog.show(transaction, "FullScreenDialog")
         }
-
-
-
 
 
         (card.findViewById(R.id.btn_log) as Button).setOnClickListener {
@@ -259,18 +209,11 @@ class PeopleHistoryResultFragment : Fragment(), LifecycleOwner {
 
 
 
-        var count: Long = 0
-        for (entry in childAux){
-            for(element in entry.value){
-                count += element.value
-            }
-        }
-
 
         (card.findViewById(R.id.nameTV4) as TextView).text = ("Person History")
-        (card.findViewById(R.id.descriptionTV4) as TextView).text = ("People Found: ${map.size}")
-        (card.findViewById(R.id.nplacesTV4) as TextView).text = ("Physical Spaces Found: ${childAux.size}")
-        (card.findViewById(R.id.durationTV4) as TextView).text = ("Total Time Elapsed: ${count/60} min")
+//        (card.findViewById(R.id.descriptionTV4) as TextView).text = ("People Found: ${durMap.size}")
+//        (card.findViewById(R.id.nplacesTV4) as TextView).text = ("Physical Spaces Found: ${childAux.size}")
+        (card.findViewById(R.id.durationTV4) as TextView).text = ("Total Time Elapsed: ${totalTimeElapsed/60} min")
         card.visibility = View.VISIBLE
 
     }

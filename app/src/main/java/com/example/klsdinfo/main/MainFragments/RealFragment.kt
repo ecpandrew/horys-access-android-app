@@ -39,6 +39,7 @@ class RealFragment : Fragment(){
     private fun addItems(){
 
         items.clear()
+
         items.add(
             Method(
                 "Check Physical Space",

@@ -28,8 +28,6 @@ class RMethodsAdapter(
 
         return MethodViewHolder(itemView)
 
-
-
     }
 
 
@@ -82,6 +80,7 @@ class RMethodsAdapter(
             holder.imgView.setImageResource(R.mipmap.ic_launcher)
         }
     }
+
 
 
     class MethodViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){

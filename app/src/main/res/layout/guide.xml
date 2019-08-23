@@ -30,7 +30,7 @@
                 android:textSize="15sp"
                 android:textColor="@color/black"
                 android:fontFamily="monospace"
-                android:text="LSDinfo is an Android Application first designed to monitor LSDi's users and environment. This app can retrieve information related to a user/location routine. Basicaly this LSDi's app can be separated in two main sections."
+                android:text="LSDinfo is an Android Application first designed to monitor LSDi's users and environment. This app can retrieve information related to a user location/routine. Basicaly this LSDi's app can be separated in two main sections."
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -43,7 +43,7 @@
 
                 android:textSize="15sp"
                 android:textColor="@color/black"
-                android:text="The first one retrieves real time information, such as the current location of selected users or wich users are in each location selected."
+                android:text="The first one retrieves real time information, such as the current location of selected users or wich users are in each selected location."
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         <TextView
@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"/>
 
         <TextView
-                android:text="How to Use"
+                android:text="Development"
                 android:gravity="center"
                 android:textColor="@color/black"
                 android:textSize="20sp"
@@ -77,30 +77,7 @@
                 android:textSize="15sp"
                 android:textColor="@color/black"            android:fontFamily="monospace"
 
-                android:text="1 - Open the Side Navigtion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        <TextView
-                android:layout_marginTop="16dp"
-
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="16dp"
-                android:textSize="15sp"
-                android:textColor="@color/black"            android:fontFamily="monospace"
-
-                android:text="2 - Choose: Real Time or History"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-        <TextView
-                android:layout_marginTop="16dp"
-
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="16dp"
-                android:textSize="15sp"
-                android:textColor="@color/black"            android:fontFamily="monospace"
-
-                android:text="3 - Select: People or Location"
+                android:text="Coordinator"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         <TextView
@@ -110,17 +87,7 @@
                 android:textSize="12sp"
                 android:textColor="@color/black"            android:fontFamily="monospace"
 
-                android:text="  3.1 - Select: A Time Interval"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        <TextView
-                android:layout_marginTop="16dp"
-
-                android:layout_marginLeft="8dp"
-                android:textSize="12sp"
-                android:textColor="@color/grey_90"            android:fontFamily="monospace"
-
-                android:text="      3.1 - default time: 1 week"
+                android:text="  Francisco Jośe da Silva e Silva"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         <TextView
@@ -131,13 +98,73 @@
                 android:textSize="15sp"
                 android:textColor="@color/black"            android:fontFamily="monospace"
 
-                android:text="4 - GET Your Information"
+                android:text="Developers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-        <ImageView
+        <TextView
                 android:layout_marginTop="16dp"
-                android:layout_width="wrap_content" android:layout_height="100dp"
-                android:src="@drawable/lsdi_transparent"/>
+
+                android:layout_marginLeft="8dp"
+                android:textSize="12sp"
+                android:textColor="@color/black"            android:fontFamily="monospace"
+
+                android:text="  André Luiz Almeida cardoso"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        <TextView
+                android:layout_marginTop="16dp"
+
+                android:layout_marginLeft="8dp"
+                android:textSize="12sp"
+                android:textColor="@color/black"            android:fontFamily="monospace"
+
+                android:text="  Hannah "
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+                android:layout_marginTop="16dp"
+
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                android:textSize="15sp"
+                android:textColor="@color/black"            android:fontFamily="monospace"
+
+                android:text="Colaborators"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+                android:layout_marginTop="16dp"
+
+                android:layout_marginLeft="8dp"
+                android:textSize="12sp"
+                android:textColor="@color/black"            android:fontFamily="monospace"
+
+                android:text="  Alysson Cirilo "
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        <TextView
+                android:layout_marginTop="16dp"
+
+                android:layout_marginLeft="8dp"
+                android:textSize="12sp"
+                android:textColor="@color/black"            android:fontFamily="monospace"
+
+                android:text="  Daniel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        <TextView
+                android:layout_marginTop="16dp"
+
+                android:layout_marginLeft="8dp"
+                android:textSize="12sp"
+                android:textColor="@color/black"            android:fontFamily="monospace"
+
+                android:text="  Thiago Wallass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
 
     </LinearLayout>
 

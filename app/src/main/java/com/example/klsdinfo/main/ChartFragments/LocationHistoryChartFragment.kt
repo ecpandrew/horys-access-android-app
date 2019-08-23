@@ -1,5 +1,6 @@
 package com.example.klsdinfo.main.ChartFragments
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
@@ -12,9 +13,13 @@ import com.example.klsdinfo.R
 import com.example.klsdinfo.data.models.Table4Aux
 import com.example.klsdinfo.data.models.TableFiveResource
 import com.github.mikephil.charting.charts.HorizontalBarChart
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import kotlinx.android.synthetic.main.main_home_layout.*
 
 
@@ -22,7 +27,7 @@ class LocationHistoryChartFragment : DialogFragment() {
 
     val TAG: String = "FullScreenDialog"
     lateinit var tool: Toolbar
-    lateinit var chart1: HorizontalBarChart
+    lateinit var chart: HorizontalBarChart
 
     override fun getTheme(): Int {
         return R.style.FullScreenDialogStyle
@@ -40,7 +45,7 @@ class LocationHistoryChartFragment : DialogFragment() {
         tool = view.findViewById(R.id.toolbar)
 
 
-        chart1 = view.findViewById(R.id.chart1)
+        chart = view.findViewById(R.id.chart1)
 
 
 
@@ -113,7 +118,6 @@ class LocationHistoryChartFragment : DialogFragment() {
         }
         Log.i("debug", array.toString())
         // Todo()
-
         setData(array)
     }
 
@@ -140,34 +144,7 @@ class LocationHistoryChartFragment : DialogFragment() {
 
         Log.i("debug", durationMap.toString())
 
-
-
-
-
-        // primeiro converta o map para uma lista, como vc não precisa dos rotulos deve haver algum metodo do Map chamado .values
-        // que retorna uma lista com os valores, então dai vc só precisa iterar sobre essa lista de valores
-        // e adicionar cada valor em uma BarEntry
-        // vc pode fazer essa conversão aqui ou dentro do metodo setChildData
-
-
-        // Chame o Metodo setChildData passando o map ou a lista de valores
-
-
-
-        // Todo()
-
-        // Kotlin -> declaração de variavel ->     var ou val
-        //                                         var numero : <Tipo da variavel> = 10
-
-        // Kotlin -> get e set -> aqui não precisamos de getter e setter os metodos já trazem implementado
-
-        val string: String = "Ola"
-
-        // veja o getLength por exemplo, usamos o .lenght tanto para o get quanto para o set
-        string.length
-//      string.length = 2   O lenght não possui setter mas seria algo assim se fosse um metodo que permitisse
-
-
+        setChildData(durationMap)
 
     }
 
@@ -179,7 +156,46 @@ class LocationHistoryChartFragment : DialogFragment() {
     }
 
 
-    private fun setData(data: MutableList<Table4Aux>) {
+    private fun setData(map: MutableList<Table4Aux>) {
+
+
+
+        chart.setDrawBarShadow(false)
+        chart.setDrawValueAboveBar(true)
+        chart.description.isEnabled = false
+        chart.setMaxVisibleValueCount(60)
+        chart.setPinchZoom(false)
+        chart.setDrawGridBackground(false)
+        val xl = chart.xAxis
+        val array = arrayListOf<String>()
+        for(i in map){ array.add(i.name)}
+        chart.xAxis.valueFormatter = IndexAxisValueFormatter(array)
+        xl.position = XAxis.XAxisPosition.BOTTOM // caso fique estranho mudar para .BOTTOM
+        xl.typeface = Typeface.SERIF
+        xl.setDrawAxisLine(true)
+        xl.setDrawGridLines(true)
+        xl.granularity = 1f
+        val yl = chart.axisLeft
+        yl.typeface = Typeface.SERIF
+        yl.setDrawAxisLine(true)
+        yl.setDrawGridLines(true)
+        yl.axisMinimum = 0f // this replaces setStartAtZero(true)
+        val yr = chart.axisRight
+        yr.typeface = Typeface.SERIF
+        yr.setDrawAxisLine(true)
+        yr.setDrawGridLines(true)
+        yr.axisMinimum = 0f // this replaces setStartAtZero(true)
+        chart.setFitBars(true)
+        chart.animateY(1000)
+        val l = chart.legend
+        l.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+        l.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
+        l.orientation = Legend.LegendOrientation.HORIZONTAL
+        l.setDrawInside(true)
+        l.formSize = 8f
+        l.xEntrySpace = 4f
+        chart.setDrawValueAboveBar(false)
+        chart.legend.isEnabled = false
 
 
 
@@ -190,82 +206,230 @@ class LocationHistoryChartFragment : DialogFragment() {
 
 
 
+        val barWidth = .9f
+        val spaceForBar = 1f
+        val values = arrayListOf<BarEntry>()
 
+        for (i in 0 until map.toList().size){
 
-        val yVals = arrayListOf<BarEntry>()
+            values.add(
+                BarEntry(
+                    i*spaceForBar , map.toList()[i].duration.toFloat())
 
-        val barWidth = 9f
-        val spaceForBar = 10f
+            )
 
-        for (i in 0 until data.size) {
-
-            yVals.add(BarEntry(i * spaceForBar, data[i].duration.toFloat()))
         }
 
-        val set: BarDataSet
+        val set1: BarDataSet
 
-        set = BarDataSet(yVals, "Data Set")
+        if (chart.data != null && chart.data.dataSetCount > 0) {
+            set1 = chart.data.getDataSetByIndex(0) as BarDataSet
+            set1.values = values
+            chart.data.notifyDataChanged()
+            chart.notifyDataSetChanged()
+        } else {
 
-        val data = BarData(set)
+            set1 = BarDataSet(values, "")
+
+            set1.setDrawIcons(false)
+
+            val dataSets = arrayListOf<IBarDataSet>()
+            dataSets.add(set1)
+
+            val data = BarData(dataSets)
+            data.setValueTextSize(10f)
+            data.setValueTypeface(Typeface.SERIF)
+            data.barWidth = .4f
+//            chart.xAxis.valueFormatter = LabelValueFormatter(data)//IndexAxisValueFormatter(array)//obj//
 
 
+            chart.data = data
+        }
 
-
-
-
-
-
-
-        chart1.data = data
+//        val yVals = arrayListOf<BarEntry>()
+//
+//        val barWidth = 9f
+//        val spaceForBar = 10f
+//
+//        for (i in 0 until data.size) {
+//
+//            yVals.add(BarEntry(i * spaceForBar, data[i].duration.toFloat()))
+//        }
+//
+//        val set: BarDataSet
+//
+//        set = BarDataSet(yVals, "Data Set")
+//
+//        val data = BarData(set)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//        chart.data = data
 
     }
 
 
-    private fun setChildData(data: Map<String, Long>) {
+    private fun setChildData(map: Map<String, Long>) {
+        val title: String? = arguments?.getString("person")
+        tool.title = "$title's chart"
+
+
+        chart.setDrawBarShadow(false)
+        chart.setDrawValueAboveBar(true)
+        chart.description.isEnabled = false
+        chart.setMaxVisibleValueCount(60)
+        chart.setPinchZoom(false)
+        chart.setDrawGridBackground(false)
+        val xl = chart.xAxis
+        val array = arrayListOf<String>()
+        for(i in map.keys){ array.add(i)}
+        chart.xAxis.valueFormatter = IndexAxisValueFormatter(array)
+        xl.position = XAxis.XAxisPosition.BOTTOM // caso fique estranho mudar para .BOTTOM
+        xl.typeface = Typeface.SERIF
+        xl.setDrawAxisLine(true)
+        xl.setDrawGridLines(true)
+        xl.granularity = 1f
+        val yl = chart.axisLeft
+        yl.typeface = Typeface.SERIF
+        yl.setDrawAxisLine(true)
+        yl.setDrawGridLines(true)
+        yl.axisMinimum = 0f // this replaces setStartAtZero(true)
+        val yr = chart.axisRight
+        yr.typeface = Typeface.SERIF
+        yr.setDrawAxisLine(true)
+        yr.setDrawGridLines(true)
+        yr.axisMinimum = 0f // this replaces setStartAtZero(true)
+        chart.setFitBars(true)
+        chart.animateY(1000)
+        val l = chart.legend
+        l.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+        l.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
+        l.orientation = Legend.LegendOrientation.HORIZONTAL
+        l.setDrawInside(true)
+        l.formSize = 8f
+        l.xEntrySpace = 4f
+        chart.setDrawValueAboveBar(false)
+        chart.legend.isEnabled = false
 
 
 
 
 
+        val barWidth = .9f
+        val spaceForBar = 1f
+        val values = arrayListOf<BarEntry>()
+
+        for (i in 0 until map.toList().size){
+
+            values.add(
+                BarEntry(
+                    i*spaceForBar , map.toList()[i].second.toFloat())
+
+            )
+
+        }
+
+        val set1: BarDataSet
+
+        if (chart.data != null && chart.data.dataSetCount > 0) {
+            set1 = chart.data.getDataSetByIndex(0) as BarDataSet
+            set1.values = values
+            chart.data.notifyDataChanged()
+            chart.notifyDataSetChanged()
+        } else {
+
+            set1 = BarDataSet(values, "")
+
+            set1.setDrawIcons(false)
+
+            val dataSets = arrayListOf<IBarDataSet>()
+            dataSets.add(set1)
+
+            val data = BarData(dataSets)
+            data.setValueTextSize(10f)
+            data.setValueTypeface(Typeface.SERIF)
+            data.barWidth = .4f
+//            chart.xAxis.valueFormatter = LabelValueFormatter(data)//IndexAxisValueFormatter(array)//obj//
 
 
+            chart.data = data
+
+        }
 
 
-
-
-        val yVals = arrayListOf<BarEntry>()
-
-        val barWidth = 9f
-        val spaceForBar = 10f
-
-//        for (i in 0 until count) {
-//            val x = (Math.random() * range).toFloat()
-//            yVals.add(BarEntry(i * spaceForBar, x))
+//
+//        val yVals = arrayListOf<BarEntry>()
+//
+//        val barWidth = 9f
+//        val spaceForBar = 10f
+//        var count = 0f
+//
+//        for ((name, duration) in data) {
+//
+//
+//            yVals.add(BarEntry(count * spaceForBar, duration.toFloat()))
+//            count++
 //        }
-
-        val set: BarDataSet
-
-        set = BarDataSet(yVals, "Data Set")
-
-        val data = BarData(set)
-
-
-
-
-
+//
+//        val set: BarDataSet
+//
+//        set = BarDataSet(yVals, "Data Set")
+//
+//        val data = BarData(set)
+//
+//
+//        chart1.data = data
 
 
-
+    }
 
 
 
+    private fun setupChart() {
 
 
-
-
-
-
-        chart1.data = data
+        chart.setDrawBarShadow(false)
+        chart.setDrawValueAboveBar(true)
+        chart.description.isEnabled = false
+        chart.setMaxVisibleValueCount(60)
+        chart.setPinchZoom(false)
+        chart.setDrawGridBackground(false)
+        val xl = chart.xAxis
+        val array = arrayListOf<String>()
+//        for(i in map.keys){ array.add(i)}
+        chart.xAxis.valueFormatter = IndexAxisValueFormatter(array)
+        xl.position = XAxis.XAxisPosition.BOTTOM // caso fique estranho mudar para .BOTTOM
+        xl.typeface = Typeface.SERIF
+        xl.setDrawAxisLine(true)
+        xl.setDrawGridLines(true)
+        xl.granularity = 1f
+        val yl = chart.axisLeft
+        yl.typeface = Typeface.SERIF
+        yl.setDrawAxisLine(true)
+        yl.setDrawGridLines(true)
+        yl.axisMinimum = 0f // this replaces setStartAtZero(true)
+        val yr = chart.axisRight
+        yr.typeface = Typeface.SERIF
+        yr.setDrawAxisLine(true)
+        yr.setDrawGridLines(true)
+        yr.axisMinimum = 0f // this replaces setStartAtZero(true)
+        chart.setFitBars(true)
+        chart.animateY(1000)
+        val l = chart.legend
+        l.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+        l.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
+        l.orientation = Legend.LegendOrientation.HORIZONTAL
+        l.setDrawInside(true)
+        l.formSize = 8f
+        l.xEntrySpace = 4f
+        chart.setDrawValueAboveBar(false)
+        chart.legend.isEnabled = false
 
     }
 

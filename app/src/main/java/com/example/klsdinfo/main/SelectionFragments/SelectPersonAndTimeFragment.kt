@@ -89,6 +89,7 @@ class SelectPersonAndTimeFragment : Fragment(), DatePickerDialog.OnDateSetListen
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.select_person_history_layout, container, false)
 
+
         initComponents(view)
 
 
@@ -108,7 +109,6 @@ class SelectPersonAndTimeFragment : Fragment(), DatePickerDialog.OnDateSetListen
         val factory = ViewModelFactory(repo,null, activity?.application!!)
 
         viewModel = ViewModelProviders.of(this, factory).get(SelectPersonAndTimeViewModel::class.java)
-
 
         viewModel.loadingProgress.observe(viewLifecycleOwner, Observer{
 

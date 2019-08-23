@@ -55,7 +55,7 @@ class HomeViewModel(
             {
 
                 currentPosition.postValue(null)
-                TODO() //this might cause a bug
+//                TODO() //this might cause a bug
 
             })
 

@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
-
-
 <LinearLayout
         android:id="@+id/mainLayout"
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -128,151 +125,150 @@
 
 
 
-    <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/mtrl_card_spacing"
-            android:layout_marginTop="@dimen/mtrl_card_spacing"
-            android:layout_marginRight="@dimen/mtrl_card_spacing"
-            android:layout_marginBottom="8dp"
+    <!--<com.google.android.material.card.MaterialCardView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_marginLeft="@dimen/mtrl_card_spacing"-->
+            <!--android:layout_marginTop="@dimen/mtrl_card_spacing"-->
+            <!--android:layout_marginRight="@dimen/mtrl_card_spacing"-->
+            <!--android:layout_marginBottom="8dp"-->
+            <!--app:cardElevation="2dp"-->
+    <!--&gt;-->
 
-            app:cardElevation="2dp"
-    >
+        <!--<LinearLayout-->
+                <!--android:orientation="vertical"-->
+                <!--android:layout_width="match_parent" android:layout_height="wrap_content">-->
+            <!--<TextView-->
+                    <!--android:id="@+id/error"-->
+                    <!--android:gravity="top"-->
+                    <!--android:textSize="12sp"-->
+                    <!--android:text="***Error: connection problems or servers are down***"-->
+                    <!--android:textColor="@color/red_500"-->
+                    <!--android:layout_width="wrap_content" android:layout_height="wrap_content"-->
+            <!--/>-->
+            <!--<androidx.constraintlayout.utils.widget.MockView-->
+                    <!--android:layout_gravity="end"-->
+                    <!--android:layout_marginEnd="8dp"-->
+                    <!--android:layout_width="18dp"-->
+                    <!--android:layout_height="18dp"/>-->
 
-        <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent" android:layout_height="wrap_content">
-            <TextView
-                    android:id="@+id/error"
-                    android:gravity="top"
-                    android:textSize="12sp"
-                    android:text="***Error: connection problems or servers are down***"
-                    android:textColor="@color/red_500"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-            />
-            <androidx.constraintlayout.utils.widget.MockView
-                    android:layout_gravity="end"
-                    android:layout_marginEnd="8dp"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"/>
+            <!--<com.github.mikephil.charting.charts.HorizontalBarChart-->
+                    <!--android:id="@+id/chart1"-->
 
-            <com.github.mikephil.charting.charts.HorizontalBarChart
-                    android:id="@+id/chart1"
-
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp">
-
-
-
-            </com.github.mikephil.charting.charts.HorizontalBarChart>
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="200dp">-->
 
 
 
-            <RadioGroup
-                    android:id="@+id/radioGroup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:padding="5dp"
-                    android:orientation="horizontal"
+            <!--</com.github.mikephil.charting.charts.HorizontalBarChart>-->
 
-            >
 
-                <RadioButton
-                        android:id="@+id/radio0"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:button="@null"
-                        android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
-                        android:gravity="center_horizontal|bottom"
-                        android:text="1 day"
-                />
-                <RadioButton
-                        android:id="@+id/radio1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:button="@null"
-                        android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
-                        android:gravity="center_horizontal|bottom"
-                        android:text="3 days"
-                />
 
-                <RadioButton
-                        android:id="@+id/radio2"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:button="@null"
-                        android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
-                        android:gravity="center_horizontal|bottom"
-                        android:text="7 days"
-                />
+            <!--<RadioGroup-->
+                    <!--android:id="@+id/radioGroup"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="bottom"-->
+                    <!--android:padding="5dp"-->
+                    <!--android:orientation="horizontal"-->
 
-                <RadioButton
-                        android:id="@+id/radio3"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:button="@null"
-                        android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
-                        android:gravity="center_horizontal|bottom"
-                        android:text="30 days"
-                />
+            <!--&gt;-->
 
-            </RadioGroup>
+                <!--<RadioButton-->
+                        <!--android:id="@+id/radio0"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:button="@null"-->
+                        <!--android:drawableBottom="?android:attr/listChoiceIndicatorSingle"-->
+                        <!--android:gravity="center_horizontal|bottom"-->
+                        <!--android:text="1 day"-->
+                <!--/>-->
+                <!--<RadioButton-->
+                        <!--android:id="@+id/radio1"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:button="@null"-->
+                        <!--android:drawableBottom="?android:attr/listChoiceIndicatorSingle"-->
+                        <!--android:gravity="center_horizontal|bottom"-->
+                        <!--android:text="3 days"-->
+                <!--/>-->
 
-        </LinearLayout>
+                <!--<RadioButton-->
+                        <!--android:id="@+id/radio2"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:button="@null"-->
+                        <!--android:drawableBottom="?android:attr/listChoiceIndicatorSingle"-->
+                        <!--android:gravity="center_horizontal|bottom"-->
+                        <!--android:text="7 days"-->
+                <!--/>-->
 
+                <!--<RadioButton-->
+                        <!--android:id="@+id/radio3"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:button="@null"-->
+                        <!--android:drawableBottom="?android:attr/listChoiceIndicatorSingle"-->
+                        <!--android:gravity="center_horizontal|bottom"-->
+                        <!--android:text="30 days"-->
+                <!--/>-->
+
+            <!--</RadioGroup>-->
+
+        <!--</LinearLayout>-->
 
 
 
 
 
 
-    </com.google.android.material.card.MaterialCardView>
+
+    <!--</com.google.android.material.card.MaterialCardView>-->
 
 
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end">
+    <!--<LinearLayout-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="end">-->
 
-        <com.google.android.material.button.MaterialButton
-                android:text="Chart 1"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                app:backgroundTint="@color/yellow_mustard"
-                app:cornerRadius="3dp"
-                android:visibility="gone"
+        <!--<com.google.android.material.button.MaterialButton-->
+                <!--android:text="Chart 1"-->
+                <!--style="@style/Widget.AppCompat.Button.Borderless"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="15sp"-->
+                <!--app:backgroundTint="@color/yellow_mustard"-->
+                <!--app:cornerRadius="3dp"-->
+                <!--android:visibility="gone"-->
 
-                android:layout_gravity="center"
-                android:layout_margin="16dp"
-
-
-        />
-        <com.google.android.material.button.MaterialButton
-                android:text="Chart 2"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorWhite"
-                android:textSize="15sp"
-                app:backgroundTint="@color/purple"
-                app:cornerRadius="3dp"
-                android:visibility="gone"
-                android:layout_gravity="center"
-                android:layout_margin="16dp"
-
-                />
+                <!--android:layout_gravity="center"-->
+                <!--android:layout_margin="16dp"-->
 
 
-    </LinearLayout>
+        <!--/>-->
+        <!--<com.google.android.material.button.MaterialButton-->
+                <!--android:text="Chart 2"-->
+                <!--style="@style/Widget.AppCompat.Button.Borderless"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textColor="@color/colorWhite"-->
+                <!--android:textSize="15sp"-->
+                <!--app:backgroundTint="@color/purple"-->
+                <!--app:cornerRadius="3dp"-->
+                <!--android:visibility="gone"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:layout_margin="16dp"-->
+
+                <!--/>-->
+
+
+    <!--</LinearLayout>-->
 
 
 

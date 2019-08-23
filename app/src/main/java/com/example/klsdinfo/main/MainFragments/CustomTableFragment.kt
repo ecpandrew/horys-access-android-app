@@ -426,10 +426,10 @@ class CustomTableFragment : DialogFragment() {
         val mRowHeaderList: MutableList<RowHeader> = mutableListOf()
         val mColumnHeaderList: MutableList<ColumnHeader> = mutableListOf()
         mColumnHeaderList.add(ColumnHeader("0", "Physical Space"))
-        mColumnHeaderList.add(ColumnHeader("1", "Nº of rendezvous"))
-        mColumnHeaderList.add(ColumnHeader("2", "Total Duration (h)"))
-        mColumnHeaderList.add(ColumnHeader("3", "Total Duration (min)"))
-        mColumnHeaderList.add(ColumnHeader("4", "Total Duration (s)"))
+//        mColumnHeaderList.add(ColumnHeader("1", "Nº of rendezvous"))
+        mColumnHeaderList.add(ColumnHeader("1", "Total Duration (h)"))
+        mColumnHeaderList.add(ColumnHeader("2", "Total Duration (min)"))
+        mColumnHeaderList.add(ColumnHeader("3", "Total Duration (s)"))
 
 
         val countMap: MutableMap<String, Long> = mutableMapOf()
@@ -458,7 +458,7 @@ class CustomTableFragment : DialogFragment() {
             mRowHeaderList.add(RowHeader(id.toString(), id.toString()))
             val cell: MutableList<Cell> = mutableListOf()
             cell.add(Cell(id.toString(), element.key))
-            cell.add(Cell(id.toString(), countMap[element.key]))
+//            cell.add(Cell(id.toString(), countMap[element.key]))
             cell.add(Cell(id.toString(), element.value / 3600))
             cell.add(Cell(id.toString(), element.value / 60))
             cell.add(Cell(id.toString(), element.value))

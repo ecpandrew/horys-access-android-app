@@ -49,7 +49,8 @@ class HomeFragment : Fragment(){
     lateinit var radioGroup: RadioGroup
     lateinit var mView: View
     lateinit var chart : HorizontalBarChart
-
+    lateinit var listView : ListView
+    lateinit var adapter : ArrayAdapter<String>
 
 
 
@@ -61,7 +62,7 @@ class HomeFragment : Fragment(){
 
         }else{
 //            viewModel.fetchUserForChart()
-//            viewModel.fetchUserForCurrentPosition()
+            viewModel.fetchUserForCurrentPosition()
         }
 
         print("onStart")
@@ -80,17 +81,18 @@ class HomeFragment : Fragment(){
 //        radioGroup= mView.findViewById(R.id.radioGroup)
         refresh = mView.findViewById(R.id.btn_refresh_position)
 
-        mView.visibility = View.GONE
+        listView = mView.findViewById(R.id.list_view)
 
-//        setupUser()
 
-//        setupViewModel()
+        setupUser()
+
+        setupViewModel()
 
 //        setupRadioCheckChangeListener()
 
-//        refresh.setOnClickListener {
-//            viewModel.fetchUserForCurrentPosition()
-//        }
+        refresh.setOnClickListener {
+            viewModel.fetchUserForCurrentPosition()
+        }
 
 
 
@@ -116,168 +118,9 @@ class HomeFragment : Fragment(){
 
     }
 
-//    private fun setupChart(map: Map<String,Long>) {
-//
-//        chart = mView.findViewById(R.id.chart1)
-//
-//        chart.setDrawBarShadow(false)
-//
-//        chart.setDrawValueAboveBar(true)
-//
-//        chart.description.isEnabled = false
-//
-//        // if more than 60 entries are displayed in the chart, no values will be
-//        // drawn
-//        chart.setMaxVisibleValueCount(60)
-//
-//        // scaling can now only be done on x- and y-axis separately
-//        chart.setPinchZoom(false)
-//
-//
-//        // draw shadows for each bar that show the maximum value
-//        // chart.setDrawBarShadow(true);
-//        chart.setDrawGridBackground(false)
-//
-//
-//        val xl = chart.xAxis
-//
-//        val array = arrayListOf<String>()
-//
-//        for(i in map.keys){ array.add(i)}
-//
-//        chart.xAxis.valueFormatter = IndexAxisValueFormatter(array)
-//
-//        xl.position = XAxis.XAxisPosition.BOTTOM // caso fique estranho mudar para .BOTTOM
-//        xl.typeface = Typeface.SERIF
-//        xl.setDrawAxisLine(true)
-//        xl.setDrawGridLines(true)
-//        xl.granularity = 1f
-//
-//
-//        val yl = chart.axisLeft
-//        yl.typeface = Typeface.SERIF
-//        yl.setDrawAxisLine(true)
-//        yl.setDrawGridLines(true)
-//        yl.axisMinimum = 0f // this replaces setStartAtZero(true)
-//
-//
-//        val yr = chart.axisRight
-//        yr.typeface = Typeface.SERIF
-//        yr.setDrawAxisLine(true)
-//        yr.setDrawGridLines(true)
-//        yr.axisMinimum = 0f // this replaces setStartAtZero(true)
-//
-//
-//        chart.setFitBars(true)
-//        chart.animateY(1000)
-//
-//
-//        val l = chart.legend
-//        l.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
-//        l.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
-//        l.orientation = Legend.LegendOrientation.HORIZONTAL
-//        l.setDrawInside(true)
-//        l.formSize = 8f
-//        l.xEntrySpace = 4f
-//
-//
-//        chart.setDrawValueAboveBar(false)
-//        chart.legend.isEnabled = false
-//
-//
-//        setData(map)
-//    }
 
 
-    private fun setData(map: Map<String,Long>) {
 
-        val barWidth = .9f
-        val spaceForBar = 1f
-        val values = arrayListOf<BarEntry>()
-
-        for (i in 0 until map.toList().size){
-
-            values.add(
-                BarEntry(
-                    i*spaceForBar , map.toList()[i].second.toFloat())
-
-            )
-
-        }
-
-        val set1: BarDataSet
-
-        if (chart.data != null && chart.data.dataSetCount > 0) {
-            set1 = chart.data.getDataSetByIndex(0) as BarDataSet
-            set1.values = values
-            chart.data.notifyDataChanged()
-            chart.notifyDataSetChanged()
-        } else {
-
-            set1 = BarDataSet(values, "")
-
-            set1.setDrawIcons(false)
-
-            val dataSets = arrayListOf<IBarDataSet>()
-            dataSets.add(set1)
-
-            val data = BarData(dataSets)
-            data.setValueTextSize(10f)
-            data.setValueTypeface(Typeface.SERIF)
-            data.barWidth = .8f
-//            chart.xAxis.valueFormatter = LabelValueFormatter(data)//IndexAxisValueFormatter(array)//obj//
-
-
-            chart.data = data
-
-        }
-
-    }
-
-//    private fun setupRadioCheckChangeListener() {
-//        radioGroup.setOnCheckedChangeListener { radioGroup, id ->
-//
-//            viewModel.error.postValue(Pair(100,"Fetching: user"))
-//            when(id){
-//                R.id.radio0 -> {
-//                    setTimeInterval(86400)
-//                    viewModel.setDates(unixTime.toString(),unixTimePast.toString())
-//                    Log.e("debugtime", unixTime.toString())
-//                    Log.e("debugtime", unixTimePast.toString())
-//                    viewModel.fetchUserForChart()
-//                }
-//                R.id.radio1 -> {
-//                    setTimeInterval(259200)
-//                    Log.e("debugtime", unixTime.toString())
-//                    Log.e("debugtime", unixTimePast.toString())
-//                    viewModel.setDates(unixTime.toString(),unixTimePast.toString())
-//                    viewModel.fetchUserForChart()
-//
-//                }
-//                R.id.radio2 -> {
-//                    setTimeInterval(604800)
-//                    Log.e("debugtime", unixTime.toString())
-//                    Log.e("debugtime", unixTimePast.toString())
-//                    viewModel.setDates(unixTime.toString(),unixTimePast.toString())
-//                    viewModel.fetchUserForChart()
-//
-//
-//                }
-//                R.id.radio3 -> {
-//                    setTimeInterval(2592000)
-//                    Log.e("debugtime", unixTime.toString())
-//                    Log.e("debugtime", unixTimePast.toString())
-//                    viewModel.setDates(unixTime.toString(),unixTimePast.toString())
-//                    viewModel.fetchUserForChart()
-//
-//                }
-//            }
-//
-//        }
-//        radioGroup.check(R.id.radio0)
-//
-////        setTimeInterval(86400)
-//    }
 
 
     private fun setupViewModel() {
@@ -291,105 +134,19 @@ class HomeFragment : Fragment(){
 
 
 
-//        viewModel.error.observe(viewLifecycleOwner, Observer {
-//            val code = it.first
-//
-//            when(code){
-//
-//
-//                100 -> {
-//                    errorTv.text = it.second
-//                    errorTv.setTextColor(resources.getColor(colorPrimary))
-//
-//                }
-//
-//                101 -> {
-//                    errorTv.text = it.second
-//                    errorTv.setTextColor(resources.getColor(colorPrimary))
-//
-//                }
-//
-//
-//                210 -> {
-//                    errorTv.text = it.second
-//                    errorTv.setTextColor(resources.getColor(green))
-//
-//                }
-//
-//
-//                200 ->{
-//                    errorTv.text = it.second
-//                    errorTv.setTextColor(resources.getColor(green))
-//                }
-//
-//
-//
-//
-//
-//                504 ->{
-//                    errorTv.text = it.second
-//                    errorTv.setTextColor(resources.getColor(red_500))
-//                }
-//
-//
-//                503 ->{
-//                    errorTv.text = it.second
-//                    errorTv.setTextColor(resources.getColor(red_500))
-//                }
-//
-//
-//                505 -> {
-//                    errorTv.text = it.second
-//                    errorTv.setTextColor(resources.getColor(red_500))
-//                }
-//
-//            }
-//
-//        })
 
 
 
-
-
-        viewModel.currentPosition.observe(viewLifecycleOwner, Observer {
-            if(!it.isNullOrEmpty()){
-
-                var d: String = ""
-                var b: String = ""
-                for (i in it){
-                    b += "${i.physical_space}, "
-                    d += "${i.duration}, "
-                }
-
-                beacons.text = b.removeSuffix(",")
-                duration.text = d.removeSuffix(",")
-
-
-            }else{
-                beacons.text = "no beacon"
-                duration.text = "--"
-            }
-        })
-
-
-//        viewModel.chartData.observe(viewLifecycleOwner, Observer {
-//
-//
-//            if(it.isNullOrEmpty()){
-//                // TODO()
-//
-////                setupChart(mapOf())
-//
-//
+//        viewModel.listData.observe(viewLifecycleOwner, Observer {
+//            if(!it.isNullOrEmpty()){
+//                adapter = ArrayAdapter(context!!, R.layout.list_item_name, it)
+//                listView.adapter = adapter
+//                adapter.notifyDataSetChanged()
 //            }else{
-//
-//                setupChart(it)
-//                //Todo()
 //            }
-//
-//
-//
 //        })
+
+
     }
 
 

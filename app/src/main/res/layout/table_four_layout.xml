@@ -25,6 +25,8 @@
             android:layout_height="wrap_content"
             app:cardElevation="2dp"
             card_view:cardCornerRadius="8dp"
+            android:visibility="invisible"
+
             app:strokeColor="@color/colorPrimary"
             app:strokeWidth="1dp"
             app:layout_constraintStart_toStartOf="parent"

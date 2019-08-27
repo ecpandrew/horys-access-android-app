@@ -24,12 +24,11 @@ class RealFragment : Fragment(){
         }
     }
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         print("onCreateView")
         val view: View = inflater.inflate(R.layout.main_real_time_layout, container, false)
         initComponents(view)
-
-
         return view
     }
 
@@ -60,8 +59,11 @@ class RealFragment : Fragment(){
     private fun initComponents(view: View) {
 
         recyclerView = view.findViewById(R.id.realTimeRecyclerView)
+
         recyclerView.layoutManager = GridLayoutManager(context,1)
+
         recyclerView.setHasFixedSize(true)
+
         addItems()
         methodsAdapter = RMethodsAdapter(context!!, items)
         recyclerView.adapter = methodsAdapter

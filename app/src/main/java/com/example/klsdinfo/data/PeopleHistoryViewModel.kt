@@ -52,7 +52,7 @@ class PeopleHistoryViewModel(
 
         }, {
             Log.i("retrofit", "fetch failure")
-            listResource.postValue(listOf())
+//            listResource.postValue(listOf())
             loadingProgress.postValue(false)
 
 
@@ -82,12 +82,5 @@ class PeopleHistoryViewModel(
     }
 
 
-    private fun getIds():String{
-        var id = ""
-//        for (element in mPeople.value!!.iterator()){
-//            id+="${element.holder.id}/"
-//        }
-        return id
-    }
 
 }

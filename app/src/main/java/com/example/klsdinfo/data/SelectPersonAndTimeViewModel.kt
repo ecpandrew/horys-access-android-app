@@ -26,7 +26,6 @@ class SelectPersonAndTimeViewModel(
             Log.e("debug", it.toString())
 
         }, {
-            mPeople.postValue(listOf())
             loadingProgress.postValue(false)
 
         })

@@ -64,7 +64,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val user : FirebaseUser? = FirebaseAuth.getInstance().currentUser
 
         if(user == null){
+
             FirebaseAuth.getInstance().signOut()
+
             startActivity(LoginActivity.getLaunchIntent(this))
             finish()
 
@@ -77,9 +79,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     AppDatabase.destroyInstance()
                 }
 
+
                 if(user.email!!.isLsdiEmail()){//user.email!!.isLsdiEmail()){ //descomente essa linha para permitir apenas email LSDI
 
                     MY_EMAIL = user.email!!
+
                     setupAll(user)
 
                     if (savedInstanceState == null) {
@@ -187,6 +191,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
+
     override fun onBackPressed() {
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         if (drawerLayout.isDrawerOpen(START)) {
@@ -196,11 +201,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
@@ -282,6 +289,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         transaction.replace(R.id.fragment_container, fragToGo)
 
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+
         if(addToBackStack){
             transaction.addToBackStack(null) // Todo: verificar o ciclo de vida dos fragmentos
         }
@@ -384,6 +392,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             )
         }
     }
+
+
 
     private fun actionOnService(action: Actions) {
 

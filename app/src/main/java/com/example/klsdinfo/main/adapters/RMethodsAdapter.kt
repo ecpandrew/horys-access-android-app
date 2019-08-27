@@ -42,6 +42,7 @@ class RMethodsAdapter(
         holder.nameTV.text = method.name
         holder.descTV.text = method.description
 
+
         holder.cardView.setOnClickListener {
             when(position){
                 0 -> {

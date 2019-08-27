@@ -18,7 +18,9 @@ class PhysicalSpaceAdapter(
     RecyclerView.Adapter<PhysicalSpaceAdapter.SelectViewHolder>() {
 
     private var current_selected_idx = -1
+
     private var onClickLister: OnClickListener? = null
+
 //    private var onCheckBoxClickListener: OnClickListener? = null
 
 

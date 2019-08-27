@@ -41,7 +41,6 @@ class SelectLocationAndTimeFragment: Fragment() , DatePickerDialog.OnDateSetList
     lateinit var pilha: Stack<List<PhysicalSpace>>
     lateinit var back: MaterialButton
     lateinit var get: MaterialButton
-    lateinit var progress: AlertDialog.Builder
     lateinit var progressBar: ProgressBar
 
     lateinit var alertDialog: AlertDialog

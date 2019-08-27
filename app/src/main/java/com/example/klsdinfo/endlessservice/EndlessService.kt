@@ -165,7 +165,7 @@ class EndlessService : Service() {
     }
 
     private fun getMyUUID(email: String) {
-
+        println(email)
         val call = semanticAPI.getUserDevices(email)
 
         call.enqueue(object : Callback<List<Device>>{

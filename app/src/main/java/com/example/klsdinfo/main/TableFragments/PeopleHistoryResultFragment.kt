@@ -40,11 +40,7 @@ class PeopleHistoryResultFragment : Fragment(), LifecycleOwner {
     val TAG: String = "FullScreenDialog"
     lateinit var map : MutableMap<String, Long>
     lateinit var id: String
-    lateinit var url: String
-    lateinit var linear: LinearLayout
-    lateinit var parentLinear: LinearLayout
-    private lateinit var queue: RequestQueue
-    lateinit var progress: AlertDialog.Builder
+//    lateinit var progress: AlertDialog.Builder
     lateinit var progressBar: ProgressBar
 
     lateinit var alertDialog: AlertDialog
@@ -89,12 +85,12 @@ class PeopleHistoryResultFragment : Fragment(), LifecycleOwner {
             mAdapter.notifyDataSetChanged()
         })
 
-//        viewModel.getProgress().observe(viewLifecycleOwner, Observer {
-//            when(it){
-//                true -> progressBar.visibility = View.VISIBLE
-//                false -> progressBar.visibility = View.GONE
-//            }
-//        })
+        viewModel.getProgress().observe(viewLifecycleOwner, Observer {
+            when(it){
+                true -> progressBar.visibility = View.VISIBLE
+                false -> progressBar.visibility = View.GONE
+            }
+        })
     }
 
     private fun createViewModel() {
@@ -135,94 +131,93 @@ class PeopleHistoryResultFragment : Fragment(), LifecycleOwner {
 
     ) {
 
-        val durMap : MutableMap<String,Long> = mutableMapOf()
-        val durList: MutableList<Table4Aux> = mutableListOf()
-        var totalTimeElapsed : Long = 0
 
-        for(element in lista){
-            val dur = element.getDuration()
-            val name = element.shortName
-            totalTimeElapsed+= dur
+        if(lista.isNullOrEmpty()){
+//            noResults.visibility = View.VISIBLE
+        }else{
 
-            if(!durMap.containsKey(name)){
-                durMap[name] = dur
+            val durMap : MutableMap<String,Long> = mutableMapOf()
+            val durList: MutableList<Table4Aux> = mutableListOf()
+            var totalTimeElapsed : Long = 0
+
+            for(element in lista){
+                val dur = element.getDuration()
+                val name = element.shortName
+                totalTimeElapsed+= dur
+
+                if(!durMap.containsKey(name)){
+                    durMap[name] = dur
+                }
+                else{
+                    val temp = durMap[name] ?: 0
+                    durMap[name] = temp + dur
+                }
             }
-            else{
-                val temp = durMap[name] ?: 0
-                durMap[name] = temp + dur
+
+
+
+            for(element in durMap){
+                durList.add(Table4Aux(element.key, 0, element.value))
             }
+
+
+
+            val card: CardView = view!!.findViewById(R.id.tableFourCardView)
+
+
+            (card.findViewById(R.id.btn_detail) as Button).setOnClickListener {
+                // Todo: details
+                val bundle = Bundle()
+                var ref ="detail4"
+
+                bundle.putString("ref", ref)
+                bundle.putParcelableArrayList("resources", durList as ArrayList<out Parcelable>) // ??
+                val dialog = CustomTableFragment()
+                dialog.arguments = bundle
+                val activity: AppCompatActivity = context as AppCompatActivity // ??
+                val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+                dialog.show(transaction, "FullScreenDialog")
+
+            }
+
+            (card.findViewById(R.id.btn_chart) as Button).setOnClickListener {
+                // Todo: details
+                val bundle = Bundle()
+                var ref ="main_chart"
+                bundle.putString("ref", ref)
+                bundle.putParcelableArrayList("resources", durList as ArrayList<out Parcelable>) // ??
+                val dialog = PeopleHistoryChartFragment()
+                dialog.arguments = bundle
+                val activity: AppCompatActivity = context as AppCompatActivity // ??
+                val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+                dialog.show(transaction, "FullScreenDialog")
+            }
+
+
+            (card.findViewById(R.id.btn_log) as Button).setOnClickListener {
+
+                val bundle = Bundle()
+                var ref ="log4"
+                bundle.putString("ref", ref)
+                bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
+                val dialog = CustomTableFragment()
+                dialog.arguments = bundle
+                val activity: AppCompatActivity = context as AppCompatActivity // ??
+                val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+                dialog.show(transaction, "FullScreenDialog")
+
+            }
+
+
+
+
+            (card.findViewById(R.id.nameTV4) as TextView).text = ("Person History")
+    //        (card.findViewById(R.id.descriptionTV4) as TextView).text = ("People Found: ${durMap.size}")
+    //        (card.findViewById(R.id.nplacesTV4) as TextView).text = ("Physical Spaces Found: ${childAux.size}")
+            (card.findViewById(R.id.durationTV4) as TextView).text = ("Total Time Elapsed: ${totalTimeElapsed/60} min")
+            card.visibility = View.VISIBLE
         }
-
-
-
-        for(element in durMap){
-            durList.add(Table4Aux(element.key, 0, element.value))
-        }
-
-
-
-        val card: CardView = view!!.findViewById(R.id.tableFourCardView)
-
-
-        (card.findViewById(R.id.btn_detail) as Button).setOnClickListener {
-            // Todo: details
-            val bundle = Bundle()
-            var ref ="detail4"
-
-            bundle.putString("ref", ref)
-            bundle.putParcelableArrayList("resources", durList as ArrayList<out Parcelable>) // ??
-            val dialog = CustomTableFragment()
-            dialog.arguments = bundle
-            val activity: AppCompatActivity = context as AppCompatActivity // ??
-            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-            dialog.show(transaction, "FullScreenDialog")
-
-        }
-
-        (card.findViewById(R.id.btn_chart) as Button).setOnClickListener {
-            // Todo: details
-            val bundle = Bundle()
-            var ref ="main_chart"
-            bundle.putString("ref", ref)
-            bundle.putParcelableArrayList("resources", durList as ArrayList<out Parcelable>) // ??
-            val dialog = PeopleHistoryChartFragment()
-            dialog.arguments = bundle
-            val activity: AppCompatActivity = context as AppCompatActivity // ??
-            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-            dialog.show(transaction, "FullScreenDialog")
-        }
-
-
-        (card.findViewById(R.id.btn_log) as Button).setOnClickListener {
-
-            val bundle = Bundle()
-            var ref ="log4"
-            bundle.putString("ref", ref)
-            bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
-            val dialog = CustomTableFragment()
-            dialog.arguments = bundle
-            val activity: AppCompatActivity = context as AppCompatActivity // ??
-            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-            dialog.show(transaction, "FullScreenDialog")
-
-        }
-
-
-
-
-        (card.findViewById(R.id.nameTV4) as TextView).text = ("Person History")
-//        (card.findViewById(R.id.descriptionTV4) as TextView).text = ("People Found: ${durMap.size}")
-//        (card.findViewById(R.id.nplacesTV4) as TextView).text = ("Physical Spaces Found: ${childAux.size}")
-        (card.findViewById(R.id.durationTV4) as TextView).text = ("Total Time Elapsed: ${totalTimeElapsed/60} min")
-        card.visibility = View.VISIBLE
-
     }
-
-
-
-
-
-
 
 
 }

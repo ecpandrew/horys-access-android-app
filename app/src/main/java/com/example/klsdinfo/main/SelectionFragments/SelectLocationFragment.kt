@@ -39,7 +39,6 @@ class SelectLocationFragment: Fragment() {
     lateinit var layoutManager: LinearLayoutManager
     lateinit var viewModel : SelectLocationViewModel
     lateinit var progress: AlertDialog.Builder
-    lateinit var alertDialog: AlertDialog
     lateinit var progressBar: ProgressBar
 
 
@@ -83,18 +82,19 @@ class SelectLocationFragment: Fragment() {
 
 
         get.setOnClickListener {
-//            alertDialog.show()
             AsyncTask.execute {
                 AppDatabase.getInstance(context!!)?.groupDao()?.insert(GroupQuery(0,getIds(),null,null))
                 AppDatabase.destroyInstance()
                 navigateToFragment(CheckPhysicalSpacesFragment(),true)
-//                alertDialog.dismiss()
             }
         }
 
 
 
+
+
         val obj = object: PhysicalSpaceAdapter.OnClickListener {
+
             override fun onItemLongClick(view: View, obj: PhysicalSpace, pos: Int) {}
             override fun onCheckBoxClick(view: View, obj: PhysicalSpace, pos: Int) { mAdapter.toggleSelection(pos) }
             override fun onItemClick(view: View, obj: PhysicalSpace, pos: Int) {
@@ -113,6 +113,7 @@ class SelectLocationFragment: Fragment() {
             }
         }
         mAdapter.setOnClickListener(obj)
+
         validateBackParentButton(false)
 
 
@@ -131,8 +132,10 @@ class SelectLocationFragment: Fragment() {
     }
 
     private fun setupViewModel(){
+
         val repo = SemanticRepository.getInstance(SemanticApiService.create(), AppDatabase.getInstance(activity?.applicationContext!!)!!)
         val factory = ViewModelFactory(repo, null,activity?.application!!)
+
         viewModel = ViewModelProviders.of(this, factory).get(SelectLocationViewModel::class.java)
 
         viewModel.loadingProgress.observe(this, androidx.lifecycle.Observer {
@@ -142,14 +145,16 @@ class SelectLocationFragment: Fragment() {
             }
         })
 
+
         viewModel.mPhysicalSpaces.observe(this, androidx.lifecycle.Observer {
+
+
             listPhysicalSpaces = it
             mAdapter.setItems(it)
             pilha.push(it)
             mAdapter.notifyDataSetChanged()
 
         })
-
 
     }
 

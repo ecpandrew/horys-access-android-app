@@ -33,11 +33,8 @@ class LocationHistoryResultFragment : Fragment(), LifecycleOwner {
 
     private lateinit var dateStr: String
     private lateinit var dateStr2: String
-    val TAG: String = "FullScreenDialog"
     lateinit var map : MutableMap<String, Long>
     lateinit var id: String
-    lateinit var url: String
-    private lateinit var queue: RequestQueue
     lateinit var progress: AlertDialog.Builder
     lateinit var alertDialog: AlertDialog
     lateinit var recyclerView: RecyclerView
@@ -125,138 +122,147 @@ class LocationHistoryResultFragment : Fragment(), LifecycleOwner {
         lista: List<TableFiveResource>
     ) {
 
-        val map: MutableMap<String, Long> = mutableMapOf()
-        val childMap: MutableMap<String, MutableList<TableFiveResource>> = mutableMapOf()
-        val childAux: MutableMap<String, MutableMap<String, Long>> = mutableMapOf()
+        if(lista.isNullOrEmpty()){
+//            noResults.visibility = View.VISIBLE
+        }else{
 
-        for (resource in lista) {
-            if(!map.containsKey(resource.physical_space)){
-                map[resource.physical_space] = resource.getDuration()
-            }else{
-                map[resource.physical_space] = resource.getDuration() + map[resource.physical_space]!!
-            }
 
-            if (!childMap.containsKey(resource.shortName)) {
-                childMap[resource.shortName] = mutableListOf(resource)
-            } else {
-                val aux: MutableList<TableFiveResource> = childMap[resource.shortName]!!
-                aux.add(resource)
-                childMap[resource.shortName] = aux
-            }
-        }
 
-        for (entry in childMap) {
 
-            if (!childAux.containsKey(entry.key)) {
-                childAux[entry.key] = mutableMapOf()
-            } else {
 
-            }
+            val map: MutableMap<String, Long> = mutableMapOf()
+            val childMap: MutableMap<String, MutableList<TableFiveResource>> = mutableMapOf()
+            val childAux: MutableMap<String, MutableMap<String, Long>> = mutableMapOf()
 
-            val childDuration: MutableMap<String, Long> = mutableMapOf()
-            for (resource in entry.value) {
-                if (!childDuration.containsKey(resource.physical_space)) {
-                    childDuration[resource.physical_space] = resource.getDuration()
-                } else {
-                    childDuration[resource.physical_space] =
-                        resource.getDuration() + childDuration[resource.physical_space]!!
-
-                }
-            }
-            childAux[entry.key] = childDuration
-        }
-
-        val countMap: MutableMap<String, Int> = mutableMapOf()
-
-        for (entry in childAux){
-            for (element in entry.value){
-
-                if(!countMap.containsKey(element.key)){
-                    countMap[element.key] = 1
+            for (resource in lista) {
+                if(!map.containsKey(resource.physical_space)){
+                    map[resource.physical_space] = resource.getDuration()
                 }else{
-                    countMap[element.key] = countMap[element.key]!! + 1
+                    map[resource.physical_space] = resource.getDuration() + map[resource.physical_space]!!
+                }
+
+                if (!childMap.containsKey(resource.shortName)) {
+                    childMap[resource.shortName] = mutableListOf(resource)
+                } else {
+                    val aux: MutableList<TableFiveResource> = childMap[resource.shortName]!!
+                    aux.add(resource)
+                    childMap[resource.shortName] = aux
                 }
             }
+
+            for (entry in childMap) {
+
+                if (!childAux.containsKey(entry.key)) {
+                    childAux[entry.key] = mutableMapOf()
+                } else {
+
+                }
+
+                val childDuration: MutableMap<String, Long> = mutableMapOf()
+                for (resource in entry.value) {
+                    if (!childDuration.containsKey(resource.physical_space)) {
+                        childDuration[resource.physical_space] = resource.getDuration()
+                    } else {
+                        childDuration[resource.physical_space] =
+                            resource.getDuration() + childDuration[resource.physical_space]!!
+
+                    }
+                }
+                childAux[entry.key] = childDuration
+            }
+
+            val countMap: MutableMap<String, Int> = mutableMapOf()
+
+            for (entry in childAux){
+                for (element in entry.value){
+
+                    if(!countMap.containsKey(element.key)){
+                        countMap[element.key] = 1
+                    }else{
+                        countMap[element.key] = countMap[element.key]!! + 1
+                    }
+                }
+            }
+
+
+            val x: MutableList<Table4Aux> = mutableListOf()
+
+            for (element in map){
+
+                x.add(Table4Aux(element.key, countMap[element.key]!!, map[element.key]!!))
+            }
+
+
+            val card: CardView = view!!.findViewById(R.id.tableFourCardView)
+
+            (card.findViewById(R.id.btn_detail) as Button).setOnClickListener {
+                // Todo: details
+                val bundle = Bundle()
+                val ref ="detail5"
+                bundle.putString("ref", ref)
+                bundle.putParcelableArrayList("resources", x as ArrayList<out Parcelable>) // ??
+                val dialog = CustomTableFragment()
+                dialog.arguments = bundle
+                val activity: AppCompatActivity = context as AppCompatActivity // ??
+                val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+                dialog.show(transaction, "FullScreenDialog")
+
+            }
+
+
+
+            (card.findViewById(R.id.btn_chart) as Button).setOnClickListener {
+                // Todo: details
+
+                val bundle = Bundle()
+
+
+                val ref ="main_chart"
+
+
+                bundle.putString("ref", ref)
+
+                bundle.putParcelableArrayList("resources", x as ArrayList<out Parcelable>) // ??
+
+                val dialog = LocationHistoryChartFragment()
+
+                dialog.arguments = bundle
+                val activity: AppCompatActivity = context as AppCompatActivity // ??
+                val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+                dialog.show(transaction, "FullScreenDialog")
+
+            }
+
+
+
+            (card.findViewById(R.id.btn_log) as Button).setOnClickListener {
+
+                val bundle = Bundle()
+                var ref ="log5"
+                bundle.putString("ref", ref)
+                bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
+                val dialog = CustomTableFragment()
+                dialog.arguments = bundle
+                val activity: AppCompatActivity = context as AppCompatActivity // ??
+                val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+                dialog.show(transaction, "FullScreenDialog")
+
+            }
+
+
+
+
+            var count: Long = 0
+            for (entry in map){
+                count += entry.value
+            }
+
+
+            (card.findViewById(R.id.nameTV4) as TextView).text = ("Physical Space History")
+            (card.findViewById(R.id.descriptionTV4) as TextView).text =("Physical Spaces Found: ${map.size}")
+            (card.findViewById(R.id.nplacesTV4) as TextView).text = ("Total Time Elapsed: ${count/60}m")
+            card.visibility = View.VISIBLE
         }
-
-
-        val x: MutableList<Table4Aux> = mutableListOf()
-
-        for (element in map){
-
-            x.add(Table4Aux(element.key, countMap[element.key]!!, map[element.key]!!))
-        }
-
-
-        val card: CardView = view!!.findViewById(R.id.tableFourCardView)
-
-        (card.findViewById(R.id.btn_detail) as Button).setOnClickListener {
-            // Todo: details
-            val bundle = Bundle()
-            var ref ="detail5"
-            bundle.putString("ref", ref)
-            bundle.putParcelableArrayList("resources", x as ArrayList<out Parcelable>) // ??
-            val dialog = CustomTableFragment()
-            dialog.arguments = bundle
-            val activity: AppCompatActivity = context as AppCompatActivity // ??
-            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-            dialog.show(transaction, "FullScreenDialog")
-
-        }
-
-
-
-        (card.findViewById(R.id.btn_chart) as Button).setOnClickListener {
-            // Todo: details
-
-            val bundle = Bundle()
-
-
-            val ref ="main_chart"
-
-
-            bundle.putString("ref", ref)
-
-            bundle.putParcelableArrayList("resources", x as ArrayList<out Parcelable>) // ??
-
-            val dialog = LocationHistoryChartFragment()
-
-            dialog.arguments = bundle
-            val activity: AppCompatActivity = context as AppCompatActivity // ??
-            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-            dialog.show(transaction, "FullScreenDialog")
-
-        }
-
-
-
-        (card.findViewById(R.id.btn_log) as Button).setOnClickListener {
-
-            val bundle = Bundle()
-            var ref ="log5"
-            bundle.putString("ref", ref)
-            bundle.putParcelableArrayList("resources", lista as ArrayList<out Parcelable>) // ??
-            val dialog = CustomTableFragment()
-            dialog.arguments = bundle
-            val activity: AppCompatActivity = context as AppCompatActivity // ??
-            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-            dialog.show(transaction, "FullScreenDialog")
-
-        }
-
-
-
-
-        var count: Long = 0
-        for (entry in map){
-            count += entry.value
-        }
-
-
-        (card.findViewById(R.id.nameTV4) as TextView).text = ("Physical Space History")
-        (card.findViewById(R.id.descriptionTV4) as TextView).text =("Physical Spaces Found: ${map.size}")
-        (card.findViewById(R.id.nplacesTV4) as TextView).text = ("Total Time Elapsed: ${count/60}m")
-        card.visibility = View.VISIBLE
     }
 
 

@@ -14,17 +14,6 @@ class SelectPersonViewModel(
 
 
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun load(){
-        semanticRepository.getAvailablePeople({
-            mPeople.postValue(it)
-            Log.e("debug", it.toString())
-
-        }, {
-            mPeople.postValue(listOf())
-        })
-
-    }
 
     fun fetchPeople(){
         loadingProgress.postValue(true)
@@ -35,8 +24,9 @@ class SelectPersonViewModel(
             Log.e("debug", it.toString())
 
         }, {
-            mPeople.postValue(listOf())
             loadingProgress.postValue(false)
+//            mPeople.postValue(listOf())
+//            loadingProgress.postValue(false)
 
         })
     }

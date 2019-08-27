@@ -34,15 +34,7 @@ import java.util.*
 
 class GroupHistoryResultFragment : Fragment(), LifecycleOwner {
 
-    val TAG: String = "FullScreenDialog"
     lateinit var id: String
-    lateinit var url: String
-    private lateinit var dateStr: String
-    private lateinit var dateStr2: String
-    lateinit var linear: LinearLayout
-    lateinit var parentLinear: LinearLayout
-    private lateinit var queue: RequestQueue
-
     lateinit var progress: AlertDialog.Builder
     lateinit var alertDialog: AlertDialog
     lateinit var progressBar: ProgressBar
@@ -78,7 +70,7 @@ class GroupHistoryResultFragment : Fragment(), LifecycleOwner {
         noResults = mView.findViewById(R.id.no_result)
         data = listOf()
         recyclerView = mView.findViewById(R.id.rv_resource_3)
-        recyclerView.layoutManager = GridLayoutManager(context, 2)
+        recyclerView.layoutManager = GridLayoutManager(context, 1)
         recyclerView.setHasFixedSize(true)
         progressBar = mView.findViewById(R.id.progress_bar)
     }
@@ -119,7 +111,7 @@ class GroupHistoryResultFragment : Fragment(), LifecycleOwner {
     private fun generateParentTable(lista: List<TableThreeResource>) {
 
         if(lista.isNullOrEmpty()){
-            noResults.visibility = View.VISIBLE
+//            noResults.visibility = View.VISIBLE
         }else{
 
             noResults.visibility = View.GONE
@@ -177,6 +169,7 @@ class GroupHistoryResultFragment : Fragment(), LifecycleOwner {
             (card.findViewById(R.id.descriptionTV4) as TextView).text = ("Encounters: ${lista.size}")
             (card.findViewById(R.id.nplacesTV4) as TextView).visibility = View.GONE//.text = ("Physical Spaces Found: ${mean/60}")
             (card.findViewById(R.id.durationTV4) as TextView).text = ("Total Time Elapsed: ${totalDuration/60} min")
+
             card.visibility = View.VISIBLE
             }
 

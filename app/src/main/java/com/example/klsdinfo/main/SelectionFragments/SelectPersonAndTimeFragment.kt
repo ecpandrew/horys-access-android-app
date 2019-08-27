@@ -56,8 +56,6 @@ class SelectPersonAndTimeFragment : Fragment(), DatePickerDialog.OnDateSetListen
     private var calendar2: Calendar? = null
     private var unixTime: Long? = null
     private var unixTimePast: Long? = null
-    lateinit var progress: AlertDialog.Builder
-    lateinit var alertDialog: AlertDialog
     lateinit var mCheckRoles : List<MultiCheckRole>
 
     lateinit var cardDate: CardView
@@ -208,10 +206,10 @@ class SelectPersonAndTimeFragment : Fragment(), DatePickerDialog.OnDateSetListen
     private fun initComponents(view: View) {
         progressBar = view.findViewById(R.id.progress_bar)
 
-        progress = AlertDialog.Builder(context)
-        progress.setCancelable(false)
-        progress.setView(R.layout.loading_dialog_layout)
-        alertDialog = progress.create()
+//        progress = AlertDialog.Builder(context)
+//        progress.setCancelable(false)
+//        progress.setView(R.layout.loading_dialog_layout)
+//        alertDialog = progress.create()
 
         rv = view.findViewById(R.id.recycler_view) as RecyclerView
         get = view.findViewById(R.id.buttonGet)
@@ -252,10 +250,10 @@ class SelectPersonAndTimeFragment : Fragment(), DatePickerDialog.OnDateSetListen
                     when(methodRef){
                         0 -> {
                             // add query data in AppDatabase
-                            alertDialog.show()
+//                            alertDialog.show()
                             val ids = getSelectedIds()
                             if(ids.isBlank()){
-                                alertDialog.dismiss()
+//                                alertDialog.dismiss()
                                 Toast.makeText(context,"You must select something!", Toast.LENGTH_SHORT).show()
                             }else{
                                 AsyncTask.execute {
@@ -263,7 +261,7 @@ class SelectPersonAndTimeFragment : Fragment(), DatePickerDialog.OnDateSetListen
                                     AppDatabase.getInstance(context!!)?.groupDao()?.insert(GroupQuery(0,getSelectedIds(),unixTimePast!!.toString(),unixTime!!.toString()))
                                     AppDatabase.destroyInstance()
                                     navigateToFragment(GroupHistoryResultFragment(),true)
-                                    alertDialog.dismiss()
+//                                    alertDialog.dismiss()
                                 }
                             }
 
@@ -272,10 +270,10 @@ class SelectPersonAndTimeFragment : Fragment(), DatePickerDialog.OnDateSetListen
 
                         1 -> {
 
-                            alertDialog.show()
+//                            alertDialog.show()
                             val ids = getSelectedIds()
                             if(ids.isBlank()){
-                                alertDialog.dismiss()
+//                                alertDialog.dismiss()
                                 Toast.makeText(context,"You must select something!", Toast.LENGTH_SHORT).show()
                             }else{
                                 AsyncTask.execute {
@@ -285,7 +283,7 @@ class SelectPersonAndTimeFragment : Fragment(), DatePickerDialog.OnDateSetListen
                                     val dialog = PeopleHistoryResultFragment()
                                     dialog.arguments = bundle
                                     navigateToFragment(dialog,true)
-                                    alertDialog.dismiss()
+//                                    alertDialog.dismiss()
                                 }
                             }
                         }

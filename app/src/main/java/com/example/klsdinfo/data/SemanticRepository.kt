@@ -103,22 +103,26 @@ class SemanticRepository private constructor(private val semanticService: Semant
     fun getAvailablePeople(success: (List<Person2>) -> Unit, failure: () -> Unit ) {
 
         if(cached.isNullOrEmpty()){
-            Log.i("retrofit","people request done")
+            Log.i("retrofit33","people request done")
 
             val call = SemanticApiService.create().getAvailablePeople()
             call.enqueue(object : Callback<List<Person2>> {
                 override fun onResponse(call: Call<List<Person2>>, response: Response<List<Person2>>) {
                     if(response.isSuccessful){
+                        Log.i("retrofit33","people request done + ${response.body().isNullOrEmpty()}")
                         cached = response.body()!!
                         success(response.body()!!)
+
                     }
+                    Log.i("retrofit33","people request done + response not sucessfull")
+
                 }
                 override fun onFailure(call: Call<List<Person2>>, t: Throwable) {
                     failure()
                 }
             })
         }else{
-            Log.i("retrofit","cache used")
+            Log.i("retrofit33","cache used")
             success(cached)
         }
     }
@@ -127,6 +131,7 @@ class SemanticRepository private constructor(private val semanticService: Semant
 
 
     fun getPhysicalSpaces(success: (List<PhysicalSpace>) -> Unit, failure: () -> Unit){
+        Log.i("retrofit","physical spaces request done")
 
         if(cached_locations.isNullOrEmpty()){
             val call = SemanticApiService.create().getPhysicalSpaces()

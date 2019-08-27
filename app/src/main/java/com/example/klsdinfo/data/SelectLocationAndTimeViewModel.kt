@@ -28,7 +28,6 @@ class SelectLocationAndTimeViewModel(
             Log.e("debug", it.toString())
 
         }, {
-            mPlaces.postValue(listOf())
             loadingProgress.postValue(false)
 
         })

@@ -32,11 +32,28 @@ class HomeViewModel(
 
     val currentPosition = MutableLiveData<List<TableTwoResource>>().apply { value = mutableListOf() }
 
+    val listData = MutableLiveData<List<String>>().apply { value = mutableListOf() }
+
+
 
     fun setDates(unixTime:String, unixTimePast: String){
         date1.value = unixTime
         date2.value = unixTimePast
     }
+
+
+    fun generateListViewData(lista : List<TableTwoResource>){
+
+        val result = mutableListOf<String>()
+
+        for(element in lista){
+            result.add("${element.physical_space} -> ${element.duration/60} minutes.")
+        }
+
+
+        listData.postValue(result)
+    }
+
 
 
 
@@ -48,7 +65,8 @@ class HomeViewModel(
 
                     //Todo()
                 }else{
-                    currentPosition.postValue(it)
+//                    currentPosition.postValue(it)
+                    generateListViewData(it)
                 }
 
             },
@@ -70,8 +88,8 @@ class HomeViewModel(
 
         }, {
 
-            // Todo()
-            currentPosition.postValue(null)
+//            // Todo()
+//            currentPosition.postValue(null)
 
 
         })

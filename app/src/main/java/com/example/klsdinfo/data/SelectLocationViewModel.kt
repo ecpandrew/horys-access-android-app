@@ -12,21 +12,28 @@ class SelectLocationViewModel(
 
 
     val loadingProgress = MutableLiveData<Boolean>().apply { value = true }
+
     val mPhysicalSpaces = MutableLiveData<List<PhysicalSpace>>().apply { value = emptyList() }
 
-    val error = MutableLiveData<Pair<Int, String>>().apply { value = Pair(100, "Fetching Physical Spaces") }
+
 
     fun fetchPhysicalSpaces(){
         loadingProgress.postValue(true)
+
         semanticRepository.getPhysicalSpaces({
+
+
             mPhysicalSpaces.postValue(it)
             loadingProgress.postValue(false)
             Log.e("debug", it.toString())
         }, {
 
+//            fetchPhysicalSpaces()
+            loadingProgress.postValue(false)
+
 //            mPhysicalSpaces.postValue(listOf())
 //            loadingProgress.postValue(false)
-            error.postValue(Pair(0,""))
+//            error.postValue(Pair(0,""))
         })
     }
 

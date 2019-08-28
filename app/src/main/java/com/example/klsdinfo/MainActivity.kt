@@ -9,6 +9,7 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
+import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -397,14 +398,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun actionOnService(action: Actions) {
 
+        if (getServiceState(this) == ServiceState.STOPPED && action == Actions.STOP) return
+
         val bundle : Bundle = Bundle().also{
             it.putString("email", MY_EMAIL)
+            it.putString("action", action.name)
         }
 
-        if (getServiceState(this) == ServiceState.STOPPED && action == Actions.STOP) return
         Intent(this, EndlessService::class.java).also {
             it.putExtras(bundle)
-            it.action = action.name
+            it.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 log("Starting the service in >=26 Mode")
                 startForegroundService(it)

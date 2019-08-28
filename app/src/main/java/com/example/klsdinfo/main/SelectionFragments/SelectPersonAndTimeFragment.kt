@@ -1,5 +1,4 @@
 package com.example.klsdinfo.main.SelectionFragments
-import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.AsyncTask
@@ -28,8 +27,8 @@ import com.example.klsdinfo.data.database.GroupQuery
 import com.example.klsdinfo.data.models.MultiCheckRole
 import com.example.klsdinfo.data.models.Person2
 import com.example.klsdinfo.data.models.Role2
-import com.example.klsdinfo.main.TableFragments.PeopleHistoryResultFragment
-import com.example.klsdinfo.main.TableFragments.GroupHistoryResultFragment
+import com.example.klsdinfo.main.ResultFragments.PeopleHistoryResultFragment
+import com.example.klsdinfo.main.ResultFragments.GroupResultFragment
 import com.example.klsdinfo.main.adapters.MultiCheckRoleAdapter
 import com.google.android.material.button.MaterialButton
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
@@ -260,7 +259,7 @@ class SelectPersonAndTimeFragment : Fragment(), DatePickerDialog.OnDateSetListen
 //                                                                    AppDatabase.getInstance(context!!)?.groupDao()?.nukeTable()
                                     AppDatabase.getInstance(context!!)?.groupDao()?.insert(GroupQuery(0,getSelectedIds(),unixTimePast!!.toString(),unixTime!!.toString()))
                                     AppDatabase.destroyInstance()
-                                    navigateToFragment(GroupHistoryResultFragment(),true)
+                                    navigateToFragment(GroupResultFragment(),true)
 //                                    alertDialog.dismiss()
                                 }
                             }

@@ -9,14 +9,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.example.klsdinfo.R
 import com.example.klsdinfo.data.models.AuxResource4
-import com.example.klsdinfo.main.ChartFragments.PeopleHistoryChartFragment
-import com.example.klsdinfo.main.MainFragments.CustomTableFragment
-import com.example.klsdinfo.main.TableFragments.FinalResultPeopleHistoryFragment
+import com.example.klsdinfo.main.ResultFragments.FinalResultPeopleHistoryFragment
 import com.google.android.material.button.MaterialButton
 import java.util.*
 

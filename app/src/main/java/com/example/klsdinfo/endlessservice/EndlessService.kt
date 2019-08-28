@@ -61,15 +61,16 @@ class EndlessService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         log("onStartCommand executed with startId: $startId")
         if (intent != null) {
-            val action = intent.action
+//            val action = intent.action
             val bundleEmail : String? = intent.getStringExtra("email")
+            val bundleAction : String? = intent.getStringExtra("action")
 
-            log("using an intent with action $action")
+//            log("using an intent with action $action")
             if(bundleEmail.isNullOrEmpty()){
                 Toast.makeText(this,"Não há email, porfavor relogue", Toast.LENGTH_SHORT).show()
             }else{
                 email = bundleEmail
-                when (action) {
+                when (bundleAction) {
                     Actions.START.name -> startService()
                     Actions.STOP.name -> stopService()
                     else -> log("This should never happen. No action in the received intent")

@@ -1,4 +1,4 @@
-package com.example.klsdinfo.main.TableFragments
+package com.example.klsdinfo.main.ResultFragments
 
 import android.graphics.Typeface
 import android.os.Bundle

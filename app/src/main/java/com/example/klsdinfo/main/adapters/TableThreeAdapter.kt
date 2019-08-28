@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.example.klsdinfo.R
@@ -52,6 +54,20 @@ class TableThreeAdapter(
         holder.durationTV.text = ("Time spent with group: $s min")
 
 
+
+        holder.cardView.setOnClickListener {
+            val bundle = Bundle()
+            val ref ="group_data"
+            bundle.putString("ref", ref)
+            bundle.putString("person", src.nome)
+            bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
+            val frag = CustomTableFragment()
+            frag.arguments = bundle
+            navigateToFragment(frag,true)
+        }
+
+
+
         holder.btnDetail.setOnClickListener {
             val bundle = Bundle()
             var ref ="child_detail3"
@@ -80,7 +96,20 @@ class TableThreeAdapter(
 //
     }
 
+    fun navigateToFragment(fragToGo: Fragment, addToBackStack: Boolean = false){
+        val activity: AppCompatActivity = context as AppCompatActivity // ??
 
+        val transaction = activity.supportFragmentManager.beginTransaction()
+
+        transaction.replace(R.id.fragment_container, fragToGo)
+
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+
+        if(addToBackStack){
+            transaction.addToBackStack(null) // Todo: verificar o ciclo de vida dos fragmentos
+        }
+        transaction.commit()
+    }
 
 
     class ResourceThreeViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
@@ -91,7 +120,9 @@ class TableThreeAdapter(
 
         val btnDetail: MaterialButton = itemView.findViewById(R.id.btn_detail)
         val btnLog: MaterialButton = itemView.findViewById(R.id.btn_log)
+        val cardView : CardView = itemView.findViewById(R.id.cardView)
     }
+
 
 
 

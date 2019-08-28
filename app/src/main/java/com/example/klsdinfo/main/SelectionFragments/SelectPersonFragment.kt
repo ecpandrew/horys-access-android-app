@@ -28,7 +28,7 @@ import com.example.klsdinfo.data.database.GroupQuery
 import com.example.klsdinfo.data.models.MultiCheckRole
 import com.example.klsdinfo.data.models.Person2
 import com.example.klsdinfo.data.models.Role2
-import com.example.klsdinfo.main.TableFragments.FindPeopleFragment
+import com.example.klsdinfo.main.ResultFragments.FindPeopleFragment
 import com.example.klsdinfo.main.adapters.MultiCheckRoleAdapter
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 

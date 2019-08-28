@@ -24,7 +24,7 @@ import com.example.klsdinfo.R
 import com.example.klsdinfo.data.*
 import com.example.klsdinfo.data.database.AppDatabase
 import com.example.klsdinfo.data.models.PhysicalSpace
-import com.example.klsdinfo.main.TableFragments.LocationHistoryResultFragment
+import com.example.klsdinfo.main.ResultFragments.LocationHistoryResultFragment
 import com.example.klsdinfo.main.adapters.PhysicalSpaceAdapter
 import com.google.android.material.button.MaterialButton
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog

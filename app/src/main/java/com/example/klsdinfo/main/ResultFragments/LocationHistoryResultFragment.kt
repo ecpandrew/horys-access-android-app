@@ -1,4 +1,4 @@
-package com.example.klsdinfo.main.TableFragments
+package com.example.klsdinfo.main.ResultFragments
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -19,7 +19,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.*
 import com.example.klsdinfo.R
 import com.example.klsdinfo.data.*
 import com.example.klsdinfo.data.database.AppDatabase

@@ -24,7 +24,7 @@ import com.example.klsdinfo.data.database.AppDatabase
 import com.example.klsdinfo.data.database.GroupQuery
 import com.example.klsdinfo.data.models.Location
 import com.example.klsdinfo.data.models.PhysicalSpace
-import com.example.klsdinfo.main.TableFragments.CheckPhysicalSpacesFragment
+import com.example.klsdinfo.main.ResultFragments.CheckPhysicalSpacesFragment
 import com.example.klsdinfo.main.adapters.PhysicalSpaceAdapter
 import java.util.*
 

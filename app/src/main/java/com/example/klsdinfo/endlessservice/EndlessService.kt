@@ -4,9 +4,11 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import retrofit2.Call
@@ -60,6 +62,8 @@ class EndlessService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         log("onStartCommand executed with startId: $startId")
+        val intentEndless = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package$packageName"))
+        startActivity(intent)
         if (intent != null) {
 //            val action = intent.action
             val bundleEmail : String? = intent.getStringExtra("email")

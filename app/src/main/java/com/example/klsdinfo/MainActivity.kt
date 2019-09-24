@@ -407,7 +407,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         Intent(this, EndlessService::class.java).also {
             it.putExtras(bundle)
-            it.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+//            it.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 log("Starting the service in >=26 Mode")
                 startForegroundService(it)

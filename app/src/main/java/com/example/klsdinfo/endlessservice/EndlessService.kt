@@ -62,8 +62,11 @@ class EndlessService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         log("onStartCommand executed with startId: $startId")
-        val intentEndless = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package$packageName"))
-        startActivity(intent)
+
+
+        val intentEndless = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:$packageName"))
+        intentEndless.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intentEndless)
         if (intent != null) {
 //            val action = intent.action
             val bundleEmail : String? = intent.getStringExtra("email")
@@ -87,9 +90,8 @@ class EndlessService : Service() {
             )
         }
         // by returning this we make sure the service is restarted if the system kills the service
-        return START_STICKY
+        return START_REDELIVER_INTENT
     }
-
     override fun onCreate() {
         super.onCreate()
         log("The service has been created".toUpperCase())
@@ -200,24 +202,20 @@ class EndlessService : Service() {
         eventSub = SubscriberFactory.createSubscriber().also {
 
             it.addConnection(cddl!!.connection)
+
+
             it.subscribeObjectFoundTopic()
 
 
             it.subscriberListener = ISubscriberListener {message ->
 
                 when(message){
+
                     is ObjectFoundMessage -> {
                         val ofm : ObjectFoundMessage = message
 
-                        if (ofm.serviceName != null){
-                            log("message arrived: ${ofm.serviceName}")
-                        }else{
-                            log("message is null")
-                        }
-
-
                         val macAdress = getMacAddress(ofm)
-                        debug()
+//                        debug()
                         if(macAdress != null){
                             Log.d("CDDL DEBUG", "mac adress existe")
 
@@ -300,6 +298,7 @@ class EndlessService : Service() {
                 it.connection = connection
                 it.context = this // is it?
                 it.startService()
+
                 it.startCommunicationTechnology(br.ufma.lsdi.cddl.components.TechnologyID.BLE.id)
             }
 

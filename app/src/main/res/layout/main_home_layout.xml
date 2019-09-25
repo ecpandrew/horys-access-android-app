@@ -125,8 +125,13 @@
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
-    <ListView
-            android:id="@+id/list_view"
+    <!--<ListView-->
+            <!--android:id="@+id/list_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_margin="15dp"-->
+    <!--/>-->
+    <androidx.constraintlayout.utils.widget.MockView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="15dp"

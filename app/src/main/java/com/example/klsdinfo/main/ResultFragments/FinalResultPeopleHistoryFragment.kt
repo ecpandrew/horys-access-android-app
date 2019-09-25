@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -38,14 +39,15 @@ class FinalResultPeopleHistoryFragment : Fragment(), LifecycleOwner {
     lateinit var btnDetail : Button
     lateinit var tool: Toolbar
     lateinit var myView : View
+    lateinit var titleTV : TextView
     lateinit var mainTitle : String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         myView = inflater.inflate(R.layout.final_result_people_history, container, false)
         btnDetail = myView.findViewById(R.id.btn_detail)
         btnLog = myView.findViewById(R.id.btn_log)
-
-        tool = myView.findViewById(R.id.toolbar)
+        titleTV = myView.findViewById(R.id.textViewTitle)
+//        tool = myView.findViewById(R.id.toolbar)
 
 
 
@@ -54,10 +56,9 @@ class FinalResultPeopleHistoryFragment : Fragment(), LifecycleOwner {
         val lista: ArrayList<Parcelable>? = arguments?.getParcelableArrayList<Parcelable>("resources")
         val ref: String? = arguments?.getString("ref")
         val title: String? = arguments?.getString("person")
-        mainTitle = title ?: ""
-        Log.i("debug", "custom table: $lista" )
 
-        tool.title = title
+        mainTitle = title?:""
+        titleTV.text = "$title: (places x hours)"
 
         when{
             lista == null ->{
@@ -124,19 +125,36 @@ class FinalResultPeopleHistoryFragment : Fragment(), LifecycleOwner {
         val chart = myView.findViewById<HorizontalBarChart>(R.id.chart1)
 
 
+//        val countMap: MutableMap<String, Long> = mutableMapOf()
+//        val map: MutableMap<String, Long> = mutableMapOf()
+//
+//        for (element in lista){
+//
+//            val item = element as TableFourResource
+//            if(!countMap.containsKey(item.physical_space)){
+////                countMap[item.shortName] = 1
+//                map[item.physical_space] = item.getDuration()
+//            }else{
+////                countMap[item.shortName] = countMap[item.shortName]!!.plus(1)
+//                map[item.physical_space] = map[item.physical_space]!!.plus(item.getDuration())
+//            }
+//        }
+
         val countMap: MutableMap<String, Long> = mutableMapOf()
-        val map: MutableMap<String, Long> = mutableMapOf()
+        val durationMap: MutableMap<String, Long> = mutableMapOf()
 
         for (element in lista){
 
             val item = element as TableFourResource
             if(!countMap.containsKey(item.physical_space)){
-//                countMap[item.shortName] = 1
-                map[item.physical_space] = item.getDuration()
+                countMap[item.physical_space] = 1
+                durationMap[item.physical_space] = item.getDuration()
             }else{
-//                countMap[item.shortName] = countMap[item.shortName]!!.plus(1)
-                map[item.physical_space] = map[item.physical_space]!!.plus(item.getDuration())
+                countMap[item.physical_space] = countMap[item.physical_space]!!.plus(1)
+                durationMap[item.physical_space] = durationMap[item.physical_space]!!.plus(item.getDuration())
             }
+
+
         }
 
 
@@ -148,7 +166,7 @@ class FinalResultPeopleHistoryFragment : Fragment(), LifecycleOwner {
         chart.setDrawGridBackground(false)
         val xl = chart.xAxis
         val array = arrayListOf<String>()
-        for(i in map.keys){ array.add(i)}
+        for(i in durationMap.keys){ array.add(i)}
         chart.xAxis.valueFormatter = IndexAxisValueFormatter(array)
         xl.position = XAxis.XAxisPosition.BOTTOM // caso fique estranho mudar para .BOTTOM
         xl.typeface = Typeface.SERIF
@@ -185,11 +203,11 @@ class FinalResultPeopleHistoryFragment : Fragment(), LifecycleOwner {
         val spaceForBar = 1f
         val values = arrayListOf<BarEntry>()
 
-        for (i in 0 until map.toList().size){
+        for (i in 0 until durationMap.toList().size){
 
             values.add(
                 BarEntry(
-                    i*spaceForBar , map.toList()[i].second.toFloat())
+                    i*spaceForBar , durationMap.toList()[i].second.toFloat()/3600)
 
             )
 

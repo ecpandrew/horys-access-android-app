@@ -81,7 +81,7 @@ class HomeFragment : Fragment(){
 //        radioGroup= mView.findViewById(R.id.radioGroup)
         refresh = mView.findViewById(R.id.btn_refresh_position)
 
-        listView = mView.findViewById(R.id.list_view)
+//        listView = mView.findViewById(R.id.list_view)
 
 
         setupUser()

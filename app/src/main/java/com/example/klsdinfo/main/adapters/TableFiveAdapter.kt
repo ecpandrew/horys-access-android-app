@@ -8,12 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.example.klsdinfo.R
 import com.example.klsdinfo.data.models.AuxResource5
 import com.example.klsdinfo.main.ChartFragments.LocationHistoryChartFragment
 import com.example.klsdinfo.main.MainFragments.CustomTableFragment
+import com.example.klsdinfo.main.ResultFragments.FinalResultLocationHistoryFragment
+import com.example.klsdinfo.main.ResultFragments.FinalResultPeopleHistoryFragment
 import com.google.android.material.button.MaterialButton
 import java.util.*
 
@@ -45,45 +48,67 @@ class TableFiveAdapter(
         holder.durationTV.text = ("Time Elapsed: ${src.getDuration()/60} min")
 
 
-        holder.btnDetail.setOnClickListener {
-            val bundle = Bundle()
-            var ref ="child_detail5"
+
+        holder.cardView.setOnClickListener {
+            val bundle: Bundle = Bundle()
+            val ref = "location_history_child_data"
             bundle.putString("ref", ref)
             bundle.putString("person", src.name)
             bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
-            val dialog = CustomTableFragment()
+            val dialog = FinalResultLocationHistoryFragment()
             dialog.arguments = bundle
             val activity: AppCompatActivity = context as AppCompatActivity // ??
             val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-            dialog.show(transaction, "FullScreenDialog")
-        }
+            transaction.replace(R.id.fragment_container, dialog)
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            transaction.addToBackStack(null)
+            transaction.commit()
 
-        holder.btnChart.setOnClickListener {
-            val bundle = Bundle()
-            var ref ="child_chart"
-            bundle.putString("ref", ref)
-            bundle.putString("person", src.name)
-            bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
-            val dialog = LocationHistoryChartFragment()
-            dialog.arguments = bundle
-            val activity: AppCompatActivity = context as AppCompatActivity // ??
-            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-            dialog.show(transaction, "FullScreenDialog")
+
+
         }
 
 
-        holder.btnLog.setOnClickListener {
-            val bundle = Bundle()
-            var ref ="child_log5"
-            bundle.putString("ref", ref)
-            bundle.putString("person", src.name)
-            bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
-            val dialog = CustomTableFragment()
-            dialog.arguments = bundle
-            val activity: AppCompatActivity = context as AppCompatActivity // ??
-            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
-            dialog.show(transaction, "FullScreenDialog")
-        }
+
+//        holder.btnDetail.setOnClickListener {
+//            val bundle = Bundle()
+//            var ref ="child_detail5"
+//            bundle.putString("ref", ref)
+//            bundle.putString("person", src.name)
+//            bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
+//            val dialog = CustomTableFragment()
+//            dialog.arguments = bundle
+//            val activity: AppCompatActivity = context as AppCompatActivity // ??
+//            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+//            dialog.show(transaction, "FullScreenDialog")
+//        }
+//
+//        holder.btnChart.setOnClickListener {
+//            val bundle = Bundle()
+//            var ref ="child_chart"
+//            bundle.putString("ref", ref)
+//            bundle.putString("person", src.name)
+//            bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
+//            val dialog = LocationHistoryChartFragment()
+//            dialog.arguments = bundle
+//            val activity: AppCompatActivity = context as AppCompatActivity // ??
+//            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+//            dialog.show(transaction, "FullScreenDialog")
+//        }
+//
+//
+//        holder.btnLog.setOnClickListener {
+//            val bundle = Bundle()
+//            var ref ="child_log5"
+//            bundle.putString("ref", ref)
+//            bundle.putString("person", src.name)
+//            bundle.putParcelableArrayList("resources", src.resources as ArrayList<out Parcelable>) // ??
+//            val dialog = CustomTableFragment()
+//            dialog.arguments = bundle
+//            val activity: AppCompatActivity = context as AppCompatActivity // ??
+//            val transaction: FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+//            dialog.show(transaction, "FullScreenDialog")
+//        }
 
     }
 
@@ -92,6 +117,7 @@ class TableFiveAdapter(
 
     class ResourceFourViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
+        val cardView : CardView = itemView.findViewById(R.id.cardView)
         val nameTV: TextView = itemView.findViewById(R.id.main_title)
         val numberRendzTV: TextView = itemView.findViewById(R.id.main_rating)
         val durationTV: TextView = itemView.findViewById(R.id.main_duration)

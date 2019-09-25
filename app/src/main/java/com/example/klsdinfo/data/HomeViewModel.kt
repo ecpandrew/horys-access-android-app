@@ -65,7 +65,7 @@ class HomeViewModel(
 
                     //Todo()
                 }else{
-//                    currentPosition.postValue(it)
+                    currentPosition.postValue(it)
                     generateListViewData(it)
                 }
 

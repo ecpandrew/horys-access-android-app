@@ -1,11 +1,11 @@
 package com.example.klsdinfo.endlessservice.models
 
 data class Rendezvous(
-    private var appID : String,
-    private var mhubID : String,
-    private var thingID : String,
-    private var latitude : Double,
-    private var longitude : Double,
-    private var signal : Double,
-    private var timestamp : Long
+    var appID : String,
+    var mhubID : String,
+    var thingID : String,
+    var latitude : Double,
+    var longitude : Double,
+    var signal : Double,
+    var timestamp : Long
 )

@@ -77,11 +77,14 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.1'
+//
+//    implementation (group: 'br.ufma.lsdi', name: 'cddl', version: '1.0.0', ext: 'aar')
+//    implementation (group: 'br.ufma.lsdi', name: 'cddl-mhub', version: '1.0.0', ext: 'aar')
+//    implementation (group: 'br.ufma.lsdi', name: 'cddl-microbroker', version: '1.0.0', ext: 'aar')
 
-    implementation (group: 'br.ufma.lsdi', name: 'cddl', version: '1.0.0', ext: 'aar')
-    implementation (group: 'br.ufma.lsdi', name: 'cddl-mhub', version: '1.0.0', ext: 'aar')
-    implementation (group: 'br.ufma.lsdi', name: 'cddl-microbroker', version: '1.0.0', ext: 'aar')
-
+    implementation project(':cddl-release')
+    implementation project(':mhub-release')
+    implementation project(':microbroker-release')
 
 
 

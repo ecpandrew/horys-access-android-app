@@ -214,7 +214,7 @@ class LocationHistoryChartFragment : DialogFragment() {
 
             values.add(
                 BarEntry(
-                    i*spaceForBar , map.toList()[i].duration.toFloat())
+                    i*spaceForBar , map.toList()[i].duration.toFloat()/3600)
 
             )
 

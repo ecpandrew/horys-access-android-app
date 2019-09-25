@@ -53,6 +53,10 @@ class EndlessService : Service() {
     private  var cddl: CDDL? = null
     private  var eventSub: Subscriber? = null
 
+    private val WINDOW_SIZE : Int = 5
+
+    private lateinit var rendezvousWithGreatestRssi: Rendezvous
+    private var currentNumberOfRendezvous : Int = 0
 
     override fun onBind(intent: Intent): IBinder? {
         log("Some component want to bind with the service")
@@ -165,10 +169,15 @@ class EndlessService : Service() {
 
         getMyUUID(email?:"")
         initCache()
+        initStaticRendezvous()
         initMicroBroker()
         initCDDL()
         initSubscriber()
 
+    }
+
+    private fun initStaticRendezvous(){
+        rendezvousWithGreatestRssi = Rendezvous("","","",0.0,0.0,Double.NEGATIVE_INFINITY,0)
     }
 
     private fun getMyUUID(email: String) {
@@ -217,15 +226,15 @@ class EndlessService : Service() {
                         val macAdress = getMacAddress(ofm)
 //                        debug()
                         if(macAdress != null){
-                            Log.d("CDDL DEBUG", "mac adress existe")
-
+//                            log("mac address existe")
                             if(isRegistered(macAdress)){
                                 val thingID = macToUUID(macAdress)
-                                postRendezvous(MY_UUID, thingID, ofm)
+                                log("vai postar "+ofm.signal.toString())
+                                fowardRendezvous(MY_UUID!!, thingID, ofm.signal)
 
                             }
                         }else{
-                            Log.d("CDDL DEBUG", "mac adress dont existe")
+//                            log( "mac adress dont existe")
 
                         }
 
@@ -239,9 +248,9 @@ class EndlessService : Service() {
 
     }
 
-    private fun postRendezvous(myUuid: String?, thingID: String, ofm: ObjectFoundMessage) {
+    private fun postRendezvous(myUuid: String, thingID: String, rssi: Double) {
 
-        val rendezvous = createRendezvous(myUuid!!, thingID, ofm)
+        val rendezvous = createRendezvous(myUuid, thingID, rssi)
 
 
         val call = horysAPI.postRendezvous(rendezvous)
@@ -258,11 +267,32 @@ class EndlessService : Service() {
             }
         })
 
+    }
 
 
+    private fun fowardRendezvous(myUuid: String, thingID: String, rssi: Double) {
+
+        if (currentNumberOfRendezvous < WINDOW_SIZE){
+
+            currentNumberOfRendezvous +=1
+
+            if(rssi > rendezvousWithGreatestRssi.signal){
+                rendezvousWithGreatestRssi.signal = rssi
+                rendezvousWithGreatestRssi.thingID = thingID
+            }
+        }
+        if(currentNumberOfRendezvous >= WINDOW_SIZE){
+            postRendezvous(myUuid, rendezvousWithGreatestRssi.thingID, rendezvousWithGreatestRssi.signal)
+            rendezvousWithGreatestRssi.signal = Double.NEGATIVE_INFINITY
+            currentNumberOfRendezvous = 0
+
+        }
 
 
     }
+
+
+
 
     private fun macToUUID(macAdress: String): String {
         return devicesCache!!.getUUID(macAdress)
@@ -311,7 +341,6 @@ class EndlessService : Service() {
 
 
     }
-
 
     private fun initMicroBroker() {
         try {
@@ -453,14 +482,14 @@ class EndlessService : Service() {
 
 
 
-    private fun createRendezvous(myUUID:String, thingUUID: String, ofm: ObjectFoundMessage) : Rendezvous {
+    private fun createRendezvous(myUUID:String, thingUUID: String, rssi: Double) : Rendezvous {
         return Rendezvous(
             APPLICATION_ID,
             myUUID,
             thingUUID,
             -23.01641146,
             -23.01641146,
-            0.toDouble(),
+            rssi,
             System.currentTimeMillis()/1000
         )
     }

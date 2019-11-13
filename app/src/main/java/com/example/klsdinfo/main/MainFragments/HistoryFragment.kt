@@ -35,13 +35,13 @@ class HistoryFragment : Fragment(){
 
     private fun addItems(){
         items.clear()
-        items.add(
-            Method(
-                "Group History",
-                "Given a group and a time interval this section display how many encounters the group had and the time each person spent with the group.",
-                R.drawable.ic_hierarchical_structure
-            )
-        )
+//        items.add(
+//            Method(
+//                "Group History",
+//                "Given a group and a time interval this section display how many encounters the group had and the time each person spent with the group.",
+//                R.drawable.ic_hierarchical_structure
+//            )
+//        )
         items.add(
             Method(
                 "People History",

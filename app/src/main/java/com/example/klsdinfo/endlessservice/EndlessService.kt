@@ -1,3 +1,4 @@
+
 package com.example.klsdinfo.endlessservice
 
 import android.app.*
@@ -53,7 +54,7 @@ class EndlessService : Service() {
     private  var cddl: CDDL? = null
     private  var eventSub: Subscriber? = null
 
-    private val WINDOW_SIZE : Int = 5
+    private val WINDOW_SIZE : Int = 6
 
     private lateinit var rendezvousWithGreatestRssi: Rendezvous
     private var currentNumberOfRendezvous : Int = 0
@@ -133,9 +134,10 @@ class EndlessService : Service() {
 
         GlobalScope.launch(Dispatchers.IO) {
 
-            init()
 
+            init()
             while (isServiceStarted) {
+
                 launch(Dispatchers.IO) {
 
                     pingFakeServer()
@@ -229,8 +231,23 @@ class EndlessService : Service() {
 //                            log("mac address existe")
                             if(isRegistered(macAdress)){
                                 val thingID = macToUUID(macAdress)
-                                log("vai postar "+ofm.signal.toString())
+//                                log("vai postar "+ofm.signal.toString())
+
+                                if(thingID=="7ffae023-41f6-4a1f-a90c-abcffe417195"){
+                                    log("beacon das ETS vai postar " + ofm.signal.toString())
+
+
+                                }else if(thingID== "f7679ec5-6078-466a-8a20-b0ee9a267ac5"){
+                                    log("beacon de teste 4 vai postar " + ofm.signal.toString())
+//                                    fowardRendezvous(MY_UUID!!, thingID, ofm.signal)
+
+                                }else if(thingID== "0301653c-b672-4089-8539-b94e68c3a620"){
+                                    log("beacon de reuniao vai postar " + ofm.signal.toString())
+//                                    fowardRendezvous(MY_UUID!!, thingID, ofm.signal)
+
+                                }
                                 fowardRendezvous(MY_UUID!!, thingID, ofm.signal)
+
 
                             }
                         }else{
@@ -282,6 +299,14 @@ class EndlessService : Service() {
             }
         }
         if(currentNumberOfRendezvous >= WINDOW_SIZE){
+            if(rendezvousWithGreatestRssi.thingID=="7ffae023-41f6-4a1f-a90c-abcffe417195"){
+                log("beacon das ETS postado " + rendezvousWithGreatestRssi.signal.toString())
+            }else if(rendezvousWithGreatestRssi.thingID== "f7679ec5-6078-466a-8a20-b0ee9a267ac5"){
+                log("beacon de teste 4 postado " + rendezvousWithGreatestRssi.signal.toString())
+            }else if(rendezvousWithGreatestRssi.thingID== "0301653c-b672-4089-8539-b94e68c3a620"){
+                log("beacon de reuniao postado " + rendezvousWithGreatestRssi.signal.toString())
+
+            }
             postRendezvous(myUuid, rendezvousWithGreatestRssi.thingID, rendezvousWithGreatestRssi.signal)
             rendezvousWithGreatestRssi.signal = Double.NEGATIVE_INFINITY
             currentNumberOfRendezvous = 0
@@ -496,3 +521,5 @@ class EndlessService : Service() {
 
 
 }
+
+

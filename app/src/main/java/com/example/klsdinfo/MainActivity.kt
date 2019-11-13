@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
 
 
-                if(user.email!!.isLsdiEmail()){//user.email!!.isLsdiEmail()){ //descomente essa linha para permitir apenas email LSDI
+                if(true){//user.email!!.isLsdiEmail()){//user.email!!.isLsdiEmail()){ //descomente essa linha para permitir apenas email LSDI
 
                     MY_EMAIL = user.email!!
 

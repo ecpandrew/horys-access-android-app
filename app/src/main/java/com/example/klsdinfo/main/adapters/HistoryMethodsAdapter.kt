@@ -48,16 +48,16 @@ class HistoryMethodsAdapter(
 
             // TODO: remenber to also pass some reference aboute the choosen method
             when(position){
-                0 -> { // person
-
-                    val frag =
-                        SelectPersonAndTimeFragment.newInstance()
-                    val bundle = Bundle()
-                    bundle.putInt("ref", 0)
-                    frag.arguments = bundle
-                    navigateToFragment(frag, it,true)
-                }
-                1 -> {// person: Here we algo need to choose target person
+//                0 -> { // person
+//
+//                    val frag =
+//                        SelectPersonAndTimeFragment.newInstance()
+//                    val bundle = Bundle()
+//                    bundle.putInt("ref", 0)
+//                    frag.arguments = bundle
+//                    navigateToFragment(frag, it,true)
+//                }
+                0 -> {// person: Here we algo need to choose target person
                     val frag =
                         SelectPersonAndTimeFragment.newInstance()
                     val bundle = Bundle()
@@ -67,7 +67,7 @@ class HistoryMethodsAdapter(
 
                 }
 
-                2 -> {
+                1 -> {
                     val bundle = Bundle()
                     val frag =
                         SelectLocationAndTimeFragment.newInstance()

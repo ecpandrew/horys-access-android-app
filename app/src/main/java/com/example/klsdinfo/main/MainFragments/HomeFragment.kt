@@ -137,14 +137,19 @@ class HomeFragment : Fragment(){
 
 
 
-//        viewModel.listData.observe(viewLifecycleOwner, Observer {
-//            if(!it.isNullOrEmpty()){
+        viewModel.listData.observe(viewLifecycleOwner, Observer {
+            if(!it.isNullOrEmpty()){
+                beacons.text = it[0]
+                duration.text = it[1]
+
 //                adapter = ArrayAdapter(context!!, R.layout.list_item_name, it)
 //                listView.adapter = adapter
 //                adapter.notifyDataSetChanged()
-//            }else{
-//            }
-//        })
+            }else{
+                beacons.text = "no beacon found"
+                duration.text = "no duration"
+            }
+        })
 
 
     }

@@ -46,9 +46,11 @@ class HomeViewModel(
 
         val result = mutableListOf<String>()
 
-        for(element in lista){
-            result.add("${element.physical_space} -> ${element.duration/60} minutes.")
-        }
+//        for(element in lista){
+//            result.add("${element.physical_space} -> ${element.duration/60} minutes.")
+//        }
+        result.add(lista[0].physical_space)
+        result.add("${lista[0].duration/60} minutes.")
 
 
         listData.postValue(result)

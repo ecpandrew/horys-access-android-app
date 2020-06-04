@@ -3,6 +3,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.google.gms.google-services'
+
 android {
     signingConfigs {
         debug {
@@ -12,11 +14,13 @@ android {
             storeFile file(var)
         }
     }
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.example.KLSDinfo"
-        minSdkVersion 23
-        targetSdkVersion 28
+        minSdkVersion 26
+        targetSdkVersion 29
+        multiDexEnabled true
+
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -28,14 +32,18 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    packagingOptions {
+        pickFirst "META-INF/INDEX.LIST"
+        pickFirst "META-INF/io.netty.versions.properties"
     }
 
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.aar','*.jar', ])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.41"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0-M1'
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
@@ -75,24 +83,41 @@ dependencies {
     implementation 'org.mapdb:mapdb:1.0.6'
     implementation 'com.lmax:disruptor:3.3.0'
     implementation 'org.greenrobot:eventbus:3.1.1'
-    implementation 'io.netty:netty-all:4.0.25.Final'
     implementation 'com.jaredrummler:android-device-names:1.1.8'
     implementation 'com.github.kittinunf.fuel:fuel:2.1.0'
     implementation 'com.github.kittinunf.fuel:fuel-android:2.1.0'
+    implementation 'com.kingfisherphuoc:easy-file-folder-picker-dialog:1.4'
 
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'org.greenrobot:eventbus:3.1.1'
-    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.1'
-//
-//    implementation (group: 'br.ufma.lsdi', name: 'cddl', version: '1.0.0', ext: 'aar')
-//    implementation (group: 'br.ufma.lsdi', name: 'cddl-mhub', version: '1.0.0', ext: 'aar')
-//    implementation (group: 'br.ufma.lsdi', name: 'cddl-microbroker', version: '1.0.0', ext: 'aar')
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.2'
+    implementation 'com.madgag.spongycastle:core:1.51.0.0'
+    implementation 'com.madgag.spongycastle:pkix:1.51.0.0'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
 
-    implementation project(':cddl-release')
-    implementation project(':mhub-release')
-    implementation project(':microbroker-release')
+//    implementation(name:'cddl-release', ext:'aar')
+//    implementation(name:'mhub-release', ext:'aar')
+//    implementation(name:'microbroker-release', ext:'aar')
+//    implementation(name:'security-service-release', ext:'aar')
+
+
+//    implementation (name: 'cddl-release', ext: 'aar')
+//    implementation (name: 'mhub-release, ext: 'aar')
+//    implementation (name: 'microbroker-release', ext: 'aar')
+//    implementation (name: 'security-service-release', ext: 'aar')
+
+    implementation 'com.github.ecpandrew.cdll-security:cddl:153a02ccb3'
+    implementation 'com.github.ecpandrew.cdll-security:mhub:153a02ccb3'
+    implementation 'com.github.ecpandrew.cdll-security:microbroker:153a02ccb3'
+    implementation 'com.github.ecpandrew.cdll-security:security-service:153a02ccb3'
+
+
+    //    implementation project(':cddl-release')
+//    implementation project(':mhub-release')
+//    implementation project(':microbroker-release')
+//    implementation project(':security-service-release')
 
 
 
@@ -101,4 +126,3 @@ dependencies {
 
 }
 
-apply plugin: 'com.google.gms.google-services'

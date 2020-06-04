@@ -32,6 +32,7 @@ import com.example.klsdinfo.endlessservice.*
 import com.example.klsdinfo.main.MainFragments.HistoryFragment
 import com.example.klsdinfo.main.MainFragments.HomeFragment
 import com.example.klsdinfo.main.MainFragments.RealFragment
+import com.example.klsdinfo.main.MainFragments.SecurityFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -253,6 +254,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 navigateToFragment(HistoryFragment.newInstance())
                 title = "Accessing History"
             }
+            R.id.nav_security -> {
+                Toast.makeText(baseContext, "Security Service", Toast.LENGTH_LONG).show()
+                clearBackStack()
+                navigateToFragment(SecurityFragment.newInstance(applicationContext))
+                title = "Security Service"
+            }
+
+
+
+
+
 
             R.id.nav_report_bug -> {
 
@@ -263,6 +275,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 sendEmail(recipient, subject, message)
 
             }
+
+
             R.id.nav_logout -> {
 
                 signOut()

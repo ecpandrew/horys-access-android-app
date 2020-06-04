@@ -12,27 +12,36 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import br.ufma.lsdi.cddl.pubsub.Subscriber
 import br.ufma.lsdi.cddl.CDDL
 import br.ufma.lsdi.cddl.Connection
 import br.ufma.lsdi.cddl.ConnectionFactory
+import br.ufma.lsdi.cddl.listeners.IConnectionListener
 import br.ufma.lsdi.cddl.listeners.ISubscriberListener
 import br.ufma.lsdi.cddl.message.ObjectFoundMessage
+import br.ufma.lsdi.cddl.message.RendezvousMessage
+import br.ufma.lsdi.cddl.network.ConnectionImpl
 import br.ufma.lsdi.cddl.network.MicroBroker
+import br.ufma.lsdi.cddl.pubsub.Publisher
+import br.ufma.lsdi.cddl.pubsub.PublisherFactory
+import br.ufma.lsdi.cddl.pubsub.Subscriber
 import br.ufma.lsdi.cddl.pubsub.SubscriberFactory
+import br.ufma.lsdi.cddl.qos.TimeBasedFilterQoS
 import com.example.klsdinfo.MainActivity
 import com.example.klsdinfo.R
-import com.example.klsdinfo.endlessservice.api.HorysAPI
 import com.example.klsdinfo.endlessservice.api.SemanticAPI
 import com.example.klsdinfo.endlessservice.cache.DevicesCache
-import com.example.klsdinfo.endlessservice.client.HorysClient
 import com.example.klsdinfo.endlessservice.client.SemanticClient
 import com.example.klsdinfo.endlessservice.models.Device
 import com.example.klsdinfo.endlessservice.models.Rendezvous
-import kotlinx.coroutines.*
+import com.fasterxml.jackson.databind.ObjectMapper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.*
 
 
 class EndlessService : Service() {
@@ -46,13 +55,18 @@ class EndlessService : Service() {
     private var isServiceStarted = false
 
     private var devicesCache: DevicesCache? = null
-    private val horysAPI = HorysClient.getClient().create(HorysAPI::class.java)
+//    private val horysAPI = HorysClient.getClient().create(HorysAPI::class.java)
     private val semanticAPI = SemanticClient.getClient().create(SemanticAPI::class.java)
 
 
     /* IoT middleware responsible to manage bluetooth scanning */
     private  var cddl: CDDL? = null
     private  var eventSub: Subscriber? = null
+    private var publisher: Publisher? = null
+    var jsonMapper: ObjectMapper = ObjectMapper()
+
+    var conLocal: Connection? = null
+    var conRemota: Connection? = null
 
     private val WINDOW_SIZE : Int = 6
 
@@ -131,7 +145,7 @@ class EndlessService : Service() {
             }
 
         // we're starting a loop in a coroutine
-
+//        loadPublisher()
         GlobalScope.launch(Dispatchers.IO) {
 
 
@@ -160,7 +174,8 @@ class EndlessService : Service() {
             cddl!!.stopAllCommunicationTechnologies()
             cddl!!.stopService()
             cddl!!.connection.disconnect()
-            MicroBroker.getInstance().stop()
+            publisher!!.disconnectAll()
+            CDDL.stopMicroBroker()
             stopService()
         }catch (e: Exception){
             log("Error on stopping cddl and services")
@@ -172,10 +187,75 @@ class EndlessService : Service() {
         getMyUUID(email?:"")
         initCache()
         initStaticRendezvous()
-        initMicroBroker()
+        configConLocal()
+        configConRemota()
         initCDDL()
-        initSubscriber()
+        initSubscriberLocal()
+    }
 
+    private fun configConLocal(){
+        val host = CDDL.startSecureMicroBroker(applicationContext, true);
+        conLocal = ConnectionFactory.createConnection();
+        if (conLocal != null) {
+            (conLocal as ConnectionImpl).clientId = "lcmuniz@gmail.com";
+            (conLocal as ConnectionImpl).host = host;
+            (conLocal as ConnectionImpl).addConnectionListener(connectionListenerLocal);
+            (conLocal as ConnectionImpl).secureConnect(applicationContext);
+        }
+    }
+    private fun configConRemota(){
+        val host = "192.168.15.144";
+//        val host = "192.168.15.114";
+        conRemota = ConnectionFactory.createConnection();
+        if (conRemota != null) {
+            (conRemota as ConnectionImpl).clientId = "lcmuniz@gmail.com";
+            (conRemota as ConnectionImpl).host = host;
+            (conRemota as ConnectionImpl).addConnectionListener(connectionListenerRemota);
+            (conRemota as ConnectionImpl).secureConnect(applicationContext);
+        }
+    }
+
+    private val connectionListenerLocal: IConnectionListener = object : IConnectionListener{
+        val con : String = "local"
+        override fun onConnectionEstablished() {
+            log("Conexão $con estabelecida")
+        }
+
+        override fun onConnectionEstablishmentFailed() {
+            log("Conexão $con falhou")
+
+        }
+
+        override fun onConnectionLost() {
+            log("Conexão $con perdida")
+
+        }
+
+        override fun onDisconnectedNormally() {
+            log("Conexão $con desconectada normalmente")
+
+        }
+    }
+    private val connectionListenerRemota: IConnectionListener = object : IConnectionListener{
+        val con : String = "remota"
+        override fun onConnectionEstablished() {
+            log("Conexão $con estabelecida")
+        }
+
+        override fun onConnectionEstablishmentFailed() {
+            log("Conexão $con falhou")
+
+        }
+
+        override fun onConnectionLost() {
+            log("Conexão $con perdida")
+
+        }
+
+        override fun onDisconnectedNormally() {
+            log("Conexão $con desconectada normalmente")
+
+        }
     }
 
     private fun initStaticRendezvous(){
@@ -183,7 +263,7 @@ class EndlessService : Service() {
     }
 
     private fun getMyUUID(email: String) {
-        println(email)
+//        println(email)
         val call = semanticAPI.getUserDevices(email)
 
         call.enqueue(object : Callback<List<Device>>{
@@ -209,81 +289,47 @@ class EndlessService : Service() {
 
     }
 
-    private fun initSubscriber() {
-        eventSub = SubscriberFactory.createSubscriber().also {
-
-            it.addConnection(cddl!!.connection)
-
-
-            it.subscribeObjectFoundTopic()
-
-
-            it.subscriberListener = ISubscriberListener {message ->
-
-                when(message){
-
-                    is ObjectFoundMessage -> {
-                        val ofm : ObjectFoundMessage = message
-
+    private fun initSubscriberLocal() {
+        val sub : Subscriber = SubscriberFactory.createSubscriber()
+        sub.addConnection(conLocal)
+        sub.subscribeObjectFoundTopic()
+        sub.setSubscriberListener {
+            when(it){
+                is ObjectFoundMessage -> {
+                    val ofm : ObjectFoundMessage = it
                         val macAdress = getMacAddress(ofm)
-//                        debug()
                         if(macAdress != null){
-//                            log("mac address existe")
                             if(isRegistered(macAdress)){
                                 val thingID = macToUUID(macAdress)
-//                                log("vai postar "+ofm.signal.toString())
-
-                                if(thingID=="7ffae023-41f6-4a1f-a90c-abcffe417195"){
-                                    log("beacon das ETS vai postar " + ofm.signal.toString())
-
-
-                                }else if(thingID== "f7679ec5-6078-466a-8a20-b0ee9a267ac5"){
-                                    log("beacon de teste 4 vai postar " + ofm.signal.toString())
-//                                    fowardRendezvous(MY_UUID!!, thingID, ofm.signal)
-
-                                }else if(thingID== "0301653c-b672-4089-8539-b94e68c3a620"){
-                                    log("beacon de reuniao vai postar " + ofm.signal.toString())
-//                                    fowardRendezvous(MY_UUID!!, thingID, ofm.signal)
-
+                                if(thingID=="8cbfff88-b04d-4006-89e6-bf24d6b58968"){
+                                    log("beacon de testes vai postar " + ofm.signal.toString())
                                 }
                                 fowardRendezvous(MY_UUID!!, thingID, ofm.signal)
-
-
                             }
-                        }else{
-//                            log( "mac adress dont existe")
-
                         }
-
-                    }
-
                 }
-
             }
-
         }
 
     }
 
     private fun postRendezvous(myUuid: String, thingID: String, rssi: Double) {
 
-        val rendezvous = createRendezvous(myUuid, thingID, rssi)
+        val publisher = PublisherFactory.createPublisher()
+        publisher.addConnection(conRemota)
 
-
-        val call = horysAPI.postRendezvous(rendezvous)
-
-        call.enqueue(object : Callback<Void>{
-
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                log("rendezvous posted")
-
-            }
-
-            override fun onFailure(call: Call<Void>, t: Throwable) {
-
-            }
-        })
-
+        val rendezvousMessage = RendezvousMessage()
+        rendezvousMessage.appID = UUID.fromString(APPLICATION_ID)
+        rendezvousMessage.mhubID = UUID.fromString(myUuid)
+        rendezvousMessage.thingID = UUID.fromString(thingID)
+        rendezvousMessage.signal = rssi
+        rendezvousMessage.latitude = 0.0
+        rendezvousMessage.longitude = 0.0
+        rendezvousMessage.timestamp = System.currentTimeMillis() / 1000L
+        publisher.publish(rendezvousMessage)
+        publisher.setPublisherListener {
+            log("RENDEZVOUS MESSAGE POSTED")
+        }
     }
 
 
@@ -299,14 +345,10 @@ class EndlessService : Service() {
             }
         }
         if(currentNumberOfRendezvous >= WINDOW_SIZE){
-            if(rendezvousWithGreatestRssi.thingID=="7ffae023-41f6-4a1f-a90c-abcffe417195"){
-                log("beacon das ETS postado " + rendezvousWithGreatestRssi.signal.toString())
-            }else if(rendezvousWithGreatestRssi.thingID== "f7679ec5-6078-466a-8a20-b0ee9a267ac5"){
-                log("beacon de teste 4 postado " + rendezvousWithGreatestRssi.signal.toString())
-            }else if(rendezvousWithGreatestRssi.thingID== "0301653c-b672-4089-8539-b94e68c3a620"){
-                log("beacon de reuniao postado " + rendezvousWithGreatestRssi.signal.toString())
-
+            if(rendezvousWithGreatestRssi.thingID=="8cbfff88-b04d-4006-89e6-bf24d6b58968"){
+                log("beacon de testes postado " + rendezvousWithGreatestRssi.signal.toString())
             }
+
             postRendezvous(myUuid, rendezvousWithGreatestRssi.thingID, rendezvousWithGreatestRssi.signal)
             rendezvousWithGreatestRssi.signal = Double.NEGATIVE_INFINITY
             currentNumberOfRendezvous = 0
@@ -341,26 +383,23 @@ class EndlessService : Service() {
 
     }
 
+
+
     private fun initCDDL() {
         try {
-
-            val connection = ConnectionFactory.createConnection()
-            connection.clientId = email
-            connection.host = Connection.MICRO_BROKER_LOCAL_HOST
-            connection.connect()
-
-            cddl = CDDL.getInstance(). also {
-                it.connection = connection
-                it.context = this // is it?
-                it.startService()
-
-                it.startCommunicationTechnology(br.ufma.lsdi.cddl.components.TechnologyID.BLE.id)
+            cddl = CDDL.getInstance();
+            if(cddl != null) {
+                cddl!!.connection = conLocal;
+                cddl!!.context = this;
+                cddl!!.startService();
+                cddl!!.startCommunicationTechnology(CDDL.BLE_TECHNOLOGY_ID);
+                //cddl.startLocationSensor();
+                cddl!!.setQoS(TimeBasedFilterQoS());
+                println("---------------- CDDL iniciado ------------")
             }
 
-
-            log("----------- CDDL started -----------")
         }catch (e : Exception){
-            log("initCDDL() Failed: Unkown error!")
+            log("initCDDL() Failed")
             e.message?.let { log(it) }
         }
 
@@ -370,6 +409,7 @@ class EndlessService : Service() {
     private fun initMicroBroker() {
         try {
             val microBroker : MicroBroker = MicroBroker.getInstance()
+
             microBroker.start()
             log("----------- Micro broker started -----------")
         }catch (e : Exception){
@@ -431,36 +471,43 @@ class EndlessService : Service() {
         Log.d("CDDL DEBUG", "subscriber listener = null? => ${eventSub?.subscriberListener == null}")
     }
 
+//    private fun loadPublisher(){
+//
+//        secureConnection = ConnectionFactory.createConnection()
+//        secureConnection!!.host = "192.168.15.144"   //"192.168.15.144"
+//        secureConnection!!.clientId = "horiz@clientID";
+//        secureConnection!!.secureConnect(applicationContext)
+//
+//
+//
+//
+//    }
+    private fun createRandomRendezvous() : Rendezvous{
+
+        return Rendezvous(
+            UUID.randomUUID().toString(),
+            UUID.randomUUID().toString(),
+            UUID.randomUUID().toString(),
+            0.0,
+            0.0,
+            0.0,
+            System.currentTimeMillis()/1000L
+        )
+
+    }
 
     private fun pingFakeServer() {
-//        val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmmZ")
-//        val gmtTime = df.format(Date())
-//
-//        val deviceId = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
-//
-//        val json =
-//            """
-//                {
-//                    "deviceId": "$deviceId",
-//                    "createdAt": "$gmtTime"
-//                }
-//            """
 
-        log("I am Alive!")
-//        try {
-//            Fuel.post("https://jsonplaceholder.typicode.com/posts")
-//                .jsonBody(json)
-//                .response { _, _, result ->
-//                    val (bytes, error) = result
-//                    if (bytes != null) {
-//                        log("[response bytes] ${String(bytes)}")
-//                    } else {
-//                        log("[response error] ${error?.message}")
-//                    }
-//                }
-//        } catch (e: Exception) {
-//            log("Error making the request: ${e.message}")
-//        }
+        println("I am Alive!")
+//        val rendezvous : Rendezvous = createRandomRendezvous();
+//        val stringRendezvous : String = jsonMapper.writeValueAsString(rendezvous);
+//        val customMessage : SensorDataMessage = SensorDataMessage()
+//
+//        customMessage.serviceName = "horiz";
+//        customMessage.setServiceValue(stringRendezvous);
+//        publisher!!.publish(customMessage);
+
+
     }
 
     private fun createNotification(): Notification {

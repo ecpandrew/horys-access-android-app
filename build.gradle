@@ -1,5 +1,5 @@
 ext {
-    var = '/home/andrew/Android/keystorepath.jks'
+    var = '/home/andre/keystore.jks'
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
@@ -23,7 +23,7 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
-        maven { url "http://lsdi.ufma.br:8081/artifactory/libs-release-local" }
+//        maven { url "http://lsdi.ufma.br:8081/artifactory/libs-release-local" }
 
 
     }

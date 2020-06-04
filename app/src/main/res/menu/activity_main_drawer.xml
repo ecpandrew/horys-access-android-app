@@ -13,6 +13,11 @@
         <item
                 android:id="@+id/nav_slideshow"
                 android:title="@string/menu_slideshow"/>
+        <item
+                android:id="@+id/nav_security"
+                android:title="@string/menu_security"/>
+
+
         <!--<item-->
                 <!--android:id="@+id/nav_tools"-->
                 <!--android:icon="@drawable/ic_menu_manage"-->

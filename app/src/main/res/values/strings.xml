@@ -36,6 +36,8 @@
 
     <string name="menu_gallery">Buscas em Tempo Real</string>
     <string name="menu_slideshow">Acessando Histórico</string>
+    <string name="menu_security">Security Service</string>
+
     <string name="menu_home">Home Page</string>
     <string name="pick_label">YY-MM-dd HH-mm</string>
     <string name="pick_a_date">Pick a Date</string>

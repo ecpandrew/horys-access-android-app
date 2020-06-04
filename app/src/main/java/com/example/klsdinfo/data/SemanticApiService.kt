@@ -30,7 +30,7 @@ interface SemanticApiService {
     companion object Factory {
 
         fun create(): SemanticApiService {
-            val retrofit = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl("http://smartlab.lsdi.ufma.br/semantic/api/").build()
+            val retrofit = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl("http://192.168.15.144:5002/api/").build()
             return retrofit.create(SemanticApiService::class.java)
         }
     }

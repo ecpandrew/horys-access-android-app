@@ -1,1 +1,1 @@
-include ':app', ':cddl-release', ':mhub-release', ':microbroker-release'
+include ':app', ':cddl-release', ':mhub-release', ':microbroker-release', ':security-service-release'

@@ -16,7 +16,6 @@ import br.ufma.lsdi.cddl.CDDL
 import br.ufma.lsdi.cddl.Connection
 import br.ufma.lsdi.cddl.ConnectionFactory
 import br.ufma.lsdi.cddl.listeners.IConnectionListener
-import br.ufma.lsdi.cddl.listeners.ISubscriberListener
 import br.ufma.lsdi.cddl.message.ObjectFoundMessage
 import br.ufma.lsdi.cddl.message.RendezvousMessage
 import br.ufma.lsdi.cddl.network.ConnectionImpl
@@ -42,9 +41,14 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
 
 
 class EndlessService : Service() {
+
+    private val scheduler: ScheduledExecutorService = Executors.newScheduledThreadPool(1)
 
     private val APPLICATION_ID = "4e5cf492-9bee-4f96-9749-11e334c90aef"
 
@@ -55,15 +59,13 @@ class EndlessService : Service() {
     private var isServiceStarted = false
 
     private var devicesCache: DevicesCache? = null
-//    private val horysAPI = HorysClient.getClient().create(HorysAPI::class.java)
+    //    private val horysAPI = HorysClient.getClient().create(HorysAPI::class.java)
     private val semanticAPI = SemanticClient.getClient().create(SemanticAPI::class.java)
 
 
     /* IoT middleware responsible to manage bluetooth scanning */
     private  var cddl: CDDL? = null
     private  var eventSub: Subscriber? = null
-    private var publisher: Publisher? = null
-    var jsonMapper: ObjectMapper = ObjectMapper()
 
     var conLocal: Connection? = null
     var conRemota: Connection? = null
@@ -111,11 +113,14 @@ class EndlessService : Service() {
         // by returning this we make sure the service is restarted if the system kills the service
         return START_REDELIVER_INTENT
     }
+
     override fun onCreate() {
         super.onCreate()
+
         log("The service has been created".toUpperCase())
         val notification = createNotification()
         startForeground(1, notification)
+
     }
 
     override fun onDestroy() {
@@ -146,35 +151,50 @@ class EndlessService : Service() {
 
         // we're starting a loop in a coroutine
 //        loadPublisher()
-        GlobalScope.launch(Dispatchers.IO) {
+        init()
 
+        scheduler.scheduleAtFixedRate(Runnable {
+            log("----RESTART----")
+            removeConLocal()
+            stopCDDL()
+            configConLocal()
+            configConRemota()
+            initCDDL()
+        }, 30, 30, TimeUnit.MINUTES);
 
-            init()
-            while (isServiceStarted) {
-
-                launch(Dispatchers.IO) {
-
-                    pingFakeServer()
-
-                }
-                delay(1 * 5 * 1000)
-            }
-
-            log("End of the loop for the service")
-            stop()
-        }
+//        GlobalScope.launch(Dispatchers.IO) {
+//
+////            scheduler.scheduleAtFixedRate(Runnable {
+////
+////            }, 8, 8, TimeUnit.MINUTES);
+//
+//            while (isServiceStarted) {
+////                launch(Dispatchers.IO) {
+////                    pingFakeServer()
+////                }
+//                println("----------- STARTED -----------")
+//                cddl!!.startCommunicationTechnology(CDDL.BLE_TECHNOLOGY_ID);
+//                delay(8 * 60 * 1000)
+//                println("----------- STOPPED -----------")
+//                cddl!!.stopCommunicationTechnology(CDDL.BLE_TECHNOLOGY_ID);
+//                System.gc();
+//
+//            }
+//
+//            log("End of the loop for the service")
+//            stop()
+//        }
 
 
     }
 
     private fun stop() {
-
         try {
             eventSub!!.unsubscribeAll()
             cddl!!.stopAllCommunicationTechnologies()
             cddl!!.stopService()
-            cddl!!.connection.disconnect()
-            publisher!!.disconnectAll()
+            conLocal!!.disconnect()
+            conRemota!!.disconnect()
             CDDL.stopMicroBroker()
             stopService()
         }catch (e: Exception){
@@ -187,6 +207,7 @@ class EndlessService : Service() {
         getMyUUID(email?:"")
         initCache()
         initStaticRendezvous()
+
         configConLocal()
         configConRemota()
         initCDDL()
@@ -203,6 +224,16 @@ class EndlessService : Service() {
             (conLocal as ConnectionImpl).secureConnect(applicationContext);
         }
     }
+    private fun removeConLocal(){
+        if (conLocal != null) {
+            conLocal!!.disconnect()
+        }
+        if(conRemota != null) {
+            conRemota!!.disconnect()
+        }
+        CDDL.stopMicroBroker()
+    }
+
     private fun configConRemota(){
         val host = "192.168.15.144";
 //        val host = "192.168.15.114";
@@ -214,6 +245,7 @@ class EndlessService : Service() {
             (conRemota as ConnectionImpl).secureConnect(applicationContext);
         }
     }
+
 
     private val connectionListenerLocal: IConnectionListener = object : IConnectionListener{
         val con : String = "local"
@@ -263,30 +295,22 @@ class EndlessService : Service() {
     }
 
     private fun getMyUUID(email: String) {
-//        println(email)
         val call = semanticAPI.getUserDevices(email)
-
         call.enqueue(object : Callback<List<Device>>{
             override fun onResponse(call: Call<List<Device>>, response: Response<List<Device>>) {
                 val deviceList = response.body()
-
                 if(deviceList.isNullOrEmpty()){
                     MY_UUID = null
                     log("init() failed: user not exists")
                 }else{
                     MY_UUID = deviceList[0].uuid
                     log("--------- User found: $email")
-
                 }
             }
-
             override fun onFailure(call: Call<List<Device>>, t: Throwable) {
                 log("init() failed: request httl failed")
             }
-
         })
-
-
     }
 
     private fun initSubscriberLocal() {
@@ -297,20 +321,19 @@ class EndlessService : Service() {
             when(it){
                 is ObjectFoundMessage -> {
                     val ofm : ObjectFoundMessage = it
-                        val macAdress = getMacAddress(ofm)
-                        if(macAdress != null){
-                            if(isRegistered(macAdress)){
-                                val thingID = macToUUID(macAdress)
-                                if(thingID=="8cbfff88-b04d-4006-89e6-bf24d6b58968"){
-                                    log("beacon de testes vai postar " + ofm.signal.toString())
-                                }
-                                fowardRendezvous(MY_UUID!!, thingID, ofm.signal)
+                    val macAdress = getMacAddress(ofm)
+                    if(macAdress != null){
+                        if(isRegistered(macAdress)){
+                            val thingID = macToUUID(macAdress)
+                            if(thingID=="8cbfff88-b04d-4006-89e6-bf24d6b58968"){
+                                log("beacon de testes vai postar " + ofm.signal.toString())
                             }
+                            fowardRendezvous(MY_UUID!!, thingID, ofm.signal)
                         }
+                    }
                 }
             }
         }
-
     }
 
     private fun postRendezvous(myUuid: String, thingID: String, rssi: Double) {
@@ -328,7 +351,7 @@ class EndlessService : Service() {
         rendezvousMessage.timestamp = System.currentTimeMillis() / 1000L
         publisher.publish(rendezvousMessage)
         publisher.setPublisherListener {
-            log("RENDEZVOUS MESSAGE POSTED")
+            log("---RENDEZVOUS MESSAGE POSTED")
         }
     }
 
@@ -383,7 +406,12 @@ class EndlessService : Service() {
 
     }
 
+    private fun stopCDDL(){
+        cddl = CDDL.getInstance();
+        cddl!!.stopCommunicationTechnology(CDDL.BLE_TECHNOLOGY_ID)
+        cddl!!.stopService()
 
+    }
 
     private fun initCDDL() {
         try {
@@ -394,7 +422,7 @@ class EndlessService : Service() {
                 cddl!!.startService();
                 cddl!!.startCommunicationTechnology(CDDL.BLE_TECHNOLOGY_ID);
                 //cddl.startLocationSensor();
-                cddl!!.setQoS(TimeBasedFilterQoS());
+//                cddl!!.setQoS(TimeBasedFilterQoS());
                 println("---------------- CDDL iniciado ------------")
             }
 
@@ -406,18 +434,6 @@ class EndlessService : Service() {
 
     }
 
-    private fun initMicroBroker() {
-        try {
-            val microBroker : MicroBroker = MicroBroker.getInstance()
-
-            microBroker.start()
-            log("----------- Micro broker started -----------")
-        }catch (e : Exception){
-            log("initMicroBroker() Failed: Unkown error!")
-            e.message?.let { log(it) }
-
-        }
-    }
 
     private fun initCache() {
 
@@ -451,6 +467,8 @@ class EndlessService : Service() {
                     it.release()
                 }
             }
+            scheduler.shutdown()
+            stop()
             stopForeground(true)
             stopSelf()
         } catch (e: Exception) {
@@ -461,54 +479,6 @@ class EndlessService : Service() {
     }
 
 
-    private fun debug(){
-        Log.d("CDDL DEBUG", "my uuid = $MY_UUID")
-        Log.d("CDDL DEBUG", "cache size = ${devicesCache?.debug()}")
-        Log.d("CDDL DEBUG", "micro broker instance = null ? => ${MicroBroker.getInstance()==null}")
-        Log.d("CDDL DEBUG", "cddl isntance = null? =>  ${cddl==null}")
-        Log.d("CDDL DEBUG", "cddl connection =  ${cddl?.connection}")
-        Log.d("CDDL DEBUG", "subscriber = null? => ${eventSub==null}")
-        Log.d("CDDL DEBUG", "subscriber listener = null? => ${eventSub?.subscriberListener == null}")
-    }
-
-//    private fun loadPublisher(){
-//
-//        secureConnection = ConnectionFactory.createConnection()
-//        secureConnection!!.host = "192.168.15.144"   //"192.168.15.144"
-//        secureConnection!!.clientId = "horiz@clientID";
-//        secureConnection!!.secureConnect(applicationContext)
-//
-//
-//
-//
-//    }
-    private fun createRandomRendezvous() : Rendezvous{
-
-        return Rendezvous(
-            UUID.randomUUID().toString(),
-            UUID.randomUUID().toString(),
-            UUID.randomUUID().toString(),
-            0.0,
-            0.0,
-            0.0,
-            System.currentTimeMillis()/1000L
-        )
-
-    }
-
-    private fun pingFakeServer() {
-
-        println("I am Alive!")
-//        val rendezvous : Rendezvous = createRandomRendezvous();
-//        val stringRendezvous : String = jsonMapper.writeValueAsString(rendezvous);
-//        val customMessage : SensorDataMessage = SensorDataMessage()
-//
-//        customMessage.serviceName = "horiz";
-//        customMessage.setServiceValue(stringRendezvous);
-//        publisher!!.publish(customMessage);
-
-
-    }
 
     private fun createNotification(): Notification {
         val notificationChannelId = "ENDLESS SERVICE CHANNEL"
@@ -551,20 +521,6 @@ class EndlessService : Service() {
             .build()
     }
 
-
-
-
-    private fun createRendezvous(myUUID:String, thingUUID: String, rssi: Double) : Rendezvous {
-        return Rendezvous(
-            APPLICATION_ID,
-            myUUID,
-            thingUUID,
-            -23.01641146,
-            -23.01641146,
-            rssi,
-            System.currentTimeMillis()/1000
-        )
-    }
 
 
 }

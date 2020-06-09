@@ -1,6 +1,5 @@
 package com.example.klsdinfo
-import android.Manifest.permission.ACCESS_FINE_LOCATION
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.Manifest.permission.*
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -393,17 +392,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
     private fun setPermissions() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-                this,
-                WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
+        if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            || ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+            || ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            || ActivityCompat.checkSelfPermission(this, ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 this,
-                arrayOf(ACCESS_FINE_LOCATION, WRITE_EXTERNAL_STORAGE), 1
+                arrayOf(ACCESS_FINE_LOCATION, WRITE_EXTERNAL_STORAGE, ACCESS_COARSE_LOCATION, ACCESS_BACKGROUND_LOCATION), 1
             )
         }
     }
@@ -418,18 +414,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             it.putString("email", MY_EMAIL)
             it.putString("action", action.name)
         }
+        val intent : Intent = Intent(this, EndlessService::class.java)
+        intent.putExtras(bundle)
 
-        Intent(this, EndlessService::class.java).also {
-            it.putExtras(bundle)
-//            it.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                log("Starting the service in >=26 Mode")
-                startForegroundService(it)
-                return
-            }
-            log("Starting the service in < 26 Mode")
-            startService(it)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            log("Starting the service in >=26 Mode")
+            startForegroundService(intent)
+            return
         }
+        startService(intent)
+
+
+//
+//        Intent(this, EndlessService::class.java).also {
+//            it.putExtras(bundle)
+////            it.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                log("Starting the service in >=26 Mode")
+//                startForegroundService(it)
+//                return
+//            }
+//            log("Starting the service in < 26 Mode")
+//            startService(it)
+//        }
     }
 
 

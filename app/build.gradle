@@ -108,10 +108,10 @@ dependencies {
 //    implementation (name: 'microbroker-release', ext: 'aar')
 //    implementation (name: 'security-service-release', ext: 'aar')
 
-    implementation 'com.github.ecpandrew.cdll-security:cddl:153a02ccb3'
-    implementation 'com.github.ecpandrew.cdll-security:mhub:153a02ccb3'
-    implementation 'com.github.ecpandrew.cdll-security:microbroker:153a02ccb3'
-    implementation 'com.github.ecpandrew.cdll-security:security-service:153a02ccb3'
+    implementation 'com.github.ecpandrew.cdll-security:cddl:161fd0665c'
+    implementation 'com.github.ecpandrew.cdll-security:mhub:161fd0665c'
+    implementation 'com.github.ecpandrew.cdll-security:microbroker:161fd0665c'
+    implementation 'com.github.ecpandrew.cdll-security:security-service:161fd0665c'
 
 
     //    implementation project(':cddl-release')

@@ -8,7 +8,6 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
-import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -396,10 +395,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             || ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
             || ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
             || ActivityCompat.checkSelfPermission(this, ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED
+            || ActivityCompat.checkSelfPermission(this, WAKE_LOCK) != PackageManager.PERMISSION_GRANTED
+
         ) {
             ActivityCompat.requestPermissions(
                 this,
-                arrayOf(ACCESS_FINE_LOCATION, WRITE_EXTERNAL_STORAGE, ACCESS_COARSE_LOCATION, ACCESS_BACKGROUND_LOCATION), 1
+                arrayOf(ACCESS_FINE_LOCATION, WRITE_EXTERNAL_STORAGE, ACCESS_COARSE_LOCATION, ACCESS_BACKGROUND_LOCATION, WAKE_LOCK), 1
             )
         }
     }
@@ -416,15 +417,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         val intent : Intent = Intent(this, EndlessService::class.java)
         intent.putExtras(bundle)
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             log("Starting the service in >=26 Mode")
             startForegroundService(intent)
             return
         }
         startService(intent)
-
-
 //
 //        Intent(this, EndlessService::class.java).also {
 //            it.putExtras(bundle)

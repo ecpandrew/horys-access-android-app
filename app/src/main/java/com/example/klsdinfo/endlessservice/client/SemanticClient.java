@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SemanticClient {
 //    private static String BASE_URL = "http://smartlab.lsdi.ufma.br/semantic/api/";
-    private static String BASE_URL = "http://192.168.15.144:5002/api/";
+    private static String BASE_URL = "http://192.168.15.114:5002/api/";
 
     private static Retrofit retrofit = null;
 

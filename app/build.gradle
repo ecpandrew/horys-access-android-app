@@ -98,7 +98,7 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
 
 //    implementation(name:'cddl-release', ext:'aar')
-//    implementation(name:'mhub-release', ext:'aar')
+//    implementation(name:'mhub-release', ext:'aar')768
 //    implementation(name:'microbroker-release', ext:'aar')
 //    implementation(name:'security-service-release', ext:'aar')
 
@@ -107,11 +107,13 @@ dependencies {
 //    implementation (name: 'mhub-release, ext: 'aar')
 //    implementation (name: 'microbroker-release', ext: 'aar')
 //    implementation (name: 'security-service-release', ext: 'aar')
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
+//    releaseImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
 
-    implementation 'com.github.ecpandrew.cdll-security:cddl:161fd0665c'
-    implementation 'com.github.ecpandrew.cdll-security:mhub:161fd0665c'
-    implementation 'com.github.ecpandrew.cdll-security:microbroker:161fd0665c'
-    implementation 'com.github.ecpandrew.cdll-security:security-service:161fd0665c'
+    implementation 'com.github.ecpandrew.cdll-security:cddl:00cfe08c8d'
+    implementation 'com.github.ecpandrew.cdll-security:mhub:00cfe08c8d'
+    implementation 'com.github.ecpandrew.cdll-security:microbroker:00cfe08c8d'
+    implementation 'com.github.ecpandrew.cdll-security:security-service:00cfe08c8d'
 
 
     //    implementation project(':cddl-release')

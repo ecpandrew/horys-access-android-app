@@ -6,11 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
 import android.provider.Settings
-import android.util.Log
 import android.widget.Toast
 import br.ufma.lsdi.cddl.CDDL
 import br.ufma.lsdi.cddl.Connection
@@ -18,13 +18,10 @@ import br.ufma.lsdi.cddl.ConnectionFactory
 import br.ufma.lsdi.cddl.listeners.IConnectionListener
 import br.ufma.lsdi.cddl.message.ObjectFoundMessage
 import br.ufma.lsdi.cddl.message.RendezvousMessage
-import br.ufma.lsdi.cddl.network.ConnectionImpl
-import br.ufma.lsdi.cddl.network.MicroBroker
 import br.ufma.lsdi.cddl.pubsub.Publisher
 import br.ufma.lsdi.cddl.pubsub.PublisherFactory
 import br.ufma.lsdi.cddl.pubsub.Subscriber
 import br.ufma.lsdi.cddl.pubsub.SubscriberFactory
-import br.ufma.lsdi.cddl.qos.TimeBasedFilterQoS
 import com.example.klsdinfo.MainActivity
 import com.example.klsdinfo.R
 import com.example.klsdinfo.endlessservice.api.SemanticAPI
@@ -32,30 +29,30 @@ import com.example.klsdinfo.endlessservice.cache.DevicesCache
 import com.example.klsdinfo.endlessservice.client.SemanticClient
 import com.example.klsdinfo.endlessservice.models.Device
 import com.example.klsdinfo.endlessservice.models.Rendezvous
-import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+//import leakcanary.AppWatcher
+//import leakcanary.ObjectWatcher
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
 
 
 class EndlessService : Service() {
 
-    private val scheduler: ScheduledExecutorService = Executors.newScheduledThreadPool(1)
-
+//    private val scheduler: ScheduledExecutorService = Executors.newScheduledThreadPool(1)
     private val APPLICATION_ID = "4e5cf492-9bee-4f96-9749-11e334c90aef"
 
     private var email: String? = null//"andre.cardoso@lsdi.ufma.br"
     private var MY_UUID: String? = null /* UUID of this smathphone, obtained through the user email */
 
     private var wakeLock: PowerManager.WakeLock? = null
+    private var wakeLock2: WifiManager.WifiLock? = null
+
+//    private var wifiLock : WifiManager.WifiLock? = null
+
     private var isServiceStarted = false
 
     private var devicesCache: DevicesCache? = null
@@ -74,6 +71,16 @@ class EndlessService : Service() {
 
     private lateinit var rendezvousWithGreatestRssi: Rendezvous
     private var currentNumberOfRendezvous : Int = 0
+
+
+
+    // Memory leak prevention
+    var macAdress : String? = null
+    var publisher : Publisher? = null
+    var rendezvousMessage : RendezvousMessage? = null
+//    var mouuid: String? = null
+//    var emptyMacAdress : String? = null
+
 
     override fun onBind(intent: Intent): IBinder? {
         log("Some component want to bind with the service")
@@ -123,16 +130,7 @@ class EndlessService : Service() {
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        log("The service has been destroyed".toUpperCase())
-        Toast.makeText(this, "Service destroyed", Toast.LENGTH_SHORT).show()
-//        try{
-//            stop()
-//        }catch (e : Exception){
-//            log("falha no on destroy do service")
-//        }
-    }
+
 
     private fun startService() {
         if (isServiceStarted) return
@@ -141,51 +139,34 @@ class EndlessService : Service() {
         isServiceStarted = true
         setServiceState(this, ServiceState.STARTED)
 
-        // we need this lock so our service gets not affected by Doze Mode
         wakeLock =
             (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
                 newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "EndlessService::lock").apply {
                     acquire()
                 }
             }
-
-        // we're starting a loop in a coroutine
-//        loadPublisher()
+        wakeLock2 =
+            (getSystemService(Context.WIFI_SERVICE) as WifiManager).run {
+                createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "EndlessService::lock2").apply {
+                    acquire()
+                }
+            }
         init()
+        cddl!!.startCommunicationTechnology(CDDL.BLE_TECHNOLOGY_ID);
 
-        scheduler.scheduleAtFixedRate(Runnable {
-            log("----RESTART----")
-            removeConLocal()
-            stopCDDL()
-            configConLocal()
-            configConRemota()
-            initCDDL()
-        }, 30, 30, TimeUnit.MINUTES);
-
-//        GlobalScope.launch(Dispatchers.IO) {
+//        scheduler.scheduleAtFixedRate(Runnable {
+//            println("WIFI: state = ${wifiManager.wifiState}")
+//            println("WIFI: isEnabled = ${wifiManager.isWifiEnabled}")
+//            print(wifiManager.connectionInfo
+//            )
 //
-////            scheduler.scheduleAtFixedRate(Runnable {
-////
-////            }, 8, 8, TimeUnit.MINUTES);
-//
-//            while (isServiceStarted) {
-////                launch(Dispatchers.IO) {
-////                    pingFakeServer()
-////                }
-//                println("----------- STARTED -----------")
-//                cddl!!.startCommunicationTechnology(CDDL.BLE_TECHNOLOGY_ID);
-//                delay(8 * 60 * 1000)
-//                println("----------- STOPPED -----------")
-//                cddl!!.stopCommunicationTechnology(CDDL.BLE_TECHNOLOGY_ID);
-//                System.gc();
-//
-//            }
-//
-//            log("End of the loop for the service")
-//            stop()
-//        }
-
-
+//        }, 5, 5, TimeUnit.MINUTES);
+        GlobalScope.launch(Dispatchers.IO) {
+            while (isServiceStarted) {
+            }
+            log("End of the loop for the service")
+            stop()
+        }
     }
 
     private fun stop() {
@@ -207,22 +188,28 @@ class EndlessService : Service() {
         getMyUUID(email?:"")
         initCache()
         initStaticRendezvous()
-
         configConLocal()
         configConRemota()
         initCDDL()
         initSubscriberLocal()
+        initPublisherRemote()
+    }
+    private fun initPublisherRemote(){
+        publisher = PublisherFactory.createPublisher().also {
+            it.addConnection(conRemota)
+        }
+
     }
 
     private fun configConLocal(){
         val host = CDDL.startSecureMicroBroker(applicationContext, true);
-        conLocal = ConnectionFactory.createConnection();
-        if (conLocal != null) {
-            (conLocal as ConnectionImpl).clientId = "lcmuniz@gmail.com";
-            (conLocal as ConnectionImpl).host = host;
-            (conLocal as ConnectionImpl).addConnectionListener(connectionListenerLocal);
-            (conLocal as ConnectionImpl).secureConnect(applicationContext);
+        conLocal = ConnectionFactory.createConnection().also {
+            it.clientId = "lcmuniz@gmail.com";
+            it.host = host;
+            it.addConnectionListener(connectionListenerLocal);
+            it.secureConnect(applicationContext);
         }
+
     }
     private fun removeConLocal(){
         if (conLocal != null) {
@@ -235,15 +222,15 @@ class EndlessService : Service() {
     }
 
     private fun configConRemota(){
-        val host = "192.168.15.144";
+        val host = "192.168.15.114";
 //        val host = "192.168.15.114";
-        conRemota = ConnectionFactory.createConnection();
-        if (conRemota != null) {
-            (conRemota as ConnectionImpl).clientId = "lcmuniz@gmail.com";
-            (conRemota as ConnectionImpl).host = host;
-            (conRemota as ConnectionImpl).addConnectionListener(connectionListenerRemota);
-            (conRemota as ConnectionImpl).secureConnect(applicationContext);
+        conRemota = ConnectionFactory.createConnection().also {
+            it.clientId = "lcmuniz@gmail.com";
+            it.host = host;
+            it.addConnectionListener(connectionListenerRemota);
+            it.secureConnect(applicationContext);
         }
+
     }
 
 
@@ -320,15 +307,10 @@ class EndlessService : Service() {
         sub.setSubscriberListener {
             when(it){
                 is ObjectFoundMessage -> {
-                    val ofm : ObjectFoundMessage = it
-                    val macAdress = getMacAddress(ofm)
+                    macAdress = getMacAddress(it)
                     if(macAdress != null){
-                        if(isRegistered(macAdress)){
-                            val thingID = macToUUID(macAdress)
-                            if(thingID=="8cbfff88-b04d-4006-89e6-bf24d6b58968"){
-                                log("beacon de testes vai postar " + ofm.signal.toString())
-                            }
-                            fowardRendezvous(MY_UUID!!, thingID, ofm.signal)
+                        if(isRegistered(macAdress!!)){
+                            fowardRendezvous(MY_UUID!!, macToUUID(macAdress!!), it.signal)
                         }
                     }
                 }
@@ -336,23 +318,23 @@ class EndlessService : Service() {
         }
     }
 
+
     private fun postRendezvous(myUuid: String, thingID: String, rssi: Double) {
-
-        val publisher = PublisherFactory.createPublisher()
-        publisher.addConnection(conRemota)
-
-        val rendezvousMessage = RendezvousMessage()
-        rendezvousMessage.appID = UUID.fromString(APPLICATION_ID)
-        rendezvousMessage.mhubID = UUID.fromString(myUuid)
-        rendezvousMessage.thingID = UUID.fromString(thingID)
-        rendezvousMessage.signal = rssi
-        rendezvousMessage.latitude = 0.0
-        rendezvousMessage.longitude = 0.0
-        rendezvousMessage.timestamp = System.currentTimeMillis() / 1000L
-        publisher.publish(rendezvousMessage)
-        publisher.setPublisherListener {
-            log("---RENDEZVOUS MESSAGE POSTED")
+        rendezvousMessage = RendezvousMessage().also {
+            it.appID = UUID.fromString(APPLICATION_ID)
+            it.mhubID = UUID.fromString(myUuid)
+            it.thingID = UUID.fromString(thingID)
+            it.signal = rssi
+            it.latitude = 0.0
+            it.longitude = 0.0
+            it.timestamp = System.currentTimeMillis() / 1000L
+            it.serviceName = "rendezvous"
         }
+
+        publisher.run {
+            this?.publish(rendezvousMessage)
+        }
+
     }
 
 
@@ -368,10 +350,6 @@ class EndlessService : Service() {
             }
         }
         if(currentNumberOfRendezvous >= WINDOW_SIZE){
-            if(rendezvousWithGreatestRssi.thingID=="8cbfff88-b04d-4006-89e6-bf24d6b58968"){
-                log("beacon de testes postado " + rendezvousWithGreatestRssi.signal.toString())
-            }
-
             postRendezvous(myUuid, rendezvousWithGreatestRssi.thingID, rendezvousWithGreatestRssi.signal)
             rendezvousWithGreatestRssi.signal = Double.NEGATIVE_INFINITY
             currentNumberOfRendezvous = 0
@@ -394,15 +372,10 @@ class EndlessService : Service() {
     }
 
     private fun getMacAddress(ofm: ObjectFoundMessage): String? {
-        val mouuid: String? = ofm.mouuid
-        var macAdress : String? = null
-
-        if(mouuid != null && mouuid.length > 2){
-            macAdress = mouuid.substring(2)
-
+        if(ofm.mouuid != null && ofm.mouuid!!.length > 2){
+            return ofm.mouuid!!.substring(2)
         }
-
-        return macAdress
+        return null
 
     }
 
@@ -420,7 +393,6 @@ class EndlessService : Service() {
                 cddl!!.connection = conLocal;
                 cddl!!.context = this;
                 cddl!!.startService();
-                cddl!!.startCommunicationTechnology(CDDL.BLE_TECHNOLOGY_ID);
                 //cddl.startLocationSensor();
 //                cddl!!.setQoS(TimeBasedFilterQoS());
                 println("---------------- CDDL iniciado ------------")
@@ -467,7 +439,19 @@ class EndlessService : Service() {
                     it.release()
                 }
             }
-            scheduler.shutdown()
+            wakeLock2?.let {
+                if (it.isHeld) {
+                    it.release()
+                }
+            }
+
+//            wifiLock?.let{
+//                if(it.isHeld){
+//                    it.release()
+//                }
+//            }
+
+//            scheduler.shutdown()
             stop()
             stopForeground(true)
             stopSelf()

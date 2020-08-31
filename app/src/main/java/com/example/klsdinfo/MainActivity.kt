@@ -24,6 +24,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import br.ufma.lsdi.cddl.CDDL
+import br.ufma.lsdi.cddl.network.SecurityService
 import com.example.klsdinfo.data.database.AppDatabase
 import com.example.klsdinfo.data.database.LocalUserQuery
 import com.example.klsdinfo.endlessservice.*
@@ -104,6 +106,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 finish()
             }
         }
+
+//        val securityServiceImpl = CDDL.getSecurityServiceInstance(applicationContext)
+//        securityServiceImpl.grantReadPermissionByCDDLTopic("thiago", SecurityService.ALL_TOPICS)
+//        securityServiceImpl.grantWritePermissionByCDDLTopic("thiago", SecurityService.ALL_TOPICS)
+
+
 
 
 //        setupAll(user)
@@ -187,7 +195,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         navView.setNavigationItemSelectedListener(this)
 
-
+//        val sec : SecurityService = CDDL.getSecurityServiceInstance(applicationContext)
+//        sec.grantReadPermissionByCDDLTopic("lcmuniz@gmail.com","object_found_topic")
+//        sec.grantWritePermissionByCDDLTopic("lcmuniz@gmail.com","object_found_topic")
 
     }
 

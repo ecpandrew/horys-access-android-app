@@ -15,6 +15,7 @@ android {
         }
     }
     compileSdkVersion 29
+
     defaultConfig {
         applicationId "com.example.KLSDinfo"
         minSdkVersion 26
@@ -110,11 +111,10 @@ dependencies {
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
 //    releaseImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
 
-    implementation 'com.github.ecpandrew.cdll-security:cddl:00cfe08c8d'
-    implementation 'com.github.ecpandrew.cdll-security:mhub:00cfe08c8d'
-    implementation 'com.github.ecpandrew.cdll-security:microbroker:00cfe08c8d'
-    implementation 'com.github.ecpandrew.cdll-security:security-service:00cfe08c8d'
-
+    implementation 'com.github.ecpandrew.cddl-prod:cddl-1.0.4:a4e5336531'
+    implementation 'com.github.ecpandrew.cddl-prod:mhub-1.0.4:a4e5336531'
+    implementation 'com.github.ecpandrew.cddl-prod:microbroker:a4e5336531'
+    implementation 'com.github.ecpandrew.cddl-prod:security-service:a4e5336531'
 
     //    implementation project(':cddl-release')
 //    implementation project(':mhub-release')

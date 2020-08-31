@@ -122,15 +122,15 @@ class ImportCertificatesFragment : Fragment(), LifecycleOwner {
         }
 
 
-        val certCheck: Boolean = securityService.verifyCertificateAgainstPrivateKey()
-
-        if (certCheck) {
-            verift1_tv.setText("Verified")
-            verift1_tv.setTextColor(Color.parseColor("#008000"))
-        } else {
-            verift1_tv.setText("NOT SECURE")
-            verift1_tv.setTextColor(Color.parseColor("#FF0000"))
-        }
+//        val certCheck: Boolean = securityService.verifyCertificateAgainstPrivateKey()
+//
+//        if (certCheck) {
+//            verift1_tv.setText("Verified")
+//            verift1_tv.setTextColor(Color.parseColor("#008000"))
+//        } else {
+//            verift1_tv.setText("NOT SECURE")
+//            verift1_tv.setTextColor(Color.parseColor("#FF0000"))
+//        }
     }
 
     private fun setOnClickListeners() {

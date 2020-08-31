@@ -16,8 +16,9 @@ import br.ufma.lsdi.cddl.CDDL
 import br.ufma.lsdi.cddl.Connection
 import br.ufma.lsdi.cddl.ConnectionFactory
 import br.ufma.lsdi.cddl.listeners.IConnectionListener
+import br.ufma.lsdi.cddl.message.Message
 import br.ufma.lsdi.cddl.message.ObjectFoundMessage
-import br.ufma.lsdi.cddl.message.RendezvousMessage
+import br.ufma.lsdi.cddl.network.SecurityService
 import br.ufma.lsdi.cddl.pubsub.Publisher
 import br.ufma.lsdi.cddl.pubsub.PublisherFactory
 import br.ufma.lsdi.cddl.pubsub.Subscriber
@@ -29,6 +30,7 @@ import com.example.klsdinfo.endlessservice.cache.DevicesCache
 import com.example.klsdinfo.endlessservice.client.SemanticClient
 import com.example.klsdinfo.endlessservice.models.Device
 import com.example.klsdinfo.endlessservice.models.Rendezvous
+import com.example.security_service.SecurityServiceImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -77,7 +79,7 @@ class EndlessService : Service() {
     // Memory leak prevention
     var macAdress : String? = null
     var publisher : Publisher? = null
-    var rendezvousMessage : RendezvousMessage? = null
+    var rendezvousMessage : Message? = null
 //    var mouuid: String? = null
 //    var emptyMacAdress : String? = null
 
@@ -163,6 +165,7 @@ class EndlessService : Service() {
 //        }, 5, 5, TimeUnit.MINUTES);
         GlobalScope.launch(Dispatchers.IO) {
             while (isServiceStarted) {
+                Thread.sleep(5000)
             }
             log("End of the loop for the service")
             stop()
@@ -203,11 +206,15 @@ class EndlessService : Service() {
 
     private fun configConLocal(){
         val host = CDDL.startSecureMicroBroker(applicationContext, true);
+
+
+//        val host = CDDL.startMicroBroker();
         conLocal = ConnectionFactory.createConnection().also {
-            it.clientId = "lcmuniz@gmail.com";
+            it.clientId = "andre";
             it.host = host;
             it.addConnectionListener(connectionListenerLocal);
-            it.secureConnect(applicationContext);
+//            it.connect();
+            it.secureConnect(applicationContext)
         }
 
     }
@@ -222,12 +229,13 @@ class EndlessService : Service() {
     }
 
     private fun configConRemota(){
-        val host = "192.168.15.114";
+        val host = "192.168.15.56";
 //        val host = "192.168.15.114";
         conRemota = ConnectionFactory.createConnection().also {
-            it.clientId = "lcmuniz@gmail.com";
+            it.clientId = "andre"
             it.host = host;
             it.addConnectionListener(connectionListenerRemota);
+//            it.connect();
             it.secureConnect(applicationContext);
         }
 
@@ -320,17 +328,22 @@ class EndlessService : Service() {
 
 
     private fun postRendezvous(myUuid: String, thingID: String, rssi: Double) {
-        rendezvousMessage = RendezvousMessage().also {
-            it.appID = UUID.fromString(APPLICATION_ID)
-            it.mhubID = UUID.fromString(myUuid)
-            it.thingID = UUID.fromString(thingID)
-            it.signal = rssi
-            it.latitude = 0.0
-            it.longitude = 0.0
-            it.timestamp = System.currentTimeMillis() / 1000L
+//        rendezvousMessage = RendezvousMessage().also {
+//            it.appID = UUID.fromString(APPLICATION_ID)
+//            it.mhubID = UUID.fromString(myUuid)
+//            it.thingID = UUID.fromString(thingID)
+//            it.signal = rssi
+//            it.latitude = 0.0
+//            it.longitude = 0.0
+//            it.timestamp = System.currentTimeMillis() / 1000L
+//            it.serviceName = "rendezvous"
+//        }
+        println(">>>>>>>>>>> POSTADO")
+
+        rendezvousMessage = Message().also {
+            it.payload = "$APPLICATION_ID;$myUuid;$thingID;$rssi".toByteArray()
             it.serviceName = "rendezvous"
         }
-
         publisher.run {
             this?.publish(rendezvousMessage)
         }
@@ -365,6 +378,7 @@ class EndlessService : Service() {
     private fun macToUUID(macAdress: String): String {
         return devicesCache!!.getUUID(macAdress)
     }
+
 
 
     private fun isRegistered(macAdress: String): Boolean {
